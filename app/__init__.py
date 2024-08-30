@@ -32,6 +32,9 @@ def create_app(config_class=Config):
     from app.views import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
+    from app.filters import register_filters
+    register_filters(app)
+
     return app
 
 # Import the Users model

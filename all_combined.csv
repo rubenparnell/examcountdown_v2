@@ -1,9 +1,9 @@
 ﻿Date,Exam series,Board,Qualification,Examination code,Category,base_subject,Subject,Title,Time,Duration,Tier
 15/05/2025,Jun-25,OCR,GCSE,J198/01,Humanities,Ancient History,Ancient History,Greece and Persia,PM,2h 00m,
 03/06/2025,Jun-25,OCR,GCSE,J198/02,Humanities,Ancient History,Ancient History,Rome and its neighbours,PM,2h 00m,
-22/05/2025,Jun-25,Pearson,GCSE,1AA0 1F,Languages,Arabic,Arabic,Paper 1: Listening and understanding in Arabic,PM,0h 35m,F
-22/05/2025,Jun-25,Pearson,GCSE,1AA0 1H,Languages,Arabic,Arabic,Paper 1: Listening and understanding in Arabic,PM,0h 45m,H
-22/05/2025,Jun-25,Pearson,GCSE,1AA0 3F,Languages,Arabic,Arabic,Paper 3: Reading and understanding in Arabic,PM,0h 50m,F
+22/05/2025,Jun-25,Pearson,GCSE,1AA0 1F,Languages,Arabic,Arabic,Paper 1: Listening and understanding in Arabic,PM,35m,F
+22/05/2025,Jun-25,Pearson,GCSE,1AA0 1H,Languages,Arabic,Arabic,Paper 1: Listening and understanding in Arabic,PM,45m,H
+22/05/2025,Jun-25,Pearson,GCSE,1AA0 3F,Languages,Arabic,Arabic,Paper 3: Reading and understanding in Arabic,PM,50m,F
 22/05/2025,Jun-25,Pearson,GCSE,1AA0 3H,Languages,Arabic,Arabic,Paper 3: Reading and understanding in Arabic,PM,1h 05m,H
 03/06/2025,Jun-25,Pearson,GCSE,1AA0 4F,Languages,Arabic,Arabic,Paper 4: Writing in Arabic,AM,1h 20m,F
 03/06/2025,Jun-25,Pearson,GCSE,1AA0 4H,Languages,Arabic,Arabic,Paper 4: Writing in Arabic,AM,1h 25m,H
@@ -72,9 +72,9 @@
 19/05/2025,Jun-25,OCR,GCSE,J258/03,Science,Chemistry,Chemistry B (Twenty First Century Science),Breadth in Chemistry,AM,1h 45m,H
 13/06/2025,Jun-25,OCR,GCSE,J258/04,Science,Chemistry,Chemistry B (Twenty First Century Science),Depth in Chemistry,AM,1h 45m,H
 20/05/2025,Jun-25,OCR,CAMBRIDGE NATIONAL,R057/01,Other,Child Development,Child Development,Health and well-being for child development:Written Paper,PM,1h 15m,
-12/05/2025,Jun-25,Pearson,GCSE,1CN0 1F,Languages,Chinese,Chinese,Paper 1: Listening and understanding in Chinese,PM,0h 35m,F
-12/05/2025,Jun-25,Pearson,GCSE,1CN0 1H,Languages,Chinese,Chinese,Paper 1: Listening and understanding in Chinese,PM,0h 45m,H
-12/05/2025,Jun-25,Pearson,GCSE,1CN0 3F,Languages,Chinese,Chinese,Paper 3: Reading and understanding in Chinese,PM,0h 50m,F
+12/05/2025,Jun-25,Pearson,GCSE,1CN0 1F,Languages,Chinese,Chinese,Paper 1: Listening and understanding in Chinese,PM,35m,F
+12/05/2025,Jun-25,Pearson,GCSE,1CN0 1H,Languages,Chinese,Chinese,Paper 1: Listening and understanding in Chinese,PM,45m,H
+12/05/2025,Jun-25,Pearson,GCSE,1CN0 3F,Languages,Chinese,Chinese,Paper 3: Reading and understanding in Chinese,PM,50m,F
 12/05/2025,Jun-25,Pearson,GCSE,1CN0 3H,Languages,Chinese,Chinese,Paper 3: Reading and understanding in Chinese,PM,1h 05m,H
 19/05/2025,Jun-25,Pearson,GCSE,1CN0 4F,Languages,Chinese,Chinese,Paper 4: Writing in Chinese,PM,1h 20m,F
 19/05/2025,Jun-25,Pearson,GCSE,1CN0 4H,Languages,Chinese,Chinese,Paper 4: Writing in Chinese,PM,1h 25m,H
@@ -90,7 +90,7 @@
 15/05/2025,Jun-25,Pearson,GCSE,1CS0 02,Humanities,Citizenship Studies,Citizenship Studies,Paper 2,PM,1h 45m,
 08/05/2025,Jun-25,AQA,GCSE,8100/1,Humanities,Citizenship Studies,Citizenship Studies,Paper 1,PM,1h 45m,
 15/05/2025,Jun-25,AQA,GCSE,8100/2,Humanities,Citizenship Studies,Citizenship Studies,Paper 2,PM,1h 45m,
-08/05/2025,Jun-25,OCR,GCSE,J270/01,Humanities,Citizenship Studies,Citizenship Studies,Citizenship in perspective,PM,0h 50m,
+08/05/2025,Jun-25,OCR,GCSE,J270/01,Humanities,Citizenship Studies,Citizenship Studies,Citizenship in perspective,PM,50m,
 15/05/2025,Jun-25,OCR,GCSE,J270/02,Humanities,Citizenship Studies,Citizenship Studies,Citizenship in action,PM,1h 45m,
 02/06/2025,Jun-25,OCR,GCSE,J270/03,Humanities,Citizenship Studies,Citizenship Studies,"Our rights, our society, our world",AM,1h 00m,
 20/05/2025,Jun-25,OCR,GCSE,J199/11,Humanities,Classical Civilisation,Classical Civilisation,Myth and Religion,PM,1h 30m,
@@ -228,9 +228,9 @@
 21/05/2025,Jun-25,Eduqas,GCSE,C800UC0,Languages,French,French,Component 3 (Reading),AM,1h 15m,H
 05/07/2025,Jun-25,Eduqas,GCSE,C800U40,Languages,French,French,Component 4 (Writing),PM,1h 15m,F
 05/07/2025,Jun-25,Eduqas,GCSE,C800UD0,Languages,French,French,Component 4 (Writing),PM,1h 30m,H
-21/05/2025,Jun-25,Pearson,GCSE,1FR0 1F,Languages,French,French,Paper 1: Listening and understanding in French,AM,0h 35m,F
-21/05/2025,Jun-25,Pearson,GCSE,1FR0 1H,Languages,French,French,Paper 1: Listening and understanding in French,AM,0h 45m,H
-21/05/2025,Jun-25,Pearson,GCSE,1FR0 3F,Languages,French,French,Paper 3: Reading and understanding in French,AM,0h 45m,F
+21/05/2025,Jun-25,Pearson,GCSE,1FR0 1F,Languages,French,French,Paper 1: Listening and understanding in French,AM,35m,F
+21/05/2025,Jun-25,Pearson,GCSE,1FR0 1H,Languages,French,French,Paper 1: Listening and understanding in French,AM,45m,H
+21/05/2025,Jun-25,Pearson,GCSE,1FR0 3F,Languages,French,French,Paper 3: Reading and understanding in French,AM,45m,F
 21/05/2025,Jun-25,Pearson,GCSE,1FR0 3H,Languages,French,French,Paper 3: Reading and understanding in French,AM,1h 00m,H
 05/06/2025,Jun-25,Pearson,GCSE,1FR0 4F,Languages,French,French,Paper 4: Writing in French,PM,1h 15m,F
 05/06/2025,Jun-25,Pearson,GCSE,1FR0 4H,Languages,French,French,Paper 4: Writing in French,PM,1h 20m,H
@@ -273,9 +273,9 @@
 08/05/2025,Jun-25,Eduqas,GCSE,C820UC0,Languages,German,German,Component 3 (Reading),PM,1h 15m,H
 15/05/2025,Jun-25,Eduqas,GCSE,C820U40,Languages,German,German,Component 4 (Writing),PM,1h 15m,F
 15/05/2025,Jun-25,Eduqas,GCSE,C820UD0,Languages,German,German,Component 4 (Writing),PM,1h 30m,H
-08/05/2025,Jun-25,Pearson,GCSE,1GN0 1F,Languages,German,German,Paper 1: Listening and understanding in German,PM,0h 35m,F
-08/05/2025,Jun-25,Pearson,GCSE,1GN0 1H,Languages,German,German,Paper 1: Listening and understanding in German,PM,0h 45m,H
-08/05/2025,Jun-25,Pearson,GCSE,1GN0 3F,Languages,German,German,Paper 3: Reading and understanding in German,PM,0h 45m,F
+08/05/2025,Jun-25,Pearson,GCSE,1GN0 1F,Languages,German,German,Paper 1: Listening and understanding in German,PM,35m,F
+08/05/2025,Jun-25,Pearson,GCSE,1GN0 1H,Languages,German,German,Paper 1: Listening and understanding in German,PM,45m,H
+08/05/2025,Jun-25,Pearson,GCSE,1GN0 3F,Languages,German,German,Paper 3: Reading and understanding in German,PM,45m,F
 08/05/2025,Jun-25,Pearson,GCSE,1GN0 3H,Languages,German,German,Paper 3: Reading and understanding in German,PM,1h 00m,H
 15/05/2025,Jun-25,Pearson,GCSE,1GN0 4F,Languages,German,German,Paper 4: Writing in German,PM,1h 15m,F
 15/05/2025,Jun-25,Pearson,GCSE,1GN0 4H,Languages,German,German,Paper 4: Writing in German,PM,1h 20m,H
@@ -287,15 +287,15 @@
 19/05/2025,Jun-25,AQA,GCSE,8668/SH,Languages,German,German,Speaking test,,,H
 15/05/2025,Jun-25,AQA,GCSE,8668/WF,Languages,German,German,Writing,PM,1h,F
 15/05/2025,Jun-25,AQA,GCSE,8668/WH,Languages,German,German,Writing,PM,1h 15m,H
-12/06/2025,Jun-25,Pearson,GCSE,1GK0 1F,Languages,Greek,Greek,Paper 1: Listening and understanding in Greek,PM,0h 35m,F
-12/06/2025,Jun-25,Pearson,GCSE,1GK0 1H,Languages,Greek,Greek,Paper 1: Listening and understanding in Greek,PM,0h 45m,H
-12/06/2025,Jun-25,Pearson,GCSE,1GK0 3F,Languages,Greek,Greek,Paper 3: Reading and understanding in Greek,PM,0h 50m,F
+12/06/2025,Jun-25,Pearson,GCSE,1GK0 1F,Languages,Greek,Greek,Paper 1: Listening and understanding in Greek,PM,35m,F
+12/06/2025,Jun-25,Pearson,GCSE,1GK0 1H,Languages,Greek,Greek,Paper 1: Listening and understanding in Greek,PM,45m,H
+12/06/2025,Jun-25,Pearson,GCSE,1GK0 3F,Languages,Greek,Greek,Paper 3: Reading and understanding in Greek,PM,50m,F
 12/06/2025,Jun-25,Pearson,GCSE,1GK0 3H,Languages,Greek,Greek,Paper 3: Reading and understanding in Greek,PM,1h 05m,H
 19/06/2025,Jun-25,Pearson,GCSE,1GK0 4F,Languages,Greek,Greek,Paper 4: Writing in Greek,AM,1h 20m,F
 19/06/2025,Jun-25,Pearson,GCSE,1GK0 4H,Languages,Greek,Greek,Paper 4: Writing in Greek,AM,1h 25m,H
-03/06/2025,Jun-25,Pearson,GCSE,1GU0 1F,Languages,Gujarati,Gujarati,Paper 1: Listening and understanding in Gujarati,AM,0h 35m,F
-03/06/2025,Jun-25,Pearson,GCSE,1GU0 1H,Languages,Gujarati,Gujarati,Paper 1: Listening and understanding in Gujarati,AM,0h 45m,H
-03/06/2025,Jun-25,Pearson,GCSE,1GU0 3F,Languages,Gujarati,Gujarati,Paper 3: Reading and understanding in Gujarati,AM,0h 50m,F
+03/06/2025,Jun-25,Pearson,GCSE,1GU0 1F,Languages,Gujarati,Gujarati,Paper 1: Listening and understanding in Gujarati,AM,35m,F
+03/06/2025,Jun-25,Pearson,GCSE,1GU0 1H,Languages,Gujarati,Gujarati,Paper 1: Listening and understanding in Gujarati,AM,45m,H
+03/06/2025,Jun-25,Pearson,GCSE,1GU0 3F,Languages,Gujarati,Gujarati,Paper 3: Reading and understanding in Gujarati,AM,50m,F
 03/06/2025,Jun-25,Pearson,GCSE,1GU0 3H,Languages,Gujarati,Gujarati,Paper 3: Reading and understanding in Gujarati,AM,1h 05m,H
 10/06/2025,Jun-25,Pearson,GCSE,1GU0 4F,Languages,Gujarati,Gujarati,Paper 4: Writing in Gujarati,PM,1h 20m,F
 10/06/2025,Jun-25,Pearson,GCSE,1GU0 4H,Languages,Gujarati,Gujarati,Paper 4: Writing in Gujarati,PM,1h 25m,H
@@ -308,9 +308,9 @@
 16/05/2025,Jun-25,AQA,GCSE,8145/1A/A - 1B/E,Humanities,History,History,Paper 1: Understanding the modern world,AM,2h,
 05/06/2025,Jun-25,AQA,GCSE,8145/2A/A - 2B/D,Humanities,History,History,Paper 2: Shaping the nation,AM,2h,
 16/05/2025,Jun-25,OCR,GCSE,J410/01,Humanities,History,History A (Explaining the Modern World),Int Rltns:changing int order 1918-c.1975 with China 1950-1981: People & the State,AM,1h 45m,
-16/05/2025,Jun-25,OCR,GCSE,J410/02,Humanities,History,History A (Explaining the Modern World),Int Rltns:chngng int order 1918-c.1975 with Germany 1925-1955:People & the State,AM,1h 45m,
-16/05/2025,Jun-25,OCR,GCSE,J410/05,Humanities,History,History A (Explaining the Modern World),Int Rltns:chngng int order 1918-c.1975 South Africa 1960-1994:People & the State,AM,1h 45m,
-16/05/2025,Jun-25,OCR,GCSE,J410/06,Humanities,History,History A (Explaining the Modern World),Int Rltns:chngng int order 1918-c.1975 The USA 1919-1948:People & the State,AM,1h 45m,
+16/05/2025,Jun-25,OCR,GCSE,J410/02,Humanities,History,History A (Explaining the Modern World),Int Rltns:changing int order 1918-c.1975 with Germany 1925-1955:People & the State,AM,1h 45m,
+16/05/2025,Jun-25,OCR,GCSE,J410/05,Humanities,History,History A (Explaining the Modern World),Int Rltns:changing int order 1918-c.1975 South Africa 1960-1994:People & the State,AM,1h 45m,
+16/05/2025,Jun-25,OCR,GCSE,J410/06,Humanities,History,History A (Explaining the Modern World),Int Rltns:changing int order 1918-c.1975 The USA 1919-1948:People & the State,AM,1h 45m,
 16/05/2025,Jun-25,OCR,GCSE,J410/07,Humanities,History,History A (Explaining the Modern World),Int Rltns:chnging int order 1918-c.1975 with The USA 1945-1974:People & the State,AM,1h 45m,
 05/06/2025,Jun-25,OCR,GCSE,J410/08,Humanities,History,History A (Explaining the Modern World),Migration to Britain c.1000 to c.2010,AM,1h 00m,
 05/06/2025,Jun-25,OCR,GCSE,J410/09,Humanities,History,History A (Explaining the Modern World),Power: Monarchy and Democracy in Britain c.1000 to 2014,AM,1h 00m,
@@ -338,9 +338,9 @@
 10/06/2025,Jun-25,OCR,GCSE,J411/38,Humanities,History,History B (Schools History Project),"The Making of America, 1789-1900 with Aztecs and the Spanish Conquest, 1519-1535",PM,1h 45m,
 10/06/2025,Jun-25,OCR,GCSE,J411/39,Humanities,History,History B (Schools History Project),"The Making of America, 1789-1900 with Living under Nazi Rule, 1933-1945 - Wrtn",PM,1h 45m,
 19/05/2025,Jun-25,OCR,CAMBRIDGE NATIONAL,R050/01,Other,IT,IT,IT in the digital world:Written Paper,PM,1h 30m,
-02/06/2025,Jun-25,Pearson,GCSE,1IN0 1F,Languages,Italian,Italian,Paper 1: Listening and understanding in Italian,AM,0h 35m,F
-02/06/2025,Jun-25,Pearson,GCSE,1IN0 1H,Languages,Italian,Italian,Paper 1: Listening and understanding in Italian,AM,0h 45m,H
-02/06/2025,Jun-25,Pearson,GCSE,1IN0 3F,Languages,Italian,Italian,Paper 3: Reading and understanding in Italian,AM,0h 45m,F
+02/06/2025,Jun-25,Pearson,GCSE,1IN0 1F,Languages,Italian,Italian,Paper 1: Listening and understanding in Italian,AM,35m,F
+02/06/2025,Jun-25,Pearson,GCSE,1IN0 1H,Languages,Italian,Italian,Paper 1: Listening and understanding in Italian,AM,45m,H
+02/06/2025,Jun-25,Pearson,GCSE,1IN0 3F,Languages,Italian,Italian,Paper 3: Reading and understanding in Italian,AM,45m,F
 02/06/2025,Jun-25,Pearson,GCSE,1IN0 3H,Languages,Italian,Italian,Paper 3: Reading and understanding in Italian,AM,1h 00m,H
 09/06/2025,Jun-25,Pearson,GCSE,1IN0 4F,Languages,Italian,Italian,Paper 4: Writing in Italian,PM,1h 15m,F
 09/06/2025,Jun-25,Pearson,GCSE,1IN0 4H,Languages,Italian,Italian,Paper 4: Writing in Italian,PM,1h 20m,H
@@ -352,9 +352,9 @@
 19/05/2025,Jun-25,AQA,GCSE,8633/SH,Languages,Italian,Italian,Speaking test,,,H
 09/06/2025,Jun-25,AQA,GCSE,8633/WF,Languages,Italian,Italian,Writing,PM,1h,F
 09/06/2025,Jun-25,AQA,GCSE,8633/WH,Languages,Italian,Italian,Writing,PM,1h 15m,H
-02/06/2025,Jun-25,Pearson,GCSE,1JA0 1F,Languages,Japanese,Japanese,Paper 1: Listening and understanding in Japanese,PM,0h 35m,F
-02/06/2025,Jun-25,Pearson,GCSE,1JA0 1H,Languages,Japanese,Japanese,Paper 1: Listening and understanding in Japanese,PM,0h 45m,H
-02/06/2025,Jun-25,Pearson,GCSE,1JA0 3F,Languages,Japanese,Japanese,Paper 3: Reading and understanding in Japanese,PM,0h 50m,F
+02/06/2025,Jun-25,Pearson,GCSE,1JA0 1F,Languages,Japanese,Japanese,Paper 1: Listening and understanding in Japanese,PM,35m,F
+02/06/2025,Jun-25,Pearson,GCSE,1JA0 1H,Languages,Japanese,Japanese,Paper 1: Listening and understanding in Japanese,PM,45m,H
+02/06/2025,Jun-25,Pearson,GCSE,1JA0 3F,Languages,Japanese,Japanese,Paper 3: Reading and understanding in Japanese,PM,50m,F
 02/06/2025,Jun-25,Pearson,GCSE,1JA0 3H,Languages,Japanese,Japanese,Paper 3: Reading and understanding in Japanese,PM,1h 05m,H
 10/06/2025,Jun-25,Pearson,GCSE,1JA0 4F,Languages,Japanese,Japanese,Paper 4: Writing in Japanese,AM,1h 20m,F
 10/06/2025,Jun-25,Pearson,GCSE,1JA0 4H,Languages,Japanese,Japanese,Paper 4: Writing in Japanese,AM,1h 25m,H
@@ -418,9 +418,9 @@
 19/05/2025,Jun-25,AQA,GCSE,8683/SH,Languages,Panjabi,Panjabi,Speaking test,,,H
 12/06/2025,Jun-25,AQA,GCSE,8683/WF,Languages,Panjabi,Panjabi,Writing,PM,1h,F
 12/06/2025,Jun-25,AQA,GCSE,8683/WH,Languages,Panjabi,Panjabi,Writing,PM,1h 15m,H
-03/06/2025,Jun-25,Pearson,GCSE,1PN0 1F,Languages,Persian,Persian,Paper 1: Listening and understanding in Persian,PM,0h 35m,F
-03/06/2025,Jun-25,Pearson,GCSE,1PN0 1H,Languages,Persian,Persian,Paper 1: Listening and understanding in Persian,PM,0h 45m,H
-03/06/2025,Jun-25,Pearson,GCSE,1PN0 3F,Languages,Persian,Persian,Paper 3: Reading and understanding in Persian,PM,0h 50m,F
+03/06/2025,Jun-25,Pearson,GCSE,1PN0 1F,Languages,Persian,Persian,Paper 1: Listening and understanding in Persian,PM,35m,F
+03/06/2025,Jun-25,Pearson,GCSE,1PN0 1H,Languages,Persian,Persian,Paper 1: Listening and understanding in Persian,PM,45m,H
+03/06/2025,Jun-25,Pearson,GCSE,1PN0 3F,Languages,Persian,Persian,Paper 3: Reading and understanding in Persian,PM,50m,F
 03/06/2025,Jun-25,Pearson,GCSE,1PN0 3H,Languages,Persian,Persian,Paper 3: Reading and understanding in Persian,PM,1h 05m,H
 13/06/2025,Jun-25,Pearson,GCSE,1PN0 4F,Languages,Persian,Persian,Paper 4: Writing in Persian,PM,1h 20m,F
 13/06/2025,Jun-25,Pearson,GCSE,1PN0 4H,Languages,Persian,Persian,Paper 4: Writing in Persian,PM,1h 25m,H
@@ -457,9 +457,9 @@
 19/05/2025,Jun-25,AQA,GCSE,8688/SH,Languages,Polish,Polish,Speaking test,,,H
 13/06/2025,Jun-25,AQA,GCSE,8688/WF,Languages,Polish,Polish,Writing,PM,1h,F
 13/06/2025,Jun-25,AQA,GCSE,8688/WH,Languages,Polish,Polish,Writing,PM,1h 15m,H
-03/06/2025,Jun-25,Pearson,GCSE,1PG0 1F,Languages,Portuguese,Portuguese,Paper 1: Listening and understanding in Portuguese,AM,0h 35m,F
-03/06/2025,Jun-25,Pearson,GCSE,1PG0 1H,Languages,Portuguese,Portuguese,Paper 1: Listening and understanding in Portuguese,AM,0h 45m,H
-03/06/2025,Jun-25,Pearson,GCSE,1PG0 3F,Languages,Portuguese,Portuguese,Paper 3: Reading and understanding in Portuguese,AM,0h 45m,F
+03/06/2025,Jun-25,Pearson,GCSE,1PG0 1F,Languages,Portuguese,Portuguese,Paper 1: Listening and understanding in Portuguese,AM,35m,F
+03/06/2025,Jun-25,Pearson,GCSE,1PG0 1H,Languages,Portuguese,Portuguese,Paper 1: Listening and understanding in Portuguese,AM,45m,H
+03/06/2025,Jun-25,Pearson,GCSE,1PG0 3F,Languages,Portuguese,Portuguese,Paper 3: Reading and understanding in Portuguese,AM,45m,F
 03/06/2025,Jun-25,Pearson,GCSE,1PG0 3H,Languages,Portuguese,Portuguese,Paper 3: Reading and understanding in Portuguese,AM,1h 00m,H
 13/06/2025,Jun-25,Pearson,GCSE,1PG0 4F,Languages,Portuguese,Portuguese,Paper 4: Writing in Portuguese,PM,1h 15m,F
 13/06/2025,Jun-25,Pearson,GCSE,1PG0 4H,Languages,Portuguese,Portuguese,Paper 4: Writing in Portuguese,PM,1h 20m,H
@@ -491,9 +491,9 @@
 21/05/2025,Jun-25,AQA,GCSE,8061/01-05 ,Humanities,Religious Studies,Religious Studies (Short course),"The Study of religions: beliefs, teachings and ethical studies",PM,1h 45m,
 13/05/2025,Jun-25,OCR,GCSE,J125/01,Humanities,Religious Studies,Religious Studies (Short Course),"Religion, philosophy and ethics in the modern world",AM,2h 00m,
 13/05/2025,Jun-25,Pearson,GCSE,1RA0 1A-1C,Humanities,Religious Studies,Religious Studies A,Paper 1: Area of Study 1 : Study of Religion,AM,1h 45m,
-21/05/2025,Jun-25,Pearson,GCSE,1RA0 2A-2G,Humanities,Religious Studies,Religious Studies A,Paper 2: Area of Study 2 : Study of Second Religion,PM,0h 50m,
-04/06/2025,Jun-25,Pearson,GCSE,1RA0 3A-3C,Humanities,Religious Studies,Religious Studies A,Paper 3: Area of Study 3 : Philosophy and Ethics,PM,0h 50m,
-04/06/2025,Jun-25,Pearson,GCSE,1RA0 4A-4B,Humanities,Religious Studies,Religious Studies A,Paper 4: Area of Study 4 : Textual Studies,PM,0h 50m,
+21/05/2025,Jun-25,Pearson,GCSE,1RA0 2A-2G,Humanities,Religious Studies,Religious Studies A,Paper 2: Area of Study 2 : Study of Second Religion,PM,50m,
+04/06/2025,Jun-25,Pearson,GCSE,1RA0 3A-3C,Humanities,Religious Studies,Religious Studies A,Paper 3: Area of Study 3 : Philosophy and Ethics,PM,50m,
+04/06/2025,Jun-25,Pearson,GCSE,1RA0 4A-4B,Humanities,Religious Studies,Religious Studies A,Paper 4: Area of Study 4 : Textual Studies,PM,50m,
 13/05/2025,Jun-25,AQA,GCSE,8061/11-17 ,Humanities,Religious Studies,Religious Studies A,"The Study of religions: beliefs, teachings and practices",AM,1h 45m,
 21/05/2025,Jun-25,AQA,GCSE,8062/2A and 2B,Humanities,Religious Studies,Religious Studies A,Thematic studies,PM,1h 45m,
 13/05/2025,Jun-25,Pearson,GCSE,1RB0 1A-1G,Humanities,Religious Studies,Religious Studies B,Paper 1: Area of Study 1 : Religion and Ethics,AM,1h 45m,
@@ -501,9 +501,9 @@
 04/06/2025,Jun-25,Pearson,GCSE,1RB0 3A-3G,Humanities,Religious Studies,Religious Studies B,"Paper 3: Area of Study 3 : Religion, Philosophy and Social Justice",PM,1h 45m,
 13/05/2025,Jun-25,AQA,GCSE,8063/1,Humanities,Religious Studies,Religious Studies B,Paper 1: Catholic Christianity,AM,1h 45m,
 21/05/2025,Jun-25,AQA,GCSE,"8063/2A, 2B, 2X and 2Y",Humanities,Religious Studies,Religious Studies B,Chosen religion and perspectives of faith,PM,1h 45m,
-03/06/2025,Jun-25,Pearson,GCSE,1RU0 1F,Languages,Russian,Russian,Paper 1: Listening and understanding in Russian,AM,0h 35m,F
-03/06/2025,Jun-25,Pearson,GCSE,1RU0 1H,Languages,Russian,Russian,Paper 1: Listening and understanding in Russian,AM,0h 45m,H
-03/06/2025,Jun-25,Pearson,GCSE,1RU0 3F,Languages,Russian,Russian,Paper 3: Reading and understanding in Russian,AM,0h 50m,F
+03/06/2025,Jun-25,Pearson,GCSE,1RU0 1F,Languages,Russian,Russian,Paper 1: Listening and understanding in Russian,AM,35m,F
+03/06/2025,Jun-25,Pearson,GCSE,1RU0 1H,Languages,Russian,Russian,Paper 1: Listening and understanding in Russian,AM,45m,H
+03/06/2025,Jun-25,Pearson,GCSE,1RU0 3F,Languages,Russian,Russian,Paper 3: Reading and understanding in Russian,AM,50m,F
 03/06/2025,Jun-25,Pearson,GCSE,1RU0 3H,Languages,Russian,Russian,Paper 3: Reading and understanding in Russian,AM,1h 05m,H
 12/06/2025,Jun-25,Pearson,GCSE,1RU0 4F,Languages,Russian,Russian,Paper 4: Writing in Russian,PM,1h 20m,F
 12/06/2025,Jun-25,Pearson,GCSE,1RU0 4H,Languages,Russian,Russian,Paper 4: Writing in Russian,PM,1h 25m,H
@@ -517,9 +517,9 @@
 10/07/2025,Jun-25,Eduqas,GCSE,C810UC0,Languages,Spanish,Spanish,Component 2 (Listening),AM,1h 15m,
 17/07/2025,Jun-25,Eduqas,GCSE,C810U40,Languages,Spanish,Spanish,Component 4 (Writing),AM,1h 15m,
 17/07/2025,Jun-25,Eduqas,GCSE,C810UD0,Languages,Spanish,Spanish,Component 4 (Writing),AM,1h 30m,
-10/06/2025,Jun-25,Pearson,GCSE,1SP0 1F,Languages,Spanish,Spanish,Paper 1: Listening and understanding in Spanish,AM,0h 35m,F
-10/06/2025,Jun-25,Pearson,GCSE,1SP0 1H,Languages,Spanish,Spanish,Paper 1: Listening and understanding in Spanish,AM,0h 45m,H
-10/06/2025,Jun-25,Pearson,GCSE,1SP0 3F,Languages,Spanish,Spanish,Paper 3: Reading and understanding in Spanish,AM,0h 45m,F
+10/06/2025,Jun-25,Pearson,GCSE,1SP0 1F,Languages,Spanish,Spanish,Paper 1: Listening and understanding in Spanish,AM,35m,F
+10/06/2025,Jun-25,Pearson,GCSE,1SP0 1H,Languages,Spanish,Spanish,Paper 1: Listening and understanding in Spanish,AM,45m,H
+10/06/2025,Jun-25,Pearson,GCSE,1SP0 3F,Languages,Spanish,Spanish,Paper 3: Reading and understanding in Spanish,AM,45m,F
 10/06/2025,Jun-25,Pearson,GCSE,1SP0 3H,Languages,Spanish,Spanish,Paper 3: Reading and understanding in Spanish,AM,1h 00m,H
 17/06/2025,Jun-25,Pearson,GCSE,1SP0 4F,Languages,Spanish,Spanish,Paper 4: Writing in Spanish,AM,1h 15m,F
 17/06/2025,Jun-25,Pearson,GCSE,1SP0 4H,Languages,Spanish,Spanish,Paper 4: Writing in Spanish,AM,1h 20m,H
@@ -541,15 +541,15 @@
 02/06/2025,Jun-25,AQA,GCSE,8382/1H,Maths,Statistics,Statistics,Written,AM,1h 45m,H
 13/06/2025,Jun-25,AQA,GCSE,8382/2F,Maths,Statistics,Statistics,Written,PM,1h 45m,F
 13/06/2025,Jun-25,AQA,GCSE,8382/2H,Maths,Statistics,Statistics,Written,PM,1h 45m,H
-08/05/2025,Jun-25,Pearson,GCSE,1TU0 1F,Languages,Turkish,Turkish,Paper 1: Listening and understanding in Turkish,AM,0h 35m,F
-08/05/2025,Jun-25,Pearson,GCSE,1TU0 1H,Languages,Turkish,Turkish,Paper 1: Listening and understanding in Turkish,AM,0h 45m,H
-08/05/2025,Jun-25,Pearson,GCSE,1TU0 3F,Languages,Turkish,Turkish,Paper 3: Reading and understanding in Turkish,AM,0h 50m,F
+08/05/2025,Jun-25,Pearson,GCSE,1TU0 1F,Languages,Turkish,Turkish,Paper 1: Listening and understanding in Turkish,AM,35m,F
+08/05/2025,Jun-25,Pearson,GCSE,1TU0 1H,Languages,Turkish,Turkish,Paper 1: Listening and understanding in Turkish,AM,45m,H
+08/05/2025,Jun-25,Pearson,GCSE,1TU0 3F,Languages,Turkish,Turkish,Paper 3: Reading and understanding in Turkish,AM,50m,F
 08/05/2025,Jun-25,Pearson,GCSE,1TU0 3H,Languages,Turkish,Turkish,Paper 3: Reading and understanding in Turkish,AM,1h 05m,H
 22/05/2025,Jun-25,Pearson,GCSE,1TU0 4F,Languages,Turkish,Turkish,Paper 4: Writing in Turkish,PM,1h 20m,F
 22/05/2025,Jun-25,Pearson,GCSE,1TU0 4H,Languages,Turkish,Turkish,Paper 4: Writing in Turkish,PM,1h 25m,H
-19/05/2025,Jun-25,Pearson,GCSE,1UR0 1F,Languages,Urdu,Urdu,Paper 1: Listening and understanding in Urdu,PM,0h 35m,F
-19/05/2025,Jun-25,Pearson,GCSE,1UR0 1H,Languages,Urdu,Urdu,Paper 1: Listening and understanding in Urdu,PM,0h 45m,H
-19/05/2025,Jun-25,Pearson,GCSE,1UR0 3F,Languages,Urdu,Urdu,Paper 3: Reading and understanding in Urdu,PM,0h 50m,F
+19/05/2025,Jun-25,Pearson,GCSE,1UR0 1F,Languages,Urdu,Urdu,Paper 1: Listening and understanding in Urdu,PM,35m,F
+19/05/2025,Jun-25,Pearson,GCSE,1UR0 1H,Languages,Urdu,Urdu,Paper 1: Listening and understanding in Urdu,PM,45m,H
+19/05/2025,Jun-25,Pearson,GCSE,1UR0 3F,Languages,Urdu,Urdu,Paper 3: Reading and understanding in Urdu,PM,50m,F
 19/05/2025,Jun-25,Pearson,GCSE,1UR0 3H,Languages,Urdu,Urdu,Paper 3: Reading and understanding in Urdu,PM,1h 05m,H
 02/06/2025,Jun-25,Pearson,GCSE,1UR0 4F,Languages,Urdu,Urdu,Paper 4: Writing in Urdu,AM,1h 20m,F
 02/06/2025,Jun-25,Pearson,GCSE,1UR0 4H,Languages,Urdu,Urdu,Paper 4: Writing in Urdu,AM,1h 25m,H
