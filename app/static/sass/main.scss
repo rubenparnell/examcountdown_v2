@@ -1,0 +1,14 @@
+// custom variables
+$primary: rgb(26, 53, 206);
+
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 731px,
+  lg: 978px,
+  xl: 1200px,
+  xxl: 1400px
+);
+
+//import bootstrap
+@import '../node_modules/bootstrap/scss/bootstrap';

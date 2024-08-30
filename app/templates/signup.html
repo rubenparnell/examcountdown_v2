@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2><strong>Sign Up</strong></h2>
+        <br>
+    </div>
+    <div class="container">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+
+            <div class="form-floating mb-3">
+                {{ form.username(class="form-control", placeholder="username", minlength="3", maxlength="20") }}
+                <label for="floatingInput">{{ form.username.label }}</label>
+            </div>
+            <div class="form-floating mb-3">
+                {{ form.email(class="form-control", placeholder="email", type="email", maxlength="100") }}
+                <label for="floatingInput">{{ form.email.label }}</label>
+            </div>
+            <div class="form-floating mb-3">
+                {{ form.password_hash(class="form-control", placeholder="password") }}
+                <label for="floatingInput">{{ form.password_hash.label }}</label>
+            </div>
+            <div class="form-floating mb-3">
+                {{ form.password2(class="form-control", placeholder="password") }}
+                <label for="floatingInput">{{ form.password2.label }}</label>
+            </div>
+            {{ form.submit(class="btn btn-primary") }}
+        </form>
+        <br>
+        <p>Already have an account? <a href="{{url_for('main.login')}}">Log in</a>. </p>
+    </div>
+
+    <script>
+    // Make the currentTab Active
+    document.getElementById("signup-tab").classList.add("active");
+
+    </script>
+{% endblock %}

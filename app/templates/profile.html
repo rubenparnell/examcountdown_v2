@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2><strong>Profile Options</strong></h2>
+  <br>
+</div>
+<div class="container">
+  <div class="card">
+    <h5 class="card-header"><strong>Select Your Qualification</strong></h5>
+    <div class="card-body">
+      <form method="post">
+        {{ qualForm.hidden_tag() }}
+        {{ qualForm.Qualification }}
+        <input type="submit" class="btn btn-primary">
+      </form>
+    </div>
+  </div>
+  <br>
+  <div class="card">
+    <h5 class="card-header"><strong>Add an exam</strong></h5>
+    <div class="card-body">
+      <form method="POST">
+        <div class="row mb-3">
+          <input type="hidden" name="form_id" value="add-subject-form">
+          <div class="col">
+            <label for="category" class="form-label">Category</label>
+            <select id="category" name="category" class="form-select">
+              <option value="" selected>Select a Category</option>
+              {% for category in categories %}
+                <option value="{{ category }}">{{ category }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col">  
+
+            <label for="base_subject" class="form-label">Subject</label>
+            <select id="base_subject" name="base_subject" class="form-select" disabled>
+              <option value="" disabled selected>Select a Subject</option>
+            </select>
+          </div>
+          <div class="col">
+            <label for="board" class="form-label">Board</label>
+            <select id="board" name="board" class="form-select" disabled>
+              <option value="" disabled selected>Select a Board</option>
+            </select>
+          </div>
+          <div class="col hidden" id="specific_subject_drop">
+            <label for="subject" class="form-label">Specific Subject</label>
+            <select id="subject" name="subject" class="form-select" disabled>
+              <option value="" disabled selected>Select Your Specific Subject</option>
+            </select>
+          </div>
+          <div class="col hidden" id="tier_drop">
+            <label for="tier" class="form-label">Tier</label>
+            <select id="tier" name="tier" class="form-select" disabled>
+              <option value="" disabled selected>Select Tier (if applicable)</option>
+            </select>
+          </div>
+        </div>
+        <button id="addButton" type="submit" class="btn btn-primary" disabled>Add</button>
+      </form>
+    </div>
+  </div>
+  <br>
+  <div class="card">
+    <h5 class="card-header"><strong>Your Selected Subjects</strong></h5>
+    <div class="card-body">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th class="col-2">Board</th>
+            <th class="col-5">Subject</th>
+            <th class="col-2">Tier</th>
+            <th class="col-1">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for subject in selected_subjects %}
+            <tr>
+              <td>{{ subject.board }}</td>
+              <td>{{ subject.subject }}</td>
+              <td>{{ subject.tier }}</td>  <td>
+                <form method="POST" action="{{ url_for('main.delete_subject', subject_id=subject.id) }}">
+                  <input type="hidden" name="subject_id" value="{{ subject.id }}">
+                  <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function() {
+    // Function to check if all dropdowns are selected
+    function checkDropdowns() {
+      let categorySelected = $('#category').val() !== "";
+      let baseSubjectSelected = $('#base_subject').val() !== "";
+      let boardSelected = $('#board').val() !== "" && $('#board').val() !== null;
+      let subjectSelected = $('#subject').val() !== "" && $('#subject').val() !== null;
+      let tierSelected = $('#tier').val() !== "" && $('#tier').val() !== null;
+      console.log($('#tier').val())
+      console.log(tierSelected)
+    
+      // Enable the "Add" button only if all dropdowns are selected
+      if (categorySelected && baseSubjectSelected && boardSelected && subjectSelected && tierSelected) {
+        $('#addButton').prop('disabled', false); // Enable button when all are selected
+      } else {
+        $('#addButton').prop('disabled', true); // Keep button disabled otherwise
+      }
+    }
+  
+    // Initial state of the "Add" button
+    checkDropdowns();
+  
+    // When category is selected
+    $('#category').change(function() {
+      let category = $(this).val();
+  
+      // Reset the base subject, board, subject, and tier dropdowns when a new category is selected
+      $('#base_subject').empty().append('<option value="" selected>Select a Subject</option>').prop('disabled', true);
+      $('#board').empty().append('<option value="" disabled selected>Select a Board</option>').prop('disabled', true);
+      $('#subject').empty().append('<option value="" disabled selected>Select Your Specific Subject</option>').prop('disabled', true);
+      $('#tier').empty().append('<option value="" disabled selected>Select a Tier</option>').prop('disabled', true);
+  
+      if (category) {
+        // Enable and populate the Base Subject dropdown
+        $.getJSON('{{ url_for("main.get_base_subjects") }}', { category: category }, function(base_subjects) {
+          if (base_subjects.length === 1) {
+            $('#base_subject').append('<option selected value="' + base_subjects[0] + '">' + base_subjects[0] + '</option>');
+            // Hide the specific subject and tier dropdowns if only one base subject
+            $('#specific_subject_drop').hide();
+            $('#tier_drop').hide();
+          } else {
+            base_subjects.forEach(function(base_subject) {
+              $('#base_subject').append('<option value="' + base_subject + '">' + base_subject + '</option>');
+            });
+          }
+          $('#base_subject').trigger('change'); // Automatically trigger change if only one base subject
+          $('#base_subject').prop('disabled', false);
+          checkDropdowns(); // Check dropdowns after populating
+        });
+      } else {
+        checkDropdowns(); // Check dropdowns if category is deselected
+      }
+    });
+  
+    // When base_subject is selected
+    $('#base_subject').change(function() {
+      let base_subject = $(this).val();
+  
+      // Reset the board, subject, and tier dropdowns when a new base_subject is selected
+      $('#board').empty().append('<option value="" disabled selected>Select a Board</option>').prop('disabled', true);
+      $('#subject').empty().append('<option value="" disabled selected>Select Your Specific Subject</option>').prop('disabled', true);
+      $('#tier').empty().append('<option value="" disabled selected>Select a Tier</option>').prop('disabled', true);
+  
+      if (base_subject) {
+        // Enable and populate the Board dropdown
+        $.getJSON('{{ url_for("main.get_boards") }}', { base_subject: base_subject }, function(boards) {
+          if (boards.length === 1) {
+            $('#board').append('<option selected value="' + boards[0] + '">' + boards[0] + '</option>');
+            $('#board').trigger('change'); // Automatically trigger change if only one board
+          } else {
+            boards.forEach(function(board) {
+              $('#board').append('<option value="' + board + '">' + board + '</option>');
+            });
+          }
+          $('#board').prop('disabled', false);
+          checkDropdowns(); // Check dropdowns after populating
+        });
+      } else {
+        checkDropdowns(); // Check dropdowns if base_subject is deselected
+      }
+    });
+  
+    // When board is selected
+    $('#board').change(function() {
+      let base_subject = $('#base_subject').val();
+      let board = $(this).val();
+  
+      // Reset the subject and tier dropdowns when a new board is selected
+      $('#subject').empty().append('<option value="" disabled selected>Select a Subject</option>').prop('disabled', true);
+      $('#tier').empty().append('<option value="" disabled selected>Select a Tier</option>').prop('disabled', true);
+  
+      if (board) {
+        // Enable and populate the Subject dropdown
+        $.getJSON('{{ url_for("main.get_subjects") }}', { base_subject: base_subject, board: board }, function(subjects) {
+          if (subjects.length === 1) {
+            $('#subject').append('<option selected value="' + subjects[0] + '">' + subjects[0] + '</option>');
+            // Hide the specific subject and tier dropdowns if only one subject
+            $('#specific_subject_drop').hide();
+            $('#tier_drop').hide();
+            $('#subject').trigger('change'); // Trigger change event manually
+          } else {
+            subjects.forEach(function(subject) {
+              $('#subject').append('<option value="' + subject + '">' + subject + '</option>');
+            });
+            // Show the specific subject dropdown if multiple subjects
+            $('#specific_subject_drop').show();
+          }
+          $('#subject').prop('disabled', false);
+          checkDropdowns(); // Check dropdowns after populating
+        });
+      } else {
+        // Hide the specific subject and tier dropdowns if board is deselected
+        $('#specific_subject_drop').hide();
+        $('#tier_drop').hide();
+        checkDropdowns(); // Check dropdowns if board is deselected
+      }
+    });
+  
+    // When subject is selected
+    $('#subject').change(function() {
+      let base_subject = $('#base_subject').val();
+      let board = $('#board').val();
+      let subject = $(this).val();
+  
+      // Check if the selected subject has a tier
+      $.getJSON('{{ url_for("main.check_subject_tier") }}', { base_subject: base_subject, board: board, subject: subject }, function(hasTier) {
+        console.log(hasTier.has_tier)
+        if (hasTier.has_tier) {
+          // Populate the Tier dropdown
+          $.getJSON('{{ url_for("main.get_tiers") }}', { base_subject: base_subject, board: board, subject: subject }, function(tiers) {
+            tiers.forEach(function(tier) {
+              $('#tier').append('<option value="' + tier + '">' + tier + '</option>');
+            });
+            $('#tier').prop('disabled', false);
+            // Show the tier dropdown
+            $('#tier_drop').show();
+          });
+        } else {
+          // Hide the tier dropdown if the subject doesn't have a tier and set it to '-'
+          $('#tier_drop').hide();
+          $('#tier').prop('disabled', false);
+          $('#tier').append('<option value="-" selected>-</option>');
+        }
+        checkDropdowns(); // Check dropdowns after populating
+      });
+    });
+
+    // When tier is selected
+    $('#tier').change(function() {
+      checkDropdowns(); // Check dropdowns
+    });
+
+  });
+</script>
+{% endblock %}

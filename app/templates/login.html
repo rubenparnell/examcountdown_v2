@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Log In{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2><strong>Log In</strong></h2>
+        <br>
+    </div>
+    <div class="container">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+
+            <div class="form-floating mb-3">
+                {{ form.username(class="form-control", placeholder="username") }}
+                <label for="floatingInput">{{ form.username.label }}</label>
+            </div>
+            <div class="form-floating mb-3">
+                {{ form.password(class="form-control", placeholder="password") }}
+                <label for="floatingInput">{{ form.password.label }}</label>
+            </div>
+            {{ form.submit(class="btn btn-primary") }}
+        </form>
+        <br>
+        <p>Don't have an account? <a href="{{url_for('main.signup')}}">Sign Up</a>.</p>
+        <p>Forgot password? <a href="{{url_for('main.send_password_reset')}}">Reset</a>.</p>
+        
+    </div>
+
+
+<script>
+  //Make the currentTab Active
+  document.getElementById("login-tab").classList.add("active");
+</script>
+{% endblock %}

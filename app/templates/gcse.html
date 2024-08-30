@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}GCSE{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2><strong>GCSE: Upcoming Exams</strong></h2>
+        <br>
+    </div>
+    <div class="container">
+      {% if current_user.is_authenticated %}
+        <p>This page shows the next exam for each of your selected subjects.<br>
+        You can choose your subjects in your <a href="{{url_for("main.profile")}}">profile page</a>.</p>
+      {% else %}
+        <p>This page shows the next exam for each subject. This includes all papers and all exam boards. <br>
+        To see specific exams or baords, you can click on the row to show all exams for that specific subject. <br>
+        To only show your subjects, <a href="{{url_for("main.signup")}}">create an account</a> or <a href="{{url_for("main.login")}}">log in</a>.
+      </p>
+      {% endif %}
+      
+      <br>
+      {% for category, exams in exams_by_category.items() %}
+      <div class="card mb-4">
+          <div class="card-header">
+              <h2>{{ category }}</h2>
+          </div>
+          <div class="card-body">
+              <table class="table table-striped table-hover">
+                  <thead>
+                      <tr>
+                          <th>Qualification</th>
+                          <th>Subject</th>
+                          <th>Date</th>
+                          <th>Time</th>
+                          <th>Countdown</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      {% for exam in exams.values() %}
+                      <tr onclick="window.location.href='{{ url_for('main.show_selected_subject', base_subject=exam.base_subject) }}'" style="cursor:pointer;" data-exam-datetime="{{ exam.date }}">
+                          <td class="col-2">{{ exam.qualification }}</td>
+                          <td class="col-3">{{ exam.base_subject }}</td>
+                          <td class="col-3">{{ exam.date }}</td>
+                          <td class="col-1">{{ exam.time }}</td>
+                          <td class="countdown col-3"></td>
+                      </tr>
+                      {% endfor %}
+                  </tbody>
+              </table>
+          </div>
+      </div>
+      {% endfor %}
+    </div>
+
+
+<script>
+  //Make the currentTab Active
+  document.getElementById("gcse-tab").classList.add("active");
+</script>
+<script>
+    function updateCountdown() {
+        const rows = document.querySelectorAll('tr[data-exam-datetime]');
+        rows.forEach(row => {
+            const examDateTime = row.getAttribute('data-exam-datetime');
+            const countdownElement = row.querySelector('.countdown');
+            const examDate = new Date(examDateTime);
+            const now = new Date();
+            const timeDifference = examDate - now;
+
+            if (timeDifference > 0) {
+                const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+
+                countdownElement.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            } else {
+                countdownElement.textContent = "Exam Started";
+            }
+        });
+    }
+
+    // Initial countdown update
+    updateCountdown();
+    // Update countdown every second
+    setInterval(updateCountdown, 1000);
+</script>
+{% endblock %}

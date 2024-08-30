@@ -1,7 +1,20 @@
 {% extends "base.html" %}
-
 {% block title %}Home{% endblock %}
 
-{% block contents %}
+{% block content %}
+    <div class="container">
+        <h2><strong>Home</strong></h2>
+        <br>
+    </div>
+    <div class="container">
+        <a href="/gcse" class="btn btn-lg btn-primary">GCSE</a>
+        <a href="/a-level" class="btn btn-lg btn-primary">A Level</a>
 
+    </div>
+
+
+<script>
+  //Make the currentTab Active
+  document.getElementById("home-tab").classList.add("active");
+</script>
 {% endblock %}
