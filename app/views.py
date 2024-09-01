@@ -166,6 +166,10 @@ def confirm_email(token):
   except SignatureExpired:
     flash("That link has expired!", "danger")
     return redirect(url_for('main.signup'))
+  
+  except:
+    flash("Email verified successfully. Please log in.", "success")
+    return redirect(url_for("main.login"))
 
 
 @main.route('/send_password_reset', methods=['GET', 'POST'])
