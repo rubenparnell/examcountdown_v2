@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="/static/img/alarm-fill.svg" type="image/x-icon">
   <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
   <title>Exam Countdown: {% block title %}{% endblock %}</title>
   <link id="bootstrap-css" href="/static/css/main.min.css" rel="stylesheet">
@@ -168,11 +168,9 @@
       </div>
     </div>
   </nav>
-  
 
-  
 
-  <div class="container"> 
+  <div class="container">
     {% with messages = get_flashed_messages(with_categories=True) %}
         {% if messages %}
             <div class="container fixed-top alert-container p-0" style="top:80px">
