@@ -9,13 +9,49 @@ from sqlalchemy import and_
 from uuid import uuid4
 from app import db, mail, s
 from app.forms import SignUpForm, LoginForm, UpdateForm, ConfirmPwdFrom, EmailForm, PwdResetForm, QualForm
-from app.models import Users, GCSE_Exams
+from app.models import Users, Exams
 
 main = Blueprint('main', __name__)
 
 @main.route("/")
 def home():
-  return render_template("home.html")
+  if current_user.is_authenticated:
+    level = current_user.level
+
+    shown_exams = []
+    selected_exams = current_user.selected_subjects
+    for exam in selected_exams:
+      board = exam['board']
+      subject = exam['subject']
+      base_subject = exam['base_subject']
+      tier = exam['tier'] if exam['tier'] != "-" else ""
+
+      current_exams = Exams.query.filter(and_(Exams.time.isnot(None), 
+                                              Exams.time != '', 
+                                              Exams.level == level,
+                                              Exams.base_subject == base_subject, 
+                                              Exams.board == board, 
+                                              Exams.subject == subject,
+                                              Exams.tier == tier,
+                                              )).order_by(Exams.date).all()
+
+      for current_exam in current_exams:
+        shown_exams.append(current_exam)
+
+    #Get the date of the next exam:
+    next_exam_data = {
+      "date": None
+    }
+    for exam in shown_exams:
+      if isinstance(exam.date, datetime):
+        if exam.date > datetime.now():
+          if not next_exam_data['date'] or exam.date < next_exam_data['date']:
+            next_exam_data['date'] = exam.date
+
+    print(next_exam_data['date'])
+    return render_template("dashboard.html", next_exam_data=next_exam_data)
+  else:
+    return render_template("home.html")
 
 @main.route("/login", methods=['GET', 'POST'])
 def login():
@@ -31,11 +67,8 @@ def login():
 
         flash("Successfully logged in.", "success")
 
-        if current_user.qualification:
-          if current_user.qualification == "GCSE":
-            return redirect(url_for('main.gcse'))
-          elif current_user.qualification == "A Level":
-            return redirect(url_for('main.a_level'))
+        if current_user.level:
+          return redirect(url_for('main.exams', level=current_user.level))
         else:
           return redirect(url_for('main.home'))
       else:
@@ -181,7 +214,7 @@ def logout():
 
 # @main.route('/delete_user/<int:id>')
 # @login_required
-# def delete(id):
+# def delete(id): 
 # 	# Check logged in id vs. id to delete
 #   if id == current_user.id:
 #     try:
@@ -211,54 +244,84 @@ def logout():
 #     flash("Sorry, you can't delete that user!", "danger")
 #     return redirect(url_for('main.profile'))
 
+@main.route("/timetable")
+@login_required
+def timetable():
+  level = current_user.level
 
-@main.route("/a-level")
-def a_level():
-  return render_template("a-level.html")
+  shown_exams = []
+  selected_exams = current_user.selected_subjects
+  for exam in selected_exams:
+    board = exam['board']
+    subject = exam['subject']
+    base_subject = exam['base_subject']
+    tier = exam['tier'] if exam['tier'] != "-" else ""
 
-@main.route("/gcse")
-def gcse():
+    current_exams = Exams.query.filter(and_(Exams.time.isnot(None), 
+                                            Exams.time != '', 
+                                            Exams.level == level,
+                                            Exams.base_subject == base_subject, 
+                                            Exams.board == board, 
+                                            Exams.subject == subject,
+                                            Exams.tier == tier,
+                                            )).order_by(Exams.date).all()
+
+    for current_exam in current_exams:
+      shown_exams.append(current_exam)
+
+  return render_template('timetable.html', exams=shown_exams, level=level)
+
+def showExams(exams):
+  # Get the current date and time
+  now = datetime.now()
+
+  # Dictionary to store the soonest future event for each base_subject grouped by category
+  exams_by_category = {}
+
+  for exam in exams:
+    # Ensure the exam has a time value and is in the future
+    if exam.time and exam.date > now:
+      category = exam.category
+      base_subject = exam.base_subject
+      # Initialize the category key if it doesn't exist
+      if category not in exams_by_category:
+        exams_by_category[category] = {}
+
+      # Check if the base_subject has a sooner exam date
+      if base_subject not in exams_by_category[category] or exam.date < exams_by_category[category][base_subject].date:
+        exams_by_category[category][base_subject] = exam
+
+  # Define the desired order of categories
+  ordered_categories = ["Maths", "English", "Science", "Humanities & Social Sciences", "Modern Languages", "Arts & Design", "Other"]
+
+  # Filter and sort the exams by the ordered categories
+  ordered_exams_by_category = {category: exams_by_category[category] for category in ordered_categories if category in exams_by_category}
+
+  return ordered_exams_by_category
+
+
+@main.route("/exams/<string:level>")
+def exams(level):
+  if current_user.is_authenticated:
     # Fetch all exams from the database
-    if current_user.is_authenticated:
-      subjects = []
-      for subject in current_user.selected_subjects:
-        subjects.append(subject['subject'])
+    subjects = []
+    for subject in current_user.selected_subjects:
+      subjects.append(subject['subject'])
 
-      exams = GCSE_Exams.query.filter(GCSE_Exams.subject.in_(subjects)).all()
-    else:
-      exams = GCSE_Exams.query.all()
-    
-    # Get the current date and time
-    now = datetime.now()
+    exams = Exams.query.filter(and_(Exams.subject.in_(subjects),
+                                    Exams.level == level,
+                                    )).all()
 
-    # Dictionary to store the soonest future event for each base_subject grouped by category
-    exams_by_category = {}
+  else:
+    exams = Exams.query.filter_by(level=level).all()
 
-    for exam in exams:
-      # Ensure the exam has a time value and is in the future
-      if exam.time and exam.date > now:
-        category = exam.category
-        base_subject = exam.base_subject
-        # Initialize the category key if it doesn't exist
-        if category not in exams_by_category:
-          exams_by_category[category] = {}
+  ordered_exams_by_category = showExams(exams)
 
-        # Check if the base_subject has a sooner exam date
-        if base_subject not in exams_by_category[category] or exam.date < exams_by_category[category][base_subject].date:
-          exams_by_category[category][base_subject] = exam
-
-    # Define the desired order of categories
-    ordered_categories = ["Maths", "English", "Science", "Humanities", "Languages", "Sports", "Arts", "DT", "Other"]
-
-    # Filter and sort the exams by the ordered categories
-    ordered_exams_by_category = {category: exams_by_category[category] for category in ordered_categories if category in exams_by_category}
-
-    return render_template('gcse.html', exams_by_category=ordered_exams_by_category)
+  return render_template('exams.html', exams_by_category=ordered_exams_by_category)
 
 
-
-@main.route('/subject/<string:base_subject>')
-def show_selected_subject(base_subject):
+@main.route('/subject/<string:level>/<string:base_subject>')
+def show_selected_subject(level, base_subject):
   if current_user.is_authenticated:
     shown_exams = []
     selected_exams = current_user.selected_subjects
@@ -267,129 +330,128 @@ def show_selected_subject(base_subject):
       subject = exam['subject']
       tier = exam['tier'] if exam['tier'] != "-" else ""
 
-      current_exams = GCSE_Exams.query.filter(and_(GCSE_Exams.time.isnot(None), 
-                                                   GCSE_Exams.time != '', 
-                                                   GCSE_Exams.base_subject == base_subject, 
-                                                   GCSE_Exams.board == board, 
-                                                   GCSE_Exams.subject == subject,
-                                                   GCSE_Exams.tier == tier,
-                                                   )).order_by(GCSE_Exams.date).all()
+      current_exams = Exams.query.filter(and_(Exams.time.isnot(None), 
+                                              Exams.time != '', 
+                                              Exams.level == level,
+                                              Exams.base_subject == base_subject, 
+                                              Exams.board == board, 
+                                              Exams.subject == subject,
+                                              Exams.tier == tier,
+                                              )).order_by(Exams.date).all()
 
       for current_exam in current_exams:
         shown_exams.append(current_exam)
 
   else:
     # Fetch all exams for the selected base_subject
-    shown_exams = GCSE_Exams.query.filter(and_(GCSE_Exams.base_subject == base_subject, GCSE_Exams.time.isnot(None), GCSE_Exams.time != '')).order_by(GCSE_Exams.date).all()
-  return render_template('selected_subject.html', base_subject=base_subject, exams=shown_exams)
+    shown_exams = Exams.query.filter(and_(Exams.base_subject == base_subject, 
+                                          Exams.time.isnot(None), 
+                                          Exams.time != '',
+                                          Exams.level == level
+                                          )).order_by(Exams.date).all()
+  return render_template('selected_subject.html', base_subject=base_subject, exams=shown_exams, level=level)
 
-@main.route('/test')
-def test():
-  return current_user.selected_subjects
 
-@main.route('/profile', methods=['GET', 'POST'])
+@main.route('/exam_options', methods=['GET', 'POST'])
 @login_required
-def profile():
-    form_id = request.form.get('form_id')
-    qualForm = QualForm()
+def exam_options():
+  form_id = request.form.get('form_id')
+  qualForm = QualForm()
 
-    if request.method == 'GET':
-      qualForm.Qualification.data = current_user.qualification  # Set default value
+  if request.method == 'GET':
+    qualForm.Qualification.data = str(current_user.level)  # Set default value
 
-    elif request.method == 'POST':
-      if qualForm.validate_on_submit():
-        qual_selected = qualForm.Qualification.data
-    
-        if qual_selected == "GCSE":
-          current_user.qualification = "GCSE"
-        elif qual_selected == "A Level":
-          current_user.qualification = "A Level"
+  elif request.method == 'POST':
+    if qualForm.validate_on_submit():
+      if current_user.level != qualForm.Qualification.data: # if changed
+        current_user.level = qualForm.Qualification.data
+        current_user.selected_subjects = []
 
         # Save the changes to the database
         db.session.commit()
 
         flash(f"Updated profile.", "success")
 
-        return redirect(url_for('main.profile'))
+        return redirect(url_for('main.exam_options'))
+    
+    elif form_id == "add-subject-form":
+      base_subject = request.form.get('base_subject')
+      board = request.form.get('board')
+      subject = request.form.get('subject')
+      tier = request.form.get('tier')
+
+      # Create a dictionary representing the exam selection
+      exam_selection = {
+          'id': str(uuid4()),
+          'base_subject': base_subject,
+          'board': board,
+          'subject': subject,
+          'tier': tier,
+          'date_added': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+      }
+
+      # Append this selection to the user's selected_exams list
+      if current_user.selected_subjects is None:
+          current_user.selected_subjects = []
       
-      elif form_id == "add-subject-form":
-        base_subject = request.form.get('base_subject')
-        board = request.form.get('board')
-        subject = request.form.get('subject')
-        tier = request.form.get('tier')
+      current_user.selected_subjects.append(exam_selection)
+      
+      # Save the changes to the database
+      db.session.commit()
 
-        # Create a dictionary representing the exam selection
-        exam_selection = {
-            'id': str(uuid4()),
-            'base_subject': base_subject,
-            'board': board,
-            'subject': subject,
-            'tier': tier,
-            'date_added': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        }
+      flash(f"Added {base_subject}.", "success")
 
-        # Append this selection to the user's selected_exams list
-        if current_user.selected_subjects is None:
-            current_user.selected_subjects = []
-        
-        current_user.selected_subjects.append(exam_selection)
-        
-        # Save the changes to the database
-        db.session.commit()
+      return redirect(url_for('main.exam_options'))
 
-        flash(f"Added {base_subject}.", "success")
+  unique_categories = Exams.query.with_entities(Exams.category).filter_by(level=current_user.level).distinct().all()
+  unique_categories = [x[0] for x in unique_categories]
 
-        return redirect(url_for('main.profile'))
-
-    unique_categories = GCSE_Exams.query.with_entities(GCSE_Exams.category).distinct().all()
-    unique_categories = [x[0] for x in unique_categories]
-
-    # Render the page with the current user's selected exams
-    return render_template('profile.html', 
-                           selected_subjects=current_user.selected_subjects,
-                           categories=unique_categories,
-                           qualForm=qualForm
-                           )
+  # Render the page with the current user's selected exams
+  return render_template('exam_options.html', 
+                          selected_subjects=current_user.selected_subjects,
+                          categories=unique_categories,
+                          qualForm=qualForm
+                          )
 
 @main.route('/get_base_subjects', methods=['GET'])
 def get_base_subjects():
-    category = request.args.get('category')
-    # Query unique boards for the selected base_subject
-    unique_base_subjects = GCSE_Exams.query.with_entities(GCSE_Exams.base_subject).filter_by(category=category).distinct().all()
-    unique_base_subjects = [x[0] for x in unique_base_subjects]
-    
-    return jsonify(unique_base_subjects)
+  category = request.args.get('category')
+  # Query unique boards for the selected base_subject
+  unique_base_subjects = Exams.query.with_entities(Exams.base_subject).filter_by(level=current_user.level, category=category).distinct().all()
+  unique_base_subjects = [x[0] for x in unique_base_subjects]
+  
+  return jsonify(unique_base_subjects)
 
 @main.route('/get_boards', methods=['GET'])
 def get_boards():
-    base_subject = request.args.get('base_subject')
-    # Query unique boards for the selected base_subject
-    unique_boards = GCSE_Exams.query.with_entities(GCSE_Exams.board).filter_by(base_subject=base_subject).distinct().all()
-    unique_boards = [x[0] for x in unique_boards]
-    
-    return jsonify(unique_boards)
+  base_subject = request.args.get('base_subject')
+  # Query unique boards for the selected base_subject
+  unique_boards = Exams.query.with_entities(Exams.board).filter_by(level=current_user.level, base_subject=base_subject).distinct().all()
+  unique_boards = [x[0] for x in unique_boards]
+  
+  return jsonify(unique_boards)
 
 @main.route('/get_subjects', methods=['GET'])
 def get_subjects():
-    base_subject = request.args.get('base_subject')
-    board = request.args.get('board')
-    # Query unique subjects for the selected base_subject and board
-    unique_subjects = GCSE_Exams.query.with_entities(GCSE_Exams.subject).filter_by(base_subject=base_subject, board=board).distinct().all()
-    unique_subjects = [x[0] for x in unique_subjects]
-    
-    return jsonify(unique_subjects)
+  base_subject = request.args.get('base_subject')
+  board = request.args.get('board')
+  # Query unique subjects for the selected base_subject and board
+  unique_subjects = Exams.query.with_entities(Exams.subject).filter_by(level=current_user.level, base_subject=base_subject, board=board).distinct().all()
+  unique_subjects = [x[0] for x in unique_subjects]
+  
+  return jsonify(unique_subjects)
 
 @main.route('/get_tiers', methods=['GET'])
 def get_tiers():
-    base_subject = request.args.get('base_subject')
-    board = request.args.get('board')
-    subject = request.args.get('subject')
+  base_subject = request.args.get('base_subject')
+  board = request.args.get('board')
+  subject = request.args.get('subject')
 
-    # Query unique subjects for the selected base_subject and board
-    unique_tiers = GCSE_Exams.query.with_entities(GCSE_Exams.tier).filter_by(base_subject=base_subject, board=board, subject=subject).distinct().all()
-    unique_tiers = [x[0] for x in unique_tiers]
-    
-    return jsonify(unique_tiers)
+  # Query unique subjects for the selected base_subject and board
+  unique_tiers = Exams.query.with_entities(Exams.tier).filter_by(level=current_user.level, base_subject=base_subject, board=board, subject=subject).distinct().all()
+  unique_tiers = [x[0] for x in unique_tiers]
+  
+  return jsonify(unique_tiers)
 
 @main.route('/check_subject_tier', methods=['GET'])
 def check_subject_tier():
@@ -397,7 +459,7 @@ def check_subject_tier():
   board = request.args.get('board')
   subject = request.args.get('subject')
 
-  exam_tiers = GCSE_Exams.query.with_entities(GCSE_Exams.tier).filter_by(base_subject=base_subject, board=board, subject=subject).all()
+  exam_tiers = Exams.query.with_entities(Exams.tier).filter_by(level=current_user.level, base_subject=base_subject, board=board, subject=subject).all()
   try:
     has_tier = True if exam_tiers[0][0] != '' else False
   except IndexError:
@@ -407,20 +469,20 @@ def check_subject_tier():
 
 @main.route('/delete_subject', methods=['POST'])
 def delete_subject():
-    subject_id = request.form.get('subject_id')
+  subject_id = request.form.get('subject_id')
 
-    if current_user.is_authenticated:
-        selected_subjects = current_user.selected_subjects
-        
-        # Filter out the subject to delete
-        selected_subjects = [subject for subject in selected_subjects if subject.get('id') != subject_id]
-        
-        # Update the user's selected subjects
-        current_user.selected_subjects = selected_subjects
-        db.session.commit()
-        
-        flash('Subject successfully deleted.', 'success')
-    else:
-        flash('You need to be logged in to delete a subject.', 'danger')
+  if current_user.is_authenticated:
+    selected_subjects = current_user.selected_subjects
+    
+    # Filter out the subject to delete
+    selected_subjects = [subject for subject in selected_subjects if subject.get('id') != subject_id]
+    
+    # Update the user's selected subjects
+    current_user.selected_subjects = selected_subjects
+    db.session.commit()
+    
+    flash('Subject successfully deleted.', 'success')
+  else:
+    flash('You need to be logged in to delete a subject.', 'danger')
 
-    return redirect(url_for('main.profile'))
+  return redirect(url_for('main.exam_options'))

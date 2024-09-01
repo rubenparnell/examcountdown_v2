@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2><strong>Home</strong></h2>
+        <br>
+    </div>
+    <div class="container">
+        <div class="card">
+            <h5 class="card-header">Time to next exam</h5>
+            <div class="card-body">
+                <h1><strong data-exam-datetime="{{ next_exam_data.date }}"><div class="countdown"></div></strong></h1>
+            </div>
+        </div>
+    </div>
+
+
+<script>
+  //Make the currentTab Active
+  document.getElementById("home-tab").classList.add("active");
+</script>
+<script>
+    function updateCountdown() {
+        const rows = document.querySelectorAll('[data-exam-datetime]');
+        rows.forEach(row => {
+            const examDateTime = row.getAttribute('data-exam-datetime');
+            const countdownElement = row.querySelector('.countdown');
+            const examDate = new Date(examDateTime);
+            const now = new Date();
+            const timeDifference = examDate - now;
+
+            if (timeDifference > 0) {
+                const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+
+                countdownElement.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            } else {
+                countdownElement.textContent = "Exam Started/ Ended";
+            }
+        });
+    }
+
+    // Initial countdown update
+    updateCountdown();
+    // Update countdown every second
+    setInterval(updateCountdown, 1000);
+</script>
+{% endblock %}

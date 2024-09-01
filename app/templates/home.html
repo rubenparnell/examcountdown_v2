@@ -7,8 +7,9 @@
         <br>
     </div>
     <div class="container">
-        <a href="/gcse" class="btn btn-lg btn-primary">GCSE</a>
-        <a href="/a-level" class="btn btn-lg btn-primary">A Level</a>
+        <a href="{{url_for("main.exams", level="2")}}" class="btn btn-lg btn-primary">GCSE</a>
+        <a href="{{url_for("main.exams", level="3a")}}" class="btn btn-lg btn-primary">AS Level</a>
+        <a href="{{url_for("main.exams", level="3b")}}" class="btn btn-lg btn-primary">A Level</a>
 
     </div>
 

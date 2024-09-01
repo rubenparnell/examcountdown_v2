@@ -24,19 +24,20 @@ def import_csv_to_mysql(csv_file, db_config):
 
     # Create the table (adjust column names and data types as needed)
     create_table_query = """
-      CREATE TABLE gcse_exams (
+      CREATE TABLE exams (
         date DATETIME,
         exam_series VARCHAR(20),
         board VARCHAR(20),
-        qualification VARCHAR(30),
-        examination_code VARCHAR(30) PRIMARY KEY,
+        qualification VARCHAR(100),
+        examination_code VARCHAR(50) PRIMARY KEY,
         category VARCHAR(100),
         base_subject VARCHAR(100),
         subject VARCHAR(100),
         title VARCHAR(200),
         time VARCHAR(20),
         duration VARCHAR(20),
-        tier VARCHAR(1)
+        tier VARCHAR(1),
+        level VARCHAR(2)
       )
     """
     try:
@@ -50,7 +51,7 @@ def import_csv_to_mysql(csv_file, db_config):
       next(csv_reader)  # Skip header row
 
       # Insert data into the table
-      insert_query = "INSERT INTO gcse_exams (date, exam_series, board, qualification, examination_code, category, base_subject, subject, title, time, duration, tier) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+      insert_query = "INSERT INTO exams (date, exam_series, board, qualification, examination_code, category, base_subject, subject, title, time, duration, tier, level) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
       for row in csv_reader:
         # Convert date string to datetime object
         date_string = row[0]
@@ -93,11 +94,8 @@ db_config = {
 }
 
 csv_files = [
-#   r"C:\Users\ruben\Downloads\Exams CSV\pearson-gcse-summer-2025-final.csv",
-#   r"C:\Users\ruben\Downloads\Exams CSV\aqa-gcse-summer-2025-final.csv",
-#   r"C:\Users\ruben\Downloads\Exams CSV\ocr-gcse-summer-2025-final.csv",
-#   r"C:\Users\ruben\Downloads\Exams CSV\eduqas-gcse-summer-2025-final.csv",
-    r"C:\Users\ruben\Downloads\Exams CSV\all_combined.csv",
+    r"C:\Users\ruben\Documents\GitHub\examcountdown_v2\exams_csv\all_l2.csv",
+    r"C:\Users\ruben\Documents\GitHub\examcountdown_v2\exams_csv\all_l3.csv",
   ]
 
 for file in csv_files:

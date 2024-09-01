@@ -38,4 +38,4 @@ class UpdateForm(FlaskForm):
 
 class QualForm(FlaskForm):
   form_type = HiddenField(default='qual')
-  Qualification = RadioField('Qualification', choices=[('GCSE','GCSE'),('A Level','A Level')])
+  Qualification = RadioField('Qualification', choices=[('2','GCSE'),('3a','AS Level'),('3b','A Level')])

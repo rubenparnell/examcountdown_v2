@@ -78,8 +78,44 @@ function sortTableByColumn(table, column, url1, url2, asc = true) {
                 return aColText > bColText ? (1 * dirModifier) : (-1 * dirModifier);
             })
 		}
+	} else if (url1 == "timetable") {
+		if (column == 3) { //duration column
+			sortedRows = rows.sort((a, b) => {
+                const aColText = a.querySelector(`td:nth-child(${column + 1 })`).textContent.trim();
+                const bColText = b.querySelector(`td:nth-child(${column + 1 })`).textContent.trim();
+
+                // Parse time strings into minutes
+                const aMinutes = parseTimeStringToMinutes(aColText);
+                const bMinutes = parseTimeStringToMinutes(bColText);
+            
+                return aMinutes > bMinutes ? (1 * dirModifier) : (-1 * dirModifier);
+            });
+		} else if (column == 2) { //date column
+			sortedRows = rows.sort((a, b) => {
+				const aColText = a.querySelector(`td:nth-child(${ column + 1 })`).textContent.trim();
+				const bColText = b.querySelector(`td:nth-child(${ column + 1 })`).textContent.trim();
+
+				aUnixTime = convertDateToUnixTime(aColText)
+				bUnixTime = convertDateToUnixTime(bColText)
+				
+				return aUnixTime > bUnixTime ? (1 * dirModifier) : (-1 * dirModifier);
+			})
+		} else if (column  == 100) { //numbers
+			sortedRows = rows.sort((a, b) => {
+				const aColText = parseInt(a.querySelector(`td:nth-child(${ column + 1 })`).textContent.trim());
+				const bColText = parseInt(b.querySelector(`td:nth-child(${ column + 1 })`).textContent.trim());
+				
+				return aColText > bColText ? (1 * dirModifier) : (-1 * dirModifier);
+			})
+		} else { //other columns
+            sortedRows = rows.sort((a, b) => {
+                const aColText = a.querySelector(`td:nth-child(${ column + 1 })`).textContent.trim();
+                const bColText = b.querySelector(`td:nth-child(${ column + 1 })`).textContent.trim();
+                
+                return aColText > bColText ? (1 * dirModifier) : (-1 * dirModifier);
+            })
+		}
 	}
-	
 
 
 	// Remove all existing TRs from the table

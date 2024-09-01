@@ -1,21 +1,14 @@
 {% extends "base.html" %}
-{% block title %}GCSE{% endblock %}
+{% block title %}Exams{% endblock %}
 
 {% block content %}
     <div class="container">
-        <h2><strong>GCSE: Upcoming Exams</strong></h2>
+        <h2><strong>Upcoming Exams</strong></h2>
         <br>
     </div>
     <div class="container">
-      {% if current_user.is_authenticated %}
-        <p>This page shows the next exam for each of your selected subjects.<br>
-        You can choose your subjects in your <a href="{{url_for("main.profile")}}">profile page</a>.</p>
-      {% else %}
-        <p>This page shows the next exam for each subject. This includes all papers and all exam boards. <br>
-        To see specific exams or baords, you can click on the row to show all exams for that specific subject. <br>
-        To only show your subjects, <a href="{{url_for("main.signup")}}">create an account</a> or <a href="{{url_for("main.login")}}">log in</a>.
-      </p>
-      {% endif %}
+      <p>This page shows the next exam for each of your selected subjects.<br>
+      You can choose your subjects in your <a href="{{url_for("main.exam_options")}}">exam options page</a>.</p>
       
       <br>
       {% for category, exams in exams_by_category.items() %}
@@ -36,7 +29,7 @@
                   </thead>
                   <tbody>
                       {% for exam in exams.values() %}
-                      <tr onclick="window.location.href='{{ url_for('main.show_selected_subject', base_subject=exam.base_subject) }}'" style="cursor:pointer;" data-exam-datetime="{{ exam.date }}">
+                      <tr onclick="window.location.href='{{ url_for('main.show_selected_subject', level=exam.level, base_subject=exam.base_subject) }}'" style="cursor:pointer;" data-exam-datetime="{{ exam.date }}">
                           <td class="col-2">{{ exam.qualification }}</td>
                           <td class="col-3">{{ exam.base_subject }}</td>
                           <td class="col-3">{{ exam.date }}</td>
@@ -54,7 +47,7 @@
 
 <script>
   //Make the currentTab Active
-  document.getElementById("gcse-tab").classList.add("active");
+  document.getElementById("exams-tab").classList.add("active");
 </script>
 <script>
     function updateCountdown() {

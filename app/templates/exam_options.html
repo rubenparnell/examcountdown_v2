@@ -55,7 +55,7 @@
           <div class="col hidden" id="tier_drop">
             <label for="tier" class="form-label">Tier</label>
             <select id="tier" name="tier" class="form-select" disabled>
-              <option value="" disabled selected>Select Tier (if applicable)</option>
+              <option value="" disabled selected>Select Tier</option>
             </select>
           </div>
         </div>
@@ -70,9 +70,8 @@
       <table class="table table-striped">
         <thead>
           <tr>
-            <th class="col-2">Board</th>
-            <th class="col-5">Subject</th>
-            <th class="col-2">Tier</th>
+            <th class="col-3">Board</th>
+            <th class="col-8">Subject</th>
             <th class="col-1">Action</th>
           </tr>
         </thead>
@@ -80,8 +79,8 @@
           {% for subject in selected_subjects %}
             <tr>
               <td>{{ subject.board }}</td>
-              <td>{{ subject.subject }}</td>
-              <td>{{ subject.tier }}</td>  <td>
+              <td>{{ subject.subject }} {% if subject.tier != '-'%}({{ subject.tier }}){% endif %}</td>  
+              <td>
                 <form method="POST" action="{{ url_for('main.delete_subject', subject_id=subject.id) }}">
                   <input type="hidden" name="subject_id" value="{{ subject.id }}">
                   <button type="submit" class="btn btn-danger btn-sm">Delete</button>
@@ -95,6 +94,10 @@
   </div>
 </div>
 
+<script>
+  //Make the currentTab Active
+  document.getElementById("exam-options-tab").classList.add("active");
+</script>
 <script>
   $(document).ready(function() {
     // Function to check if all dropdowns are selected
