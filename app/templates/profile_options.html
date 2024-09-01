@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Profile{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2><strong>Profile</strong></h2>
+    <br>
+</div>
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h4><strong>Update Profile Information</strong></h4>
+        </div>
+        <div class="card-body">
+            <form method="POST" id="update-form">
+                {{ update_form.form_type }}
+
+                <div class="form-floating mb-3">
+                    {{ update_form.username(class="form-control", placeholder="username", value=current_user.username, minlength="3", maxlength="20") }}
+                    {{ update_form.username.label }}
+                </div>
+                <div class="form-floating mb-3">
+                    {{ update_form.email(class="form-control", placeholder="email", value=current_user.email, maxlength="100") }}
+                    {{ update_form.email.label }}
+                </div>
+
+                {{ update_form.submit(class="btn btn-primary", value="Submit Changes") }}
+            </form>
+            <br>
+            
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirm-delete">
+                Delete Account
+            </button>
+            
+            <!-- Modal -->
+            <div class="modal fade" id="confirm-delete" tabindex="-1" aria-labelledby="confirm-delete-modal" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Are you sure you want to delete the user {{ current_user.username }}?</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            This can't be undone!
+                            <br><br>
+                            <form method="POST" id="confirm-pwd-form">
+                                {{ confirm_pwd_form.form_type }}
+                
+                                <div class="form-floating mb-3">
+                                    {{ confirm_pwd_form.password(class="form-control", placeholder="pwd") }}
+                                    {{ confirm_pwd_form.password.label }}
+                                </div>
+
+                                {{ confirm_pwd_form.submit(class="btn btn-danger", value="Confirm") }}
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Make the currentTab Active
+    document.getElementById("user-tab").classList.add("active");
+    document.getElementById("profile-tab").classList.add("active");
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        document.getElementById("update-form").addEventListener("submit", function() {
+            document.getElementById("update-form").elements["form_type"].value = "update_profile";
+        });
+    });
+</script>
+
+
+{% endblock %}

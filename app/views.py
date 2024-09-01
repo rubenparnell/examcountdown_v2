@@ -39,19 +39,44 @@ def home():
         shown_exams.append(current_exam)
 
     #Get the date of the next exam:
-    next_exam_data = {
-      "date": None
-    }
+    next_exam_date = None
+    next_exam = None
     for exam in shown_exams:
       if isinstance(exam.date, datetime):
         if exam.date > datetime.now():
-          if not next_exam_data['date'] or exam.date < next_exam_data['date']:
-            next_exam_data['date'] = exam.date
+          if not next_exam_date or exam.date < next_exam_date:
+            next_exam_date = exam.date
+            next_exam = exam
 
-    print(next_exam_data['date'])
-    return render_template("dashboard.html", next_exam_data=next_exam_data)
+    filtered_shown_exams = []
+
+    for exam in shown_exams:
+      if isinstance(exam.date, datetime) and exam.date > datetime.now():
+        filtered_shown_exams.append(exam)
+
+    return render_template("dashboard.html", next_exam_data=next_exam, exams=filtered_shown_exams)
+  
   else:
-    return render_template("home.html")
+    gcse_exams = Exams.query.filter(and_(Exams.time.isnot(None), 
+                                         Exams.time != '', 
+                                         Exams.level == "2"
+                                         )).order_by(Exams.date).all()
+    as_exams = Exams.query.filter(and_(Exams.time.isnot(None), 
+                                         Exams.time != '', 
+                                         Exams.level == "3a"
+                                         )).order_by(Exams.date).all()
+    a_exams = Exams.query.filter(and_(Exams.time.isnot(None), 
+                                         Exams.time != '', 
+                                         Exams.level == "3b"
+                                         )).order_by(Exams.date).all()
+
+    next_gcse_exam = gcse_exams[0]
+    next_as_level_exam = as_exams[0]
+    next_a_level_exam = a_exams[0]
+    return render_template("home.html", 
+                           next_gcse_exam=next_gcse_exam, 
+                           next_as_level_exam=next_as_level_exam,
+                           next_a_level_exam=next_a_level_exam)
 
 @main.route("/login", methods=['GET', 'POST'])
 def login():
@@ -67,8 +92,8 @@ def login():
 
         flash("Successfully logged in.", "success")
 
-        if current_user.level:
-          return redirect(url_for('main.exams', level=current_user.level))
+        if current_user.logged_in_counter == 1:
+          return redirect(url_for('main.exam_options'))
         else:
           return redirect(url_for('main.home'))
       else:
@@ -131,7 +156,7 @@ def confirm_email(token):
     email = user_data['email']
     hashed_pw = generate_password_hash(user_data['password'])
 
-    user = Users(username=username, email=email, password_hash=hashed_pw, date_added=datetime.now())
+    user = Users(username=username, email=email, password_hash=hashed_pw, date_added=datetime.now(), level="2")
     db.session.add(user)
     db.session.commit()
 
@@ -212,37 +237,28 @@ def logout():
   return redirect(url_for("main.login"))
 
 
-# @main.route('/delete_user/<int:id>')
-# @login_required
-# def delete(id): 
-# 	# Check logged in id vs. id to delete
-#   if id == current_user.id:
-#     try:
-#       delete_user_bl_orders(id)
-#       delete_user_bo_orders(id)
-#       delete_user_bl_logs(id)
-#       delete_user_bo_logs(id)
+@main.route('/delete_user/<int:id>')
+@login_required
+def delete_user(id): 
+	# Check logged in id vs. id to delete
+  if id == current_user.id:
+    try:
+      user_to_delete = db.session.query(Users).get_or_404(id)
 
-#       user_to_delete = db.session.query(Users).get_or_404(id)
+      db.session.delete(user_to_delete)
+      db.session.commit()
+      flash("User Deleted Successfully.", "success")
 
-#       if user_to_delete.BL_OrdersJobID:
-#         scheduler.cancel(user_to_delete.BL_OrdersJobID)
-#       if user_to_delete.BO_OrdersJobID:
-#         scheduler.cancel(user_to_delete.BO_OrdersJobID)
+      return redirect(url_for("main.login"))
 
-#       db.session.delete(user_to_delete)
-#       db.session.commit()
-#       flash("User Deleted Successfully.", "success")
-
-#       return redirect(url_for("main.login"))
-
-#     except:
-#       flash("Error! We could not delete this user.", "danger")
-#       return redirect(url_for('main.profile'))
+    except:
+      flash("Error! We could not delete this user.", "danger")
+      return redirect(url_for('main.profile_options'))
     
-#   else:
-#     flash("Sorry, you can't delete that user!", "danger")
-#     return redirect(url_for('main.profile'))
+  else:
+    flash("Sorry, you can't delete that user!", "danger")
+    return redirect(url_for('main.profile_options'))
+
 
 @main.route("/timetable")
 @login_required
@@ -269,7 +285,7 @@ def timetable():
     for current_exam in current_exams:
       shown_exams.append(current_exam)
 
-  return render_template('timetable.html', exams=shown_exams, level=level)
+  return render_template('timetable.html', exams=shown_exams)
 
 def showExams(exams):
   # Get the current date and time
@@ -350,6 +366,57 @@ def show_selected_subject(level, base_subject):
                                           Exams.level == level
                                           )).order_by(Exams.date).all()
   return render_template('selected_subject.html', base_subject=base_subject, exams=shown_exams, level=level)
+
+
+@main.route('/profile_options', methods=['GET', 'POST'])
+@login_required
+def profile_options():
+  update_form = UpdateForm()
+  confirm_pwd_form = ConfirmPwdFrom()
+
+  id = current_user.id
+  user_to_update = db.session.query(Users).get_or_404(id)
+
+  if request.method == "POST":
+    if request.form['form_type']=="update_profile":
+      if current_user.username != request.form['username']: # if the username has been updated
+        # check to see if the username already exists.
+        new_username_test = db.session.query(Users).filter_by(username=request.form['username']).first() 
+      else:
+        new_username_test = None
+
+      if current_user.email != request.form['email']: # if the email has been updated
+        # check to see if the email already exists.
+        new_email_test = db.session.query(Users).filter_by(email=request.form['email']).first() 
+      else:
+        new_email_test = None
+
+      if new_username_test is None and new_email_test is None:
+        user_to_update.email = request.form['email']
+        user_to_update.username = request.form['username']
+
+        try:
+          db.session.commit()
+          flash("User updated successfully.", "success")
+        except:
+          flash("Error! Looks like there was an error updating the profile.", "danger")
+      else:
+        if new_email_test != None:
+          flash("Error! A user with that email already exists. Please use a different email.", "danger")
+        if new_username_test != None:
+          flash("Error! A user with that username already exists. Please choose a different username.", "danger")
+
+    elif request.form['form_type']=="confirm_pwd":
+      if check_password_hash(current_user.password_hash, request.form['password']):
+        return redirect(url_for("main.delete_user", id=current_user.id))
+      else:
+        flash("Wrong password! Could not delete your account.", "danger")
+
+
+  return render_template("profile_options.html", 
+                         update_form=update_form,
+                         confirm_pwd_form=confirm_pwd_form,
+                         user_to_update=user_to_update)
 
 
 @main.route('/exam_options', methods=['GET', 'POST'])

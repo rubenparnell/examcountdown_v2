@@ -46,8 +46,22 @@
 
 
 <script>
-  //Make the currentTab Active
-  document.getElementById("exams-tab").classList.add("active");
+    //Make the currentTab Active
+    {% if current_user.is_authenticated %}
+        document.getElementById("exams-tab").classList.add("active");
+    {% else %}
+        const url = window.location.pathname; // Get the current URL
+        const parts = url.split('/'); // Split the URL into parts
+        const secondPart = parts[2];
+
+        if (secondPart == "2") {
+            document.getElementById("gcse-tab").classList.add("active");
+        } else if (secondPart == "3a") {
+            document.getElementById("as-level-tab").classList.add("active");
+        } else if (secondPart == "3b") {
+            document.getElementById("a-level-tab").classList.add("active");
+        }
+    {% endif %}
 </script>
 <script>
     function updateCountdown() {

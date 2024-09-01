@@ -21,6 +21,20 @@
       margin: 0px;
     }
 
+    footer {
+      position: sticky;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: #d8d8d8;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .content {
+      min-height: 100vh;
+    }
+
     .hidden {
       display: none;
     }
@@ -64,66 +78,97 @@
       width: 100%;
       z-index: 1005;
     }
+
+    @media only screen and (max-width: 575px) {/*SMALLER SCREENS!*/
+      #title {
+        display: none;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top nav-underline" id="main-navbar">
+  <nav class="navbar navbar-expand-md bg-body-tertiary fixed-top nav-underline" id="main-navbar">
     <div class="container">
-      <a class="navbar-brand" href="/">
-        <i class="bi bi-alarm-fill" style="font-size:2rem; color:#090c5a;"></i>
+      <!-- Left section with Logo and Title -->
+      <a class="navbar-brand d-flex align-items-center" href="/">
+        <i class="bi bi-alarm-fill" style="font-size: 2rem; color: #090c5a;"></i>
+        <p class="m-0 ms-2" id="title">Exam Countdown</p>
       </a>
-      <a class="navbar-brand" href="/">
-        <p class="m-0">Exam Countdown</p>
-      </a>
-
-      <button class="navbar-toggler me-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="margin-left:auto;">
-          <span class="navbar-toggler-icon"></span>
+  
+      <!-- Toggler button for the main navigation -->
+      <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
       </button>
+  
+      <!-- Main collapsible navigation links -->
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
+        <ul class="navbar-nav me-auto">
           <li class="nav-item">
-            <a class="nav-link" id="home-tab" aria-current="page" href="{{url_for("main.home")}}">Home</a>
+            <a class="nav-link" id="home-tab" aria-current="page" href="{{url_for('main.home')}}">Home</a>
           </li>
           {% if current_user.is_authenticated %}
-            <li class="nav-item">
-              <a class="nav-link" id="exams-tab" aria-current="page" href="{{url_for("main.exams", level=current_user.level)}}">Exams</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="timetable-tab" aria-current="page" href="{{url_for("main.timetable")}}">Timetable</a>
-            </li>
+          <li class="nav-item">
+            <a class="nav-link" id="exams-tab" aria-current="page" href="{{url_for('main.exams', level=current_user.level)}}">Exams</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="timetable-tab" aria-current="page" href="{{url_for('main.timetable')}}">Timetable</a>
+          </li>
           {% else %}
-            <li class="nav-item">
-              <a class="nav-link" id="gcse-tab" aria-current="page" href="{{url_for("main.exams", level="2")}}">GCSE</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="a-level-tab" aria-current="page" href="{{url_for("main.exams", level="3a")}}">AS Level</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="a-level-tab" aria-current="page" href="{{url_for("main.exams", level="3b")}}">A Level</a>
-            </li>
+          <li class="nav-item">
+            <a class="nav-link" id="gcse-tab" aria-current="page" href="{{url_for('main.exams', level='2')}}">GCSE</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="as-level-tab" aria-current="page" href="{{url_for('main.exams', level='3a')}}">AS Level</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="a-level-tab" aria-current="page" href="{{url_for('main.exams', level='3b')}}">A Level</a>
+          </li>
           {% endif %}
-          
         </ul>
+        <!-- Person-circle dropdown, positioned to the far right within the navbar-collapse -->
+        <div class="dropdown ms-auto d-md-none">
+          <a class="nav-link text-end" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" id="user-tab">
+            <i class="bi bi-person-circle" style="font-size: 1.8rem;"></i>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            {% if current_user.is_authenticated %}
+            <li><a class="dropdown-item" href="{{url_for('main.exam_options')}}" id="exam-options-tab">Exam Options</a></li>
+            <li><a class="dropdown-item" href="{{url_for('main.profile_options')}}" id="profile-options-tab">Profile Options</a></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li><a class="dropdown-item" href="{{url_for('main.logout')}}" id="logout-tab">Log Out</a></li>
+            {% else %}
+            <li><a class="dropdown-item" href="{{url_for('main.login')}}" id="login-tab">Log In</a></li>
+            <li><a class="dropdown-item" href="{{url_for('main.signup')}}" id="signup-tab">Sign Up</a></li>
+            {% endif %}
+          </ul>
+        </div>
       </div>
-
-      <div class="dropdown">
-        <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" id="user-tab">
-          <i class="bi bi-person-circle ms-1 me-1" style="font-size: 1.8rem;"></i>
+  
+      <!-- Person-circle dropdown, always visible in the navbar on larger screens -->
+      <div class="dropdown d-none d-md-block">
+        <a class="nav-link text-end" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" id="user-tab">
+          <i class="bi bi-person-circle" style="font-size: 1.8rem;"></i>
         </a>
         <ul class="dropdown-menu dropdown-menu-end">
           {% if current_user.is_authenticated %}
-            <li><a class="dropdown-item" href="{{url_for("main.exam_options")}}" id="exam-options-tab">Exam Options</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="{{url_for("main.logout")}}" id="logout-tab">Log Out</a></li>
+          <li><a class="dropdown-item" href="{{url_for('main.exam_options')}}" id="exam-options-tab">Exam Options</a></li>
+          <li><a class="dropdown-item" href="{{url_for('main.profile_options')}}" id="profile-options-tab">Profile Options</a></li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li><a class="dropdown-item" href="{{url_for('main.logout')}}" id="logout-tab">Log Out</a></li>
           {% else %}
-            <li><a class="dropdown-item" href="{{url_for("main.login")}}" id="login-tab">Log In</a></li>
-            <li><a class="dropdown-item" href="{{url_for("main.signup")}}" id="signup-tab">Sign Up</a></li>
+          <li><a class="dropdown-item" href="{{url_for('main.login')}}" id="login-tab">Log In</a></li>
+          <li><a class="dropdown-item" href="{{url_for('main.signup')}}" id="signup-tab">Sign Up</a></li>
           {% endif %}
         </ul>
       </div>
     </div>
-</nav>
+  </nav>
+  
 
   
 

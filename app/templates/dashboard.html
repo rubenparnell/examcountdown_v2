@@ -7,10 +7,49 @@
         <br>
     </div>
     <div class="container">
-        <div class="card">
-            <h5 class="card-header">Time to next exam</h5>
-            <div class="card-body">
+        {% if current_user.selected_subjects | length > 0 %}
+        <div class="card mb-4">
+            <h4 class="card-header">Time to next exam</h4>
+            <div class="card-body text-center">
                 <h1><strong data-exam-datetime="{{ next_exam_data.date }}"><div class="countdown"></div></strong></h1>
+                <h5><strong>Date:</strong> {{ next_exam_data.date }} ({{ next_exam_data.time }})</h5>
+                <h5><strong>Subject:</strong> {{ next_exam_data.subject }}</h5>
+                <h5><strong>Title:</strong> {{ next_exam_data.title }}</h5>
+                <h5><strong>Duration:</strong> {{ next_exam_data.duration }}</h5>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    <div class="container-md">
+        <div class="card mb-4">
+            <h4 class="card-header">Timetable</h4>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-sortable">
+                        <thead>
+                            <tr>
+                                <th class="col-2">Countdown</th>
+                                <th class="col-2">Subject</th>
+                                <th class="col-2" id="date-col">Date</th>
+                                <th class="col-1">Duration</th>
+                                <th class="col-4">Title</th>
+                                <th class="col-1">Board</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for exam in exams %}
+                            <tr data-exam-datetime="{{ exam.date }}">
+                                <td class="countdown"></td>
+                                <td>{{ exam.subject }}</td>
+                                <td>{{ exam.date | format_time }} ({{ exam.time }})</td>
+                                <td>{{ exam.duration }}</td>
+                                <td>{{ exam.title }} {% if exam.tier %}({{ exam.tier }}){%endif%}</td>
+                                <td>{{ exam.board }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
