@@ -48,35 +48,11 @@
     //Make the currentTab Active
     document.getElementById("timetable-tab").classList.add("active");
 </script>
-<script>
-    const element = document.getElementById('date-col');
-    element.click();
-
-    function updateCountdown() {
-        const rows = document.querySelectorAll('tr[data-exam-datetime]');
-        rows.forEach(row => {
-            const examDateTime = row.getAttribute('data-exam-datetime');
-            const countdownElement = row.querySelector('.countdown');
-            const examDate = new Date(examDateTime);
-            const now = new Date();
-            const timeDifference = examDate - now;
-
-            if (timeDifference > 0) {
-                const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
-
-                countdownElement.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-            } else {
-                countdownElement.textContent = "Exam Started/ Ended";
-            }
-        });
-    }
-
+<script type="module">
+    import {updateCountdown} from "/static/countdown.js";
     // Initial countdown update
-    updateCountdown();
+    updateCountdown('tr[data-exam-datetime]');
     // Update countdown every second
-    setInterval(updateCountdown, 1000);
+    setInterval(function() { updateCountdown('tr[data-exam-datetime]'); } , 1000);
 </script>
 {% endblock %}
