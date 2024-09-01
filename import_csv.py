@@ -94,8 +94,8 @@ db_config = {
 }
 
 csv_files = [
-    r"C:\Users\ruben\Documents\GitHub\examcountdown_v2\exams_csv\all_l2.csv",
-    r"C:\Users\ruben\Documents\GitHub\examcountdown_v2\exams_csv\all_l3.csv",
+    "./exams_csv/all_l2.csv",
+    "./exams_csv/all_l3.csv"
   ]
 
 for file in csv_files:
