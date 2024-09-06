@@ -21,7 +21,7 @@
       margin: 0px;
     }
 
-    footer {
+    #disclaimer {
       position: sticky;
       bottom: 0;
       left: 0;
@@ -29,6 +29,10 @@
       background-color: #d8d8d8;
       text-align: center;
       font-size: 16px;
+
+      a {
+        color: darkslategray;
+      }
     }
 
     .content {
@@ -184,12 +188,30 @@
         {% endif %}
     {% endwith %}
   </div>
+  <div class="content">
+    {% block content %}
+    {% endblock %}
+  </div>
+  
 
-  {% block content %}
-  {% endblock %}
-
-  <br>
-  <br>
+  <footer id="disclaimer" class="p-2">
+    
+    <p>
+      <strong>Disclaimer: </strong>
+      Accuracy of exam data provided and its completeness is not guaranteed. <br>
+      Users are encouraged to verify all information with official exam boards and their own timetables to ensure accuracy.
+    </p>
+    <div class="container text-center pb-2" style="padding-left:300px; padding-right:300px;">
+      <div class="row align-items-start">
+        <div class="col">
+          <a href="/privacy_policy">Privacy Policy</a>
+        </div>
+        <div class="col">
+          <a href="mailto:inbox@examcountdown.live">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>  <script>
     // keep track of previous scroll position

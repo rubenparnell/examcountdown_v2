@@ -12,19 +12,23 @@
 
             <div class="form-floating mb-3">
                 {{ form.username(class="form-control", placeholder="username", minlength="3", maxlength="20") }}
-                <label for="floatingInput">{{ form.username.label }}</label>
+                <label>{{ form.username.label }}</label>
             </div>
             <div class="form-floating mb-3">
                 {{ form.email(class="form-control", placeholder="email", type="email", maxlength="100") }}
-                <label for="floatingInput">{{ form.email.label }}</label>
+                <label>{{ form.email.label }}</label>
             </div>
             <div class="form-floating mb-3">
                 {{ form.password_hash(class="form-control", placeholder="password") }}
-                <label for="floatingInput">{{ form.password_hash.label }}</label>
+                <label>{{ form.password_hash.label }}</label>
             </div>
             <div class="form-floating mb-3">
                 {{ form.password2(class="form-control", placeholder="password") }}
-                <label for="floatingInput">{{ form.password2.label }}</label>
+                <label>{{ form.password2.label }}</label>
+            </div>
+            <div class="mb-3">
+                {{ form.privacyAgree() }}
+                {{ form.privacyAgree.label }}
             </div>
             {{ form.submit(class="btn btn-primary") }}
         </form>

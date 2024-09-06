@@ -557,3 +557,8 @@ def delete_subject():
     flash('You need to be logged in to delete a subject.', 'danger')
 
   return redirect(url_for('main.exam_options'))
+
+
+@main.route("/privacy_policy")
+def privacy_policy():
+  return render_template('privacy_policy.html')

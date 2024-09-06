@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, HiddenField, PasswordField, RadioField
+from wtforms import StringField, SubmitField, HiddenField, PasswordField, RadioField, BooleanField
 from wtforms.validators import DataRequired 
 
 #Create Sign Up form:
@@ -8,6 +8,7 @@ class SignUpForm(FlaskForm):
   email = StringField("Email", validators=[DataRequired()])
   password_hash = PasswordField("Password", validators=[DataRequired()])
   password2 = PasswordField("Confirm Password", validators=[DataRequired()])
+  privacyAgree = BooleanField("I agree to the Privacy Policy", validators=[DataRequired()])
   submit = SubmitField("Submit")
 
 # Create Login Form:
