@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
 
+{% block head %}
+    <link rel="stylesheet" href="/static/tableSort.css">
+{% endblock %}
+
 {% block content %}
     <div class="container">
         <h2><strong>Home</strong></h2>
@@ -28,12 +32,12 @@
                     <table class="table table-striped table-sortable">
                         <thead>
                             <tr>
-                                <th class="col-2">Countdown</th>
-                                <th class="col-2">Subject</th>
-                                <th class="col-2" id="date-col">Date</th>
-                                <th class="col-1">Duration</th>
-                                <th class="col-4">Title</th>
-                                <th class="col-1">Board</th>
+                                <th class="col-2" data-column="countdown">Countdown</th>
+                                <th class="col-2" data-column="subject">Subject</th>
+                                <th class="col-2" id="date-col" data-column="date">Date</th>
+                                <th class="col-1" data-column="duration">Duration</th>
+                                <th class="col-4" data-column="title">Title</th>
+                                <th class="col-1" data-column="board">Board</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -54,16 +58,20 @@
         </div>
     </div>
 
+    <script src="/static/tableSort.js"></script>
+    <script>
+        const sortHeader = document.getElementById('date-col');
+        sortHeader.click();
 
-<script>
-  //Make the currentTab Active
-  document.getElementById("home-tab").classList.add("active");
-</script>
-<script type="module">
-    import {updateCountdown} from "/static/countdown.js";
-    // Initial countdown update
-    updateCountdown('[data-exam-datetime]');
-    // Update countdown every second
-    setInterval(function() { updateCountdown('[data-exam-datetime]'); } , 1000);
-</script>
+        //Make the currentTab Active
+        document.getElementById("home-tab").classList.add("active");
+
+    </script>
+    <script type="module">
+        import {updateCountdown} from "/static/countdown.js";
+        // Initial countdown update
+        updateCountdown('[data-exam-datetime]');
+        // Update countdown every second
+        setInterval(function() { updateCountdown('[data-exam-datetime]'); } , 1000);
+    </script>
 {% endblock %}

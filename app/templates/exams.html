@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 {% block title %}Exams{% endblock %}
 
+{% block head %}
+    <link rel="stylesheet" href="/static/tableSort.css">
+{% endblock %}
+
+
 {% block content %}
     <div class="container">
         <h2><strong>Upcoming Exams</strong></h2>
@@ -17,26 +22,22 @@
               <h2>{{ category }}</h2>
           </div>
           <div class="card-body">
-              <table class="table table-striped table-hover">
+              <table class="table table-striped table-hover table-sortable">
                   <thead>
                       <tr>
-                          <th>Qualification</th>
-                          <th>Subject</th>
-                          <th>Date</th>
-                          <th>Time</th>
-                          <th>Countdown</th>
+                        <th class="col-2" data-column="countdown">Countdown</th>
+                        <th class="col-2 date-col" data-column="date">Date</th>
+                        <th class="col-2" data-column="subject">Subject</th>
                       </tr>
                   </thead>
                   <tbody>
-                      {% for exam in exams.values() %}
-                      <tr onclick="window.location.href='{{ url_for('main.show_selected_subject', level=exam.level, base_subject=exam.base_subject) }}'" style="cursor:pointer;" data-exam-datetime="{{ exam.date }}">
-                          <td class="col-2">{{ exam.qualification }}</td>
-                          <td class="col-3">{{ exam.base_subject }}</td>
-                          <td class="col-3">{{ exam.date }}</td>
-                          <td class="col-1">{{ exam.time }}</td>
-                          <td class="countdown col-3"></td>
-                      </tr>
-                      {% endfor %}
+                        {% for exam in exams.values() %}
+                        <tr onclick="window.location.href='{{ url_for('main.show_selected_subject', level=exam.level, base_subject=exam.base_subject) }}'" style="cursor:pointer;" data-exam-datetime="{{ exam.date }}">
+                            <td class="countdown col-3"></td>
+                            <td>{{ exam.date | format_time }} ({{ exam.time }})</td>
+                            <td class="col-3">{{ exam.base_subject }}</td>
+                        </tr>
+                        {% endfor %}
                   </tbody>
               </table>
           </div>
@@ -44,30 +45,37 @@
       {% endfor %}
     </div>
 
-
-<script>
-    //Make the currentTab Active
-    {% if current_user.is_authenticated %}
-        document.getElementById("exams-tab").classList.add("active");
-    {% else %}
-        const url = window.location.pathname; // Get the current URL
-        const parts = url.split('/'); // Split the URL into parts
-        const secondPart = parts[2];
-
-        if (secondPart == "2") {
-            document.getElementById("gcse-tab").classList.add("active");
-        } else if (secondPart == "3a") {
-            document.getElementById("as-level-tab").classList.add("active");
-        } else if (secondPart == "3b") {
-            document.getElementById("a-level-tab").classList.add("active");
+    <script src="/static/tableSort.js"></script>
+    <script>
+        const sortHeader = document.querySelectorAll('.date-col');
+        function sortHead(head) {
+            head.click()
         }
-    {% endif %}
-</script>
-<script type="module">
-    import {updateCountdown} from "/static/countdown.js";
-    // Initial countdown update
-    updateCountdown('tr[data-exam-datetime]');
-    // Update countdown every second
-    setInterval(function() { updateCountdown('tr[data-exam-datetime]'); } , 1000);
-</script>
+        sortHeader.forEach(sortHead)
+    </script>
+    <script>
+        //Make the currentTab Active
+        {% if current_user.is_authenticated %}
+            document.getElementById("exams-tab").classList.add("active");
+        {% else %}
+            const url = window.location.pathname; // Get the current URL
+            const parts = url.split('/'); // Split the URL into parts
+            const secondPart = parts[2];
+
+            if (secondPart == "2") {
+                document.getElementById("gcse-tab").classList.add("active");
+            } else if (secondPart == "3a") {
+                document.getElementById("as-level-tab").classList.add("active");
+            } else if (secondPart == "3b") {
+                document.getElementById("a-level-tab").classList.add("active");
+            }
+        {% endif %}
+    </script>
+    <script type="module">
+        import {updateCountdown} from "/static/countdown.js";
+        // Initial countdown update
+        updateCountdown('tr[data-exam-datetime]');
+        // Update countdown every second
+        setInterval(function() { updateCountdown('tr[data-exam-datetime]'); } , 1000);
+    </script>
 {% endblock %}
