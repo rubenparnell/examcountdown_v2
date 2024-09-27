@@ -8,7 +8,7 @@ from datetime import datetime
 from sqlalchemy import and_
 from uuid import uuid4
 from app import db, mail, s
-from app.forms import SignUpForm, LoginForm, UpdateForm, ConfirmPwdFrom, EmailForm, PwdResetForm, QualForm
+from app.forms import SignUpForm, LoginForm, UpdateForm, ConfirmPwdFrom, EmailForm, PwdResetForm, QualForm, OldPwdResetForm
 from app.models import Users, Exams
 
 main = Blueprint('main', __name__)
@@ -377,6 +377,7 @@ def show_selected_subject(level, base_subject):
 def profile_options():
   update_form = UpdateForm()
   confirm_pwd_form = ConfirmPwdFrom()
+  old_pwd_reset_form = OldPwdResetForm()
 
   id = current_user.id
   user_to_update = db.session.query(Users).get_or_404(id)
@@ -416,10 +417,22 @@ def profile_options():
       else:
         flash("Wrong password! Could not delete your account.", "danger")
 
+    elif request.form['form_type'] == "password_reset":
+      if check_password_hash(current_user.password_hash, request.form['oldPassword']):
+        if request.form['password1'] == request.form['password2']:
+          current_user.password_hash = generate_password_hash(request.form['password1'])
+          db.session.commit()
+          flash("Updated password successfully.", "success")
+        else:
+          flash("The two new passwords don't match! Please try again.", "danger")
+      else:
+        flash("Wrong password! Could not update your password.", "danger")
+
 
   return render_template("profile_options.html", 
                          update_form=update_form,
                          confirm_pwd_form=confirm_pwd_form,
+                         old_pwd_reset_form=old_pwd_reset_form,
                          user_to_update=user_to_update)
 
 

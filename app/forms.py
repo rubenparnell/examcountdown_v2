@@ -40,3 +40,10 @@ class UpdateForm(FlaskForm):
 class QualForm(FlaskForm):
   form_type = HiddenField(default='qual')
   Qualification = RadioField('Qualification', choices=[('2','GCSE'),('3a','AS Level'),('3b','A Level')])
+
+class OldPwdResetForm(FlaskForm):
+  form_type = HiddenField(default='password_reset')
+  oldPassword = PasswordField("Old Password", validators=[DataRequired()])
+  password1 = PasswordField("New Password", validators=[DataRequired()])
+  password2 = PasswordField("Confirm New Password", validators=[DataRequired()])
+  submit = SubmitField('Confirm')

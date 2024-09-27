@@ -66,6 +66,34 @@
             </div>
         </div>
     </div>
+    <br>
+    <div class="card">
+        <div class="card-header">
+            <h4><strong>Update Password</strong></h4>
+        </div>
+        <div class="card-body">
+            <form method="POST" id="pwd-reset-form">
+                {{ old_pwd_reset_form.form_type }}
+
+                <div class="form-floating mb-3">
+                    {{ old_pwd_reset_form.oldPassword(class="form-control", placeholder="oldPassword") }}
+                    {{ old_pwd_reset_form.oldPassword.label }}
+                </div>
+
+                <div class="form-floating mb-3">
+                    {{ old_pwd_reset_form.password1(class="form-control", placeholder="password1") }}
+                    {{ old_pwd_reset_form.password1.label }}
+                </div>
+
+                <div class="form-floating mb-3">
+                    {{ old_pwd_reset_form.password2(class="form-control", placeholder="password2") }}
+                    {{ old_pwd_reset_form.password2.label }}
+                </div>
+
+                {{ old_pwd_reset_form.submit(class="btn btn-primary", value="Update Password") }}
+            </form>
+        </div>
+    </div>
 </div>
 
 <script>
