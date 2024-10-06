@@ -9,11 +9,16 @@
   <link id="bootstrap-css" href="/static/css/main.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://www.google.com/recaptcha/api.js"></script>
 
   {% block head %}
   {% endblock %}
 
   <style>
+    .grecaptcha-badge {
+      z-index:999;
+    }
+
     body {
       font-family: Roboto;
       color: black;
@@ -22,7 +27,7 @@
     }
 
     #disclaimer {
-      position: sticky;
+      position: relative;
       bottom: 0;
       left: 0;
       right: 0;
@@ -195,13 +200,17 @@
   
 
   <footer id="disclaimer" class="p-2">
+    <div class="d-flex justify-content-between align-items-top">
+      <p class="flex-grow-1">
+        <strong>Disclaimer: </strong>
+        Accuracy of exam data provided and its completeness is not guaranteed. <br>
+        Users are encouraged to verify all information with official exam boards and their own timetables to ensure accuracy.
+      </p>
+      <button id="footer-close-btn" type="button" class="btn-close p-2" aria-label="Close"></button>
+    </div>
     
-    <p>
-      <strong>Disclaimer: </strong>
-      Accuracy of exam data provided and its completeness is not guaranteed. <br>
-      Users are encouraged to verify all information with official exam boards and their own timetables to ensure accuracy.
-    </p>
-    <div class="container text-center pb-2" style="padding-left:300px; padding-right:300px;">
+
+    <div class="container text-center pb-2" style="padding-left:2rem; padding-right:2rem;">
       <div class="row align-items-start">
         <div class="col">
           <a href="/privacy_policy">Privacy Policy</a>
@@ -213,7 +222,8 @@
     </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>  <script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script>
     // keep track of previous scroll position
     let prevScrollPos2 = window.pageYOffset;
 
@@ -236,6 +246,26 @@
       }
       
     });
+
+    function disclaimerHide() {
+      document.getElementById("disclaimer").style.position = "relative";
+      document.getElementById("footer-close-btn").hidden = true;
+      localStorage.setItem("disclaimerHidden", true);
+    }
+
+    function checkDisclaimerHidden() {
+      if (localStorage.getItem("disclaimerHidden")) {
+        document.getElementById("disclaimer").style.position = "relative";
+        document.getElementById("footer-close-btn").hidden = true;
+      } else {
+        document.getElementById("disclaimer").style.position = "sticky";
+        document.getElementById("footer-close-btn").hidden = false;
+      }
+    }
+
+    document.getElementById("footer-close-btn").addEventListener("click", disclaimerHide)
+    // Call checkDisclaimerHidden on page load
+    window.onload = checkDisclaimerHidden;
   </script>
 </body>
 </html>

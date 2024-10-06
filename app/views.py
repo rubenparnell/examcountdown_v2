@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, flash, url_for, redirect, request, jsonify
+from flask import Blueprint, render_template, flash, url_for, redirect, request, jsonify, abort
 from markupsafe import Markup
 from flask_login import login_required, current_user, login_user, logout_user
 from flask_mail import Message
@@ -7,7 +7,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from sqlalchemy import and_
 from uuid import uuid4
-from app import db, mail, s
+import requests
+from app import db, mail, s, Config
 from app.forms import SignUpForm, LoginForm, UpdateForm, ConfirmPwdFrom, EmailForm, PwdResetForm, QualForm, OldPwdResetForm
 from app.models import Users, Exams
 
@@ -105,9 +106,16 @@ def login():
 
 @main.route("/signup", methods=['GET', 'POST'])
 def signup():
+  VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify"
+
   form = SignUpForm()
   #Validate form
   if form.validate_on_submit():
+    secret_response = request.form['g-recaptcha-response']
+    verify_response = requests.post(url=f"{VERIFY_URL}?secret={Config.RECAPTCHA_SECRET_KEY}&response={secret_response}").json()
+    if verify_response['success'] == False or verify_response['score'] < 0.5:
+      abort(403)
+
     form_email = form.email.data
     form_username = form.username.data
     form_password = form.password_hash.data
@@ -144,7 +152,7 @@ def signup():
         flash("That username is already used. Please pick a different one.", "danger")
         form.username.data = ''
 
-  return render_template('signup.html', form=form)
+  return render_template('signup.html', form=form, reCAPTCHA_site_key=Config.RECAPTCHA_SITE_KEY)
 
 
 @main.route('/confirm_email/<token>')
