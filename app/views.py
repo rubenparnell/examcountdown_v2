@@ -239,6 +239,16 @@ def verify_password_reset(token):
         except Exception as e:
           flash(f"An Error has occurred! {e}", "danger")
 
+  try:
+    email = s.loads(token, salt='password-reset', max_age=3600)
+
+  except SignatureExpired:
+    flash("That link has expired!", "danger")
+    return redirect(url_for('main.signup'))
+
+  except Exception as e:
+    flash(f"An Error has occurred! {e}", "danger")
+
   return render_template("reset_password.html", form=form)
 
 
