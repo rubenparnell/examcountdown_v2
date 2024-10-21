@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, HiddenField, PasswordField, RadioField, BooleanField
+from wtforms import StringField, SubmitField, HiddenField, PasswordField, RadioField, BooleanField, ValidationError
 from wtforms.validators import DataRequired 
 
 #Create Sign Up form:
@@ -11,9 +11,13 @@ class SignUpForm(FlaskForm):
   privacyAgree = BooleanField("I agree to the Privacy Policy", validators=[DataRequired()])
   submit = SubmitField("Submit")
 
+  def validate_username(self, username):
+    if "@" in username.data:
+      raise ValidationError("Usernames cannot contain '@' symbol. Please choose a different username.")
+    
 # Create Login Form:
 class LoginForm(FlaskForm):
-	username = StringField("Username", validators=[DataRequired()])
+	identifier = StringField("Username or Email", validators=[DataRequired()])
 	password = PasswordField("Password", validators=[DataRequired()])
 	submit = SubmitField("Submit")
 

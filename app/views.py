@@ -83,7 +83,15 @@ def home():
 def login():
   form = LoginForm()
   if form.validate_on_submit():
-    user = db.session.query(Users).filter_by(username=form.username.data).first()
+    # Determine if the identifier is an email
+    identifier = form.identifier.data
+    if "@" in identifier:
+      # It's an email
+      user = db.session.query(Users).filter_by(email=identifier).first()
+    else:
+      # It's a username
+      user = db.session.query(Users).filter_by(username=identifier).first()
+      
     if user:
       #check the hash
       if check_password_hash(user.password_hash, form.password.data):
@@ -109,7 +117,7 @@ def signup():
   VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify"
 
   form = SignUpForm()
-  #Validate form
+  # Validate form
   if form.validate_on_submit():
     secret_response = request.form['g-recaptcha-response']
     verify_response = requests.post(url=f"{VERIFY_URL}?secret={Config.RECAPTCHA_SECRET_KEY}&response={secret_response}").json()
@@ -145,12 +153,18 @@ def signup():
         return redirect(url_for("main.login"))
     
     else:
-      if not(current_email is None):
+      if not current_email is None:
         flash(Markup("That email is already used for another account. Please <a href="+url_for("main.login")+">log in</a> or use a different email."), "danger")
         form.email.data = ''
-      if not(current_username is None):
+      if not current_username is None:
         flash("That username is already used. Please pick a different one.", "danger")
         form.username.data = ''
+
+  # Catch validation errors and flash them
+  if form.errors:
+    for field, errors in form.errors.items():
+      for error in errors:
+        flash(Markup(f"<strong>{field.capitalize()} Error:</strong> {error}"), "danger")
 
   return render_template('signup.html', form=form, reCAPTCHA_site_key=Config.RECAPTCHA_SITE_KEY)
 

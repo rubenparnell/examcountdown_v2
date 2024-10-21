@@ -11,8 +11,8 @@
             {{ form.hidden_tag() }}
 
             <div class="form-floating mb-3">
-                {{ form.username(class="form-control", placeholder="username") }}
-                <label for="floatingInput">{{ form.username.label }}</label>
+                {{ form.identifier(class="form-control", placeholder="username or email") }}
+                <label for="floatingInput">{{ form.identifier.label }}</label>
             </div>
             <div class="form-floating mb-3">
                 {{ form.password(class="form-control", placeholder="password") }}
