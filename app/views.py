@@ -141,7 +141,7 @@ def signup():
         msg.body = f'Hello, {form_username}!\nTo complete signing up with Exam Countdown, confirm your email using the link below:\n{link}\n\nThis link will expire in 1 hour.\n\nIf you did not sign up, you can ignore this email.'
         mail.send(msg)
 
-        flash(Markup("A comfirmation link has been sent to your email.<br>Please also check your junk folder."), "info")
+        flash(Markup("A confirmation link has been sent to your email.<br>Please also check your junk folder."), "info")
         return redirect(url_for("main.login"))
     
     else:
