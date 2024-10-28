@@ -12,8 +12,19 @@
         <br>
     </div>
     <div class="container">
-      <p>This page shows the next exam for each of your selected subjects.<br>
-      You can choose your subjects in your <a href="{{url_for("main.exam_options")}}">exam options page</a>.</p>
+      {% if current_user.is_authenticated %}
+        <p>
+            This page shows the next exam for each of your selected subjects.<br>
+            Click on a subject to see all exams for that subject.<br>
+            You can choose your subjects in your <a href="{{url_for("main.exam_options")}}">exam options page</a>.
+        </p>
+      {% else %}
+        <p>
+            This page shows the next exam for each subject.<br>
+            Click on a subject to see all exams for that subject.<br>
+            You can <a href="{{url_for("main.signup")}}">sign up</a> to filter by your own subjects.
+        </p>
+      {% endif %}
       
       <br>
       {% for category, exams in exams_by_category.items() %}

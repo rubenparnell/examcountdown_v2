@@ -13,7 +13,7 @@
     <div class="container">
         {% if current_user.selected_subjects | length > 0 %}
         <div class="card mb-4">
-            <h4 class="card-header">Time to next exam</h4>
+            <h4 class="card-header">Time to your next exam</h4>
             <div class="card-body text-center">
                 <h1><strong data-exam-datetime="{{ next_exam_data.date }}"><div class="countdown"></div></strong></h1>
                 <h5><strong>Date:</strong> {{ next_exam_data.date }} ({{ next_exam_data.time }})</h5>
