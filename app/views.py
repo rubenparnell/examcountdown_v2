@@ -116,12 +116,13 @@ def login():
 @main.route("/signup", methods=['GET', 'POST'])
 def signup():
   VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify"
+  RECAPTCHA_SECRET_KEY = os.environ.get("RECAPTCHA_SECRET_KEY")
 
   form = SignUpForm()
   # Validate form
   if form.validate_on_submit():
     secret_response = request.form['g-recaptcha-response']
-    verify_response = requests.post(url=f"{VERIFY_URL}?secret={os.environ.get("RECAPTCHA_SECRET_KEY")}&response={secret_response}").json()
+    verify_response = requests.post(url=f"{VERIFY_URL}?secret={RECAPTCHA_SECRET_KEY}&response={secret_response}").json()
     if verify_response['success'] == False or verify_response['score'] < 0.5:
       abort(403)
 
