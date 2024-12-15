@@ -8,9 +8,10 @@ from datetime import datetime
 from sqlalchemy import and_
 from uuid import uuid4
 import requests
-from app import db, mail, s, Config
+from app import db, mail, s
 from app.forms import SignUpForm, LoginForm, UpdateForm, ConfirmPwdFrom, EmailForm, PwdResetForm, QualForm, OldPwdResetForm
 from app.models import Users, Exams
+import os 
 
 main = Blueprint('main', __name__)
 
@@ -120,7 +121,7 @@ def signup():
   # Validate form
   if form.validate_on_submit():
     secret_response = request.form['g-recaptcha-response']
-    verify_response = requests.post(url=f"{VERIFY_URL}?secret={Config.RECAPTCHA_SECRET_KEY}&response={secret_response}").json()
+    verify_response = requests.post(url=f"{VERIFY_URL}?secret={os.environ.get("RECAPTCHA_SECRET_KEY")}&response={secret_response}").json()
     if verify_response['success'] == False or verify_response['score'] < 0.5:
       abort(403)
 
@@ -166,7 +167,7 @@ def signup():
       for error in errors:
         flash(Markup(f"<strong>{field.capitalize()} Error:</strong> {error}"), "danger")
 
-  return render_template('signup.html', form=form, reCAPTCHA_site_key=Config.RECAPTCHA_SITE_KEY)
+  return render_template('signup.html', form=form, reCAPTCHA_site_key=os.environ.get("RECAPTCHA_SITE_KEY"))
 
 
 @main.route('/confirm_email/<token>')

@@ -6,7 +6,7 @@ from flask_login import LoginManager
 from flask_mail import Mail
 from itsdangerous import URLSafeTimedSerializer
 
-from app.config import Config
+import os
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -14,11 +14,23 @@ login_manager = LoginManager()
 
 #Setup mail:
 mail = Mail()
-s = URLSafeTimedSerializer(Config.SECRET_KEY)
+s = URLSafeTimedSerializer(os.getenv("SECRET_KEY"))
 
-def create_app(config_class=Config):
+def create_app():
     app = Flask(__name__)
-    app.config.from_object(config_class)
+
+    # Load configuration from environment variables
+    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI', 'sqlite:///default.db')
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = os.environ.get('SQLALCHEMY_TRACK_MODIFICATIONS')
+    app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'localhost')
+    app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 25))
+    app.config['MAIL_USE_TLS'] = os.environ.get('MAIL_USE_TLS', 'False').lower() in ['true', '1', 't']
+    app.config['MAIL_USE_SSL'] = os.environ.get('MAIL_USE_SSL', 'False').lower() in ['true', '1', 't']
+    app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+    app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+    app.config['RECAPTCHA_SITE_KEY'] = os.environ.get('RECAPTCHA_SITE_KEY')
+    app.config['RECAPTCHA_SECRET_KEY'] = os.environ.get('RECAPTCHA_SECRET_KEY')
 
     db.init_app(app)
     migrate.init_app(app, db)
