@@ -7,6 +7,9 @@ from flask_mail import Mail
 from itsdangerous import URLSafeTimedSerializer
 
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 db = SQLAlchemy()
 migrate = Migrate()
