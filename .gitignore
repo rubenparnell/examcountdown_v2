@@ -1,6 +1,6 @@
 venv
 __pycache__
-ruben-key-1.pem
+ruben_exam_main.pem
 config.py
 import_csv.py
 migrations
