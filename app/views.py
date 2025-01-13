@@ -17,6 +17,8 @@ main = Blueprint('main', __name__)
 
 @main.route("/")
 def home():
+  from_url = request.args.get("from")
+
   if current_user.is_authenticated:
     level = current_user.level
 
@@ -78,7 +80,8 @@ def home():
     return render_template("home.html", 
                            next_gcse_exam=next_gcse_exam, 
                            next_as_level_exam=next_as_level_exam,
-                           next_a_level_exam=next_a_level_exam)
+                           next_a_level_exam=next_a_level_exam,
+                           from_url=from_url)
 
 @main.route("/login", methods=['GET', 'POST'])
 def login():
