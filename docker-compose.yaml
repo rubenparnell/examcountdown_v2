@@ -1,0 +1,33 @@
+services:
+  app2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 5001:5000
+    environment:
+      SERVER_NAME: ${SERVER_NAME}
+      SECRET_KEY: ${SECRET_KEY}
+      FLASK_APP: ${FLASK_APP}
+
+      MAIL_SERVER: ${MAIL_SERVER}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      MAIL_USE_TLS: ${MAIL_USE_TLS}
+      MAIL_USE_SSL: ${MAIL_USE_SSL}
+
+      RECAPTCHA_SITE_KEY: ${RECAPTCHA_SITE_KEY}
+      RECAPTCHA_SECRET_KEY: ${RECAPTCHA_SECRET_KEY}
+
+      SQLALCHEMY_DATABASE_URI: ${SQLALCHEMY_DATABASE_URI}
+      SQLALCHEMY_TRACK_MODIFICATIONS: ${SQLALCHEMY_TRACK_MODIFICATIONS}
+    depends_on:
+      - redis
+    command: gunicorn run:app -w 4 -b 0.0.0.0:5000
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 60s
