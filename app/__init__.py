@@ -34,8 +34,7 @@ def create_app():
     app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
     app.config['RECAPTCHA_SITE_KEY'] = os.environ.get('RECAPTCHA_SITE_KEY')
     app.config['RECAPTCHA_SECRET_KEY'] = os.environ.get('RECAPTCHA_SECRET_KEY')
-
-    print(app.config['MAIL_USERNAME'])
+    app.config['SERVER_NAME'] = os.environ.get('SERVER_NAME')
 
     db.init_app(app)
     migrate.init_app(app, db)
