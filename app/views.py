@@ -149,7 +149,7 @@ def signup():
           'password': form_password
           }
         token = s.dumps(user_data, salt='email-confirm')
-        msg = Message('Confirm your email address - Exam Countdown', sender='inbox@examcountdown.live', recipients=[form_email])
+        msg = Message('Confirm your email address - Exam Countdown', sender='inbox@myexams.net', recipients=[form_email])
         link = url_for('main.confirm_email', token=token, _external=True)
         msg.body = f'Hello, {form_username}!\nTo complete signing up with Exam Countdown, confirm your email using the link below:\n{link}\n\nThis link will expire in 1 hour.\n\nIf you did not sign up, you can ignore this email.'
         mail.send(msg)
@@ -216,7 +216,7 @@ def send_password_reset():
         username = user_search.username
 
         token = s.dumps(form_email, salt='password-reset')
-        msg = Message('Password Reset - Exam Countdown', sender='inbox@examcountdown.live', recipients=[form_email])
+        msg = Message('Password Reset - Exam Countdown', sender='inbox@myexams.net', recipients=[form_email])
         link = url_for('main.verify_password_reset', token=token, _external=True)
         msg.body = f'Hello, {username}!\nTo reset your Exam Countdown password, click the link below:\n{link}\n\nThis link will expire in 1 hour.\n\nIf you did not request a password reset, you can ignore this email.'
         mail.send(msg)
