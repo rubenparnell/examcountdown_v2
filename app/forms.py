@@ -30,7 +30,7 @@ class PwdResetForm(FlaskForm):
   password2 = PasswordField("Confirm Password", validators=[DataRequired()])
   submit = SubmitField('Confirm')
 
-class ConfirmPwdFrom(FlaskForm):
+class ConfirmPwdForm(FlaskForm):
   form_type = HiddenField(default='confirm_pwd')
   password = PasswordField("Confirm Password", validators=[DataRequired()])
   submit = SubmitField('Confirm')

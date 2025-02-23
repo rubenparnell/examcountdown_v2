@@ -16,7 +16,7 @@
         </div>
         <div class="card-body">
             <form method="POST" id="update-form">
-                {{ update_form.form_type }}
+                {{ update_form.form_type(id="update-form-type") }}
 
                 <div class="form-floating mb-3">
                     {{ update_form.username(class="form-control", placeholder="username", value=current_user.username, minlength="3", maxlength="20") }}
@@ -27,7 +27,7 @@
                     {{ update_form.email.label }}
                 </div>
 
-                {{ update_form.submit(class="btn btn-primary", value="Submit Changes") }}
+                {{ update_form.submit(class="btn btn-primary", value="Submit Changes", id="update-submit") }}
             </form>
             <br>
             
@@ -48,14 +48,14 @@
                             This can't be undone!
                             <br><br>
                             <form method="POST" id="confirm-pwd-form">
-                                {{ confirm_pwd_form.form_type }}
+                                {{ confirm_pwd_form.form_type(id="delete-form-type") }}
                 
                                 <div class="form-floating mb-3">
                                     {{ confirm_pwd_form.password(class="form-control", placeholder="pwd") }}
                                     {{ confirm_pwd_form.password.label }}
                                 </div>
 
-                                {{ confirm_pwd_form.submit(class="btn btn-danger", value="Confirm") }}
+                                {{ confirm_pwd_form.submit(class="btn btn-danger", value="Confirm", id="delete-submit") }}
                             </form>
                         </div>
                         <div class="modal-footer">
@@ -73,7 +73,7 @@
         </div>
         <div class="card-body">
             <form method="POST" id="pwd-reset-form">
-                {{ old_pwd_reset_form.form_type }}
+                {{ old_pwd_reset_form.form_type(id="pwd-form-type") }}
 
                 <div class="form-floating mb-3">
                     {{ old_pwd_reset_form.oldPassword(class="form-control", placeholder="oldPassword") }}
@@ -90,7 +90,7 @@
                     {{ old_pwd_reset_form.password2.label }}
                 </div>
 
-                {{ old_pwd_reset_form.submit(class="btn btn-primary", value="Update Password") }}
+                {{ old_pwd_reset_form.submit(class="btn btn-primary", value="Update Password", id="pwd-submit") }}
             </form>
         </div>
     </div>
@@ -99,13 +99,7 @@
 <script>
     // Make the currentTab Active
     document.getElementById("user-tab").classList.add("active");
-    document.getElementById("profile-tab").classList.add("active");
-
-    document.addEventListener('DOMContentLoaded', (event) => {
-        document.getElementById("update-form").addEventListener("submit", function() {
-            document.getElementById("update-form").elements["form_type"].value = "update_profile";
-        });
-    });
+    document.getElementById("profile-options-tab").classList.add("active");
 </script>
 
 

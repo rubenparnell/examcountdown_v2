@@ -9,7 +9,7 @@ from sqlalchemy import and_
 from uuid import uuid4
 import requests
 from app import db, mail, s
-from app.forms import SignUpForm, LoginForm, UpdateForm, ConfirmPwdFrom, EmailForm, PwdResetForm, QualForm, OldPwdResetForm
+from app.forms import SignUpForm, LoginForm, UpdateForm, ConfirmPwdForm, EmailForm, PwdResetForm, QualForm, OldPwdResetForm
 from app.models import Users, Exams
 import os 
 
@@ -110,7 +110,7 @@ def login():
         else:
           return redirect(url_for('main.home'))
       else:
-        flash("Wrong password.", "danger")
+        flash("Incorrect password.", "danger")
     else:
       flash(Markup("User not found! Try a different username or <a href="+url_for("main.signup")+">sign up</a>."), "danger")
   return render_template('login.html', form=form)
@@ -413,64 +413,69 @@ def show_selected_subject(level, base_subject):
 @login_required
 def profile_options():
   update_form = UpdateForm()
-  confirm_pwd_form = ConfirmPwdFrom()
+  confirm_pwd_form = ConfirmPwdForm()
   old_pwd_reset_form = OldPwdResetForm()
 
-  id = current_user.id
-  user_to_update = db.session.query(Users).get_or_404(id)
+  user_to_update = db.session.get(Users, current_user.id)
 
   if request.method == "POST":
-    if request.form['form_type']=="update_profile":
-      if current_user.username != request.form['username']: # if the username has been updated
-        # check to see if the username already exists.
-        new_username_test = db.session.query(Users).filter_by(username=request.form['username']).first() 
-      else:
-        new_username_test = None
+    form_type = request.form.get('form_type', '')  # Avoid KeyError
+    
+    if form_type == "update_profile":
+      new_username = request.form.get('username', '').strip()
+      new_email = request.form.get('email', '').strip()
 
-      if current_user.email != request.form['email']: # if the email has been updated
-        # check to see if the email already exists.
-        new_email_test = db.session.query(Users).filter_by(email=request.form['email']).first() 
-      else:
-        new_email_test = None
+      # Check if username/email were actually changed
+      username_taken = new_username != current_user.username and Users.query.filter_by(username=new_username).first()
+      email_taken = new_email != current_user.email and Users.query.filter_by(email=new_email).first()
 
-      if new_username_test is None and new_email_test is None:
-        user_to_update.email = request.form['email']
-        user_to_update.username = request.form['username']
+      if not username_taken and not email_taken:
+        user_to_update.username = new_username
+        user_to_update.email = new_email
 
         try:
           db.session.commit()
           flash("User updated successfully.", "success")
+          return redirect(url_for("main.profile_options"))  # Prevent resubmission
         except:
-          flash("Error! Looks like there was an error updating the profile.", "danger")
+          flash("Error! Something went wrong while updating the profile.", "danger")
       else:
-        if new_email_test != None:
-          flash("Error! A user with that email already exists. Please use a different email.", "danger")
-        if new_username_test != None:
+        if username_taken:
           flash("Error! A user with that username already exists. Please choose a different username.", "danger")
+        if email_taken:
+          flash("Error! A user with that email already exists. Please use a different email.", "danger")
 
-    elif request.form['form_type']=="confirm_pwd":
-      if check_password_hash(current_user.password_hash, request.form['password']):
+    elif form_type == "confirm_pwd":
+      password = request.form.get('password', '')
+
+      if check_password_hash(current_user.password_hash, password):
         return redirect(url_for("main.delete_user", id=current_user.id))
       else:
         flash("Wrong password! Could not delete your account.", "danger")
 
-    elif request.form['form_type'] == "password_reset":
-      if check_password_hash(current_user.password_hash, request.form['oldPassword']):
-        if request.form['password1'] == request.form['password2']:
-          current_user.password_hash = generate_password_hash(request.form['password1'])
+    elif form_type == "password_reset":
+      old_password = request.form.get('oldPassword', '')
+      new_password1 = request.form.get('password1', '')
+      new_password2 = request.form.get('password2', '')
+
+      if check_password_hash(current_user.password_hash, old_password):
+        if new_password1 == new_password2:
+          current_user.password_hash = generate_password_hash(new_password1)
           db.session.commit()
           flash("Updated password successfully.", "success")
+          return redirect(url_for("main.profile_options"))  # Prevent resubmission
         else:
           flash("The two new passwords don't match! Please try again.", "danger")
       else:
         flash("Wrong password! Could not update your password.", "danger")
 
-
-  return render_template("profile_options.html", 
-                         update_form=update_form,
-                         confirm_pwd_form=confirm_pwd_form,
-                         old_pwd_reset_form=old_pwd_reset_form,
-                         user_to_update=user_to_update)
+  return render_template(
+      "profile_options.html",
+      update_form=update_form,
+      confirm_pwd_form=confirm_pwd_form,
+      old_pwd_reset_form=old_pwd_reset_form,
+      user_to_update=user_to_update
+  )
 
 
 @main.route('/exam_options', methods=['GET', 'POST'])
