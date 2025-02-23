@@ -95,11 +95,6 @@
 </div>
 
 <script>
-  //Make the currentTab Active
-  document.getElementById("user-tab").classList.add("active");
-  document.getElementById("exam-options-tab").classList.add("active");
-</script>
-<script>
   $(document).ready(function() {
     // Function to check if all dropdowns are selected
     function checkDropdowns() {
@@ -108,8 +103,6 @@
       let boardSelected = $('#board').val() !== "" && $('#board').val() !== null;
       let subjectSelected = $('#subject').val() !== "" && $('#subject').val() !== null;
       let tierSelected = $('#tier').val() !== "" && $('#tier').val() !== null;
-      console.log($('#tier').val())
-      console.log(tierSelected)
     
       // Enable the "Add" button only if all dropdowns are selected
       if (categorySelected && baseSubjectSelected && boardSelected && subjectSelected && tierSelected) {
@@ -226,7 +219,6 @@
   
       // Check if the selected subject has a tier
       $.getJSON('{{ url_for("main.check_subject_tier") }}', { base_subject: base_subject, board: board, subject: subject }, function(hasTier) {
-        console.log(hasTier.has_tier)
         if (hasTier.has_tier) {
           // Populate the Tier dropdown
           $.getJSON('{{ url_for("main.get_tiers") }}', { base_subject: base_subject, board: board, subject: subject }, function(tiers) {

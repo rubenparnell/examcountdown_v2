@@ -79,14 +79,6 @@
       font-weight: bold;
       margin-left: 4px;
     }
-
-    #main-navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 1005;
-    }
   </style>
 </head>
 <body>
@@ -106,7 +98,7 @@
     </symbol>
   </svg>
   
-  <nav class="navbar navbar-expand-md bg-body-tertiary fixed-top nav-underline" id="main-navbar">
+  <nav class="navbar navbar-expand-md fixed-top navbar-light bg-light" id="nav-bar-top">
     <div class="container">
       <!-- Left section with Logo and Title -->
       <div class="dropdown">
@@ -131,72 +123,85 @@
   
       <!-- Main collapsible navigation links -->
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav me-auto">
+        <ul class="navbar-nav nav-underline gap-2">
           <li class="nav-item">
-            <a class="nav-link" id="home-tab" aria-current="page" href="{{url_for('main.home')}}">Home</a>
+            <a class="nav-link" id="home-tab" href="{{url_for('main.home')}}">Home</a>
           </li>
           {% if current_user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link" id="exams-tab" aria-current="page" href="{{url_for('main.exams', level=current_user.level)}}">Exams</a>
+            <a class="nav-link" id="exams-tab" href="{{url_for('main.exams', level=current_user.level)}}">Exams</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="timetable-tab" aria-current="page" href="{{url_for('main.timetable')}}">Timetable</a>
+            <a class="nav-link" id="timetable-tab" href="{{url_for('main.timetable')}}">Timetable</a>
           </li>
           {% else %}
           <li class="nav-item">
-            <a class="nav-link" id="gcse-tab" aria-current="page" href="{{url_for('main.exams', level='2')}}">GCSE</a>
+            <a class="nav-link" id="gcse-tab" href="{{url_for('main.exams', level='2')}}">GCSE</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="as-level-tab" aria-current="page" href="{{url_for('main.exams', level='3a')}}">AS Level</a>
+            <a class="nav-link" id="as-level-tab" href="{{url_for('main.exams', level='3a')}}">AS Level</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="a-level-tab" aria-current="page" href="{{url_for('main.exams', level='3b')}}">A Level</a>
+            <a class="nav-link" id="a-level-tab" href="{{url_for('main.exams', level='3b')}}">A Level</a>
           </li>
           {% endif %}
         </ul>
-        <!-- Person-circle dropdown, positioned to the far right within the navbar-collapse -->
-        <div class="dropdown ms-auto d-md-none">
-          <a class="nav-link text-end" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" id="user-tab">
-            <i class="bi bi-person-circle" style="font-size: 1.8rem;"></i>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end">
-            {% if current_user.is_authenticated %}
-            <li><a class="dropdown-item" href="{{url_for('main.exam_options')}}" id="exam-options-tab">Exam Options</a></li>
-            <li><a class="dropdown-item" href="{{url_for('main.profile_options')}}" id="profile-options-tab">Profile Options</a></li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li><a class="dropdown-item" href="{{url_for('main.logout')}}" id="logout-tab">Log Out</a></li>
-            {% else %}
-            <li><a class="dropdown-item" href="{{url_for('main.login')}}" id="login-tab">Log In</a></li>
-            <li><a class="dropdown-item" href="{{url_for('main.signup')}}" id="signup-tab">Sign Up</a></li>
-            {% endif %}
-          </ul>
-        </div>
-      </div>
-  
-      <!-- Person-circle dropdown, always visible in the navbar on larger screens -->
-      <div class="dropdown d-none d-md-block">
-        <a class="nav-link text-end" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" id="user-tab">
-          <i class="bi bi-person-circle" style="font-size: 1.8rem;"></i>
-        </a>
-        <ul class="dropdown-menu dropdown-menu-end">
-          {% if current_user.is_authenticated %}
-          <li><a class="dropdown-item" href="{{url_for('main.exam_options')}}" id="exam-options-tab">Exam Options</a></li>
-          <li><a class="dropdown-item" href="{{url_for('main.profile_options')}}" id="profile-options-tab">Profile Options</a></li>
-          <li>
-            <hr class="dropdown-divider">
+
+        <hr class="navbar-divider">
+
+        <ul class="navbar-nav nav-underline ms-auto gap-2">
+          <!-- Dropdown for larger screens -->
+          <li class="nav-item d-none d-md-block">
+            <div class="dropdown">
+              <a class="nav-link text-start text-md-end" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" id="user-tab">
+                <i class="bi bi-person-circle" style="font-size: 1.8rem;"></i>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end">
+                {% if current_user.is_authenticated %}
+                <li><a class="dropdown-item" href="{{url_for('main.exam_options')}}" id="exam-options-tab">Exam Options</a></li>
+                <li><a class="dropdown-item" href="{{url_for('main.profile_options')}}" id="profile-options-tab">Profile Options</a></li>
+                <li>
+                  <hr class="dropdown-divider">
+                </li>
+                <li><a class="dropdown-item" href="{{url_for('main.logout')}}" id="logout-tab">Log Out</a></li>
+                {% else %}
+                <li><a class="dropdown-item" href="{{url_for('main.login')}}" id="login-tab">Log In</a></li>
+                <li><a class="dropdown-item" href="{{url_for('main.signup')}}" id="signup-tab">Sign Up</a></li>
+                {% endif %}
+              </ul>
+            </div>
           </li>
-          <li><a class="dropdown-item" href="{{url_for('main.logout')}}" id="logout-tab">Log Out</a></li>
-          {% else %}
-          <li><a class="dropdown-item" href="{{url_for('main.login')}}" id="login-tab">Log In</a></li>
-          <li><a class="dropdown-item" href="{{url_for('main.signup')}}" id="signup-tab">Sign Up</a></li>
-          {% endif %}
+
+          <!-- Always display for smaller screens -->
+          <div class="d-block d-md-none">
+            {% if current_user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{url_for('main.exam_options')}}" id="exam-options-tab">Exam Options</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{url_for('main.profile_options')}}" id="profile-options-tab">Profile Options</a>
+            </li>
+  
+            <hr class="navbar-divider">
+  
+            <li class="nav-item">
+              <a class="nav-link" href="{{url_for('main.logout')}}" id="logout-tab">Log Out</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{url_for('main.login')}}" id="login-tab">Log In</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{url_for('main.signup')}}" id="signup-tab">Sign Up</a>
+            </li>
+            {% endif %}
+          </div>
         </ul>
       </div>
     </div>
   </nav>
 
+  <!-- Flash Messages -->
   {% with messages = get_flashed_messages(with_categories=True) %}
     {% if messages %}
       <div aria-live="polite" aria-atomic="true" class="position-relative">
@@ -267,11 +272,25 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   <script>
+    // Get the current URL path
+    const currentPath = window.location.pathname;
+    
+    // Select all nav-link elements
+    const navLinks = document.querySelectorAll("#nav-bar-top .nav-link, #nav-bar-top .dropdown-item");
+
+    // Loop through each nav-link and compare its href to the current path
+    navLinks.forEach(link => {
+      if (link.getAttribute("href") === currentPath) {
+        link.classList.add("active"); // Add the 'active' class to the matching link
+      } else {
+        link.classList.remove("active"); // Ensure others are not active
+      }
+    });
+
     // keep track of previous scroll position
     let prevScrollPos2 = window.pageYOffset;
 
     window.addEventListener('scroll', function() {
-
       if (window.innerWidth < 978) {
         // current scroll position
         const currentScrollPos = window.pageYOffset;

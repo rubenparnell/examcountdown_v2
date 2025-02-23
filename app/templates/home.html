@@ -60,37 +60,6 @@
             </div>
         </div>
     </div>
-    {% if from_url == "examcountdown.live" %}
-    <div class="modal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">ExamCountdown.live is now MyExams.net!</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>
-                        Your account has already been transferred. If you had an account on examcountdown.live, you can log in using the same credentials.
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-<script>
-  //Make the currentTab Active
-  document.getElementById("home-tab").classList.add("active");
-
-  {% if from_url == "examcountdown.live" %}
-  document.addEventListener("DOMContentLoaded", function() {
-    var myModal = new bootstrap.Modal(document.querySelector('.modal'));
-    myModal.show();
-  });
-  {% endif %}
-</script>
 <script type="module">
     import {updateCountdown} from "/static/countdown.js";
     // Initial countdown update
