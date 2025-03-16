@@ -9,7 +9,7 @@ from sqlalchemy import and_
 from uuid import uuid4
 import requests
 from app import db, mail, s
-from app.forms import SignUpForm, LoginForm, UpdateForm, ConfirmPwdForm, EmailForm, PwdResetForm, QualForm, OldPwdResetForm
+from app.forms import SignUpForm, LoginForm, UpdateForm, ConfirmPwdForm, EmailForm, PwdResetForm, QualForm, OldPwdResetForm, TimeForm
 from app.models import Users, Exams
 import os 
 
@@ -17,9 +17,10 @@ main = Blueprint('main', __name__)
 
 @main.route("/")
 def home():
-  from_url = request.args.get("from")
-
   if current_user.is_authenticated:
+    am_start_time=current_user.exam_start_time_am or "09:00"
+    pm_start_time=current_user.exam_start_time_pm or "13:30"
+
     level = current_user.level
 
     shown_exams = []
@@ -58,9 +59,17 @@ def home():
       if isinstance(exam.date, datetime) and exam.date > datetime.now():
         filtered_shown_exams.append(exam)
 
-    return render_template("dashboard.html", next_exam_data=next_exam, exams=filtered_shown_exams)
+    return render_template("dashboard.html", 
+                           next_exam_data=next_exam, 
+                           exams=filtered_shown_exams,
+                           am_start_time=am_start_time,
+                           pm_start_time=pm_start_time,
+                           )
   
   else:
+    am_start_time = "09:00"
+    pm_start_time = "13:30"
+
     gcse_exams = Exams.query.filter(and_(Exams.time.isnot(None), 
                                          Exams.time != '', 
                                          Exams.level == "2"
@@ -81,7 +90,9 @@ def home():
                            next_gcse_exam=next_gcse_exam, 
                            next_as_level_exam=next_as_level_exam,
                            next_a_level_exam=next_a_level_exam,
-                           from_url=from_url)
+                           am_start_time=am_start_time,
+                           pm_start_time=pm_start_time,
+                           )
 
 @main.route("/login", methods=['GET', 'POST'])
 def login():
@@ -483,6 +494,7 @@ def profile_options():
 def exam_options():
   form_id = request.form.get('form_id')
   qualForm = QualForm()
+  timeForm = TimeForm()
 
   if request.method == 'GET':
     qualForm.Qualification.data = str(current_user.level)  # Set default value
@@ -499,6 +511,16 @@ def exam_options():
         flash(f"Updated profile.", "success")
 
         return redirect(url_for('main.exam_options'))
+    
+    elif timeForm.validate_on_submit():
+      current_user.exam_start_time_am = timeForm.AM_time.data.strftime('%H:%M')
+      current_user.exam_start_time_pm = timeForm.PM_time.data.strftime('%H:%M')
+
+      db.session.commit()
+
+      flash(f"Updated exam times.", "success")
+
+      return redirect(url_for('main.exam_options'))
     
     elif form_id == "add-subject-form":
       base_subject = request.form.get('base_subject')
@@ -529,14 +551,23 @@ def exam_options():
 
       return redirect(url_for('main.exam_options'))
 
-  unique_categories = Exams.query.with_entities(Exams.category).filter_by(level=current_user.level).distinct().all()
-  unique_categories = [x[0] for x in unique_categories]
+  unique_categories = Exams.query.with_entities(Exams.category, Exams.base_subject).filter_by(level=current_user.level).distinct().all()
+
+  categories = {}
+  for category, subject in unique_categories:
+    if category not in categories:
+      categories[category] = []
+    categories[category].append(subject)
+
 
   # Render the page with the current user's selected exams
   return render_template('exam_options.html', 
                           selected_subjects=current_user.selected_subjects,
-                          categories=unique_categories,
-                          qualForm=qualForm
+                          categories=categories,
+                          qualForm=qualForm,
+                          timeForm=timeForm,
+                          am_start_time=current_user.exam_start_time_am or "09:00",
+                          pm_start_time=current_user.exam_start_time_pm or "13:30",
                           )
 
 @main.route('/get_base_subjects', methods=['GET'])

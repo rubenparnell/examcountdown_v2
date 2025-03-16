@@ -34,7 +34,7 @@
                             {% for exam in exams %}
                             <tr data-exam-datetime="{{ exam.date }}">
                                 <td class="countdown"></td>
-                                <td>{{ exam.date | format_time }} ({{ exam.time }})</td>
+                                <td>{{ exam.date | format_datetime }} ({{ exam.time }})</td>
                                 <td>{{ exam.duration }}</td>
                                 <td>{{ exam.title }} {% if exam.tier %}({{ exam.tier }}){%endif%}</td>
                                 <td>{{ exam.examination_code }}</td>

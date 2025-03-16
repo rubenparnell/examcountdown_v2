@@ -43,9 +43,9 @@
                   </thead>
                   <tbody>
                         {% for exam in exams.values() %}
-                        <tr onclick="window.location.href='{{ url_for('main.show_selected_subject', level=exam.level, base_subject=exam.base_subject) }}'" style="cursor:pointer;" data-exam-datetime="{{ exam.date }}">
+                        <tr onclick="window.location.href='{{ url_for('main.show_selected_subject', level=exam.level, base_subject=exam.base_subject) }}'" style="cursor:pointer;" data-exam-datetime="{{ exam.date | format_datetime_countdown }}">
                             <td class="countdown col-3"></td>
-                            <td>{{ exam.date | format_time }} ({{ exam.time }})</td>
+                            <td>{{ exam.date | format_datetime }} ({{ exam.time }})</td>
                             <td class="col-3">{{ exam.base_subject }}</td>
                         </tr>
                         {% endfor %}

@@ -5,8 +5,12 @@
     <div class="container">
         <h2><strong>Home</strong></h2>
         <br>
-    </div>
-    <div class="container">
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-1"></i>
+            Please don't rely on these exam dates. Always check with your school or exam board for the most up-to-date information.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+          
         <div class="row row-cols-1">
             <div class="col p-1">
                 <div class="card mb-4">
@@ -26,8 +30,8 @@
                 <div class="card mb-4">
                     <h4 class="card-header"><strong>Time to next GCSE exam</strong></h4>
                     <div class="card-body text-center">
-                        <h1><strong data-exam-datetime="{{ next_gcse_exam.date }}"><div class="countdown"></div></strong></h1>
-                        <h5><strong>Date:</strong> {{ next_gcse_exam.date }} ({{ next_gcse_exam.time }})</h5>
+                        <h1><strong data-exam-datetime="{{ next_gcse_exam.date | format_datetime_countdown }}"><div class="countdown"></div></strong></h1>
+                        <h5><strong>Date:</strong> {{ next_gcse_exam.date | format_datetime }} ({{ next_gcse_exam.time }})</h5>
                         <h5><strong>Subject:</strong> {{ next_gcse_exam.subject }}</h5>
                         <h5><strong>Title:</strong> {{ next_gcse_exam.title }}</h5>
                         <h5><strong>Duration:</strong> {{ next_gcse_exam.duration }}</h5>
@@ -38,8 +42,8 @@
                 <div class="card mb-4">
                     <h4 class="card-header"><strong>Time to next AS Level exam</strong></h4>
                     <div class="card-body text-center">
-                        <h1><strong data-exam-datetime="{{ next_as_level_exam.date }}"><div class="countdown"></div></strong></h1>
-                        <h5><strong>Date:</strong> {{ next_as_level_exam.date }} ({{ next_as_level_exam.time }})</h5>
+                        <h1><strong data-exam-datetime="{{ next_as_level_exam.date | format_datetime_countdown }}"><div class="countdown"></div></strong></h1>
+                        <h5><strong>Date:</strong> {{ next_as_level_exam.date | format_datetime }} ({{ next_as_level_exam.time }})</h5>
                         <h5><strong>Subject:</strong> {{ next_as_level_exam.subject }}</h5>
                         <h5><strong>Title:</strong> {{ next_as_level_exam.title }}</h5>
                         <h5><strong>Duration:</strong> {{ next_as_level_exam.duration }}</h5>
@@ -50,11 +54,22 @@
                 <div class="card mb-4">
                     <h4 class="card-header"><strong>Time to next A Level exam</strong></h4>
                     <div class="card-body text-center">
-                        <h1><strong data-exam-datetime="{{ next_a_level_exam.date }}"><div class="countdown"></div></strong></h1>
-                        <h5><strong>Date:</strong> {{ next_a_level_exam.date }} ({{ next_a_level_exam.time }})</h5>
+                        <h1><strong data-exam-datetime="{{ next_a_level_exam.date | format_datetime_countdown }}"><div class="countdown"></div></strong></h1>
+                        <h5><strong>Date:</strong> {{ next_a_level_exam.date | format_datetime }} ({{ next_a_level_exam.time }})</h5>
                         <h5><strong>Subject:</strong> {{ next_a_level_exam.subject }}</h5>
                         <h5><strong>Title:</strong> {{ next_a_level_exam.title }}</h5>
                         <h5><strong>Duration:</strong> {{ next_a_level_exam.duration }}</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row row-cols-1">
+            <div class="col p-1">
+                <div class="card mb-4">
+                    <h4 class="card-header"><strong>Info:</strong></h4>
+                    <div class="card-body">
+                        <p>AM exams are set to start at 9:00 AM.<br>PM exams are set to start at 13:30 PM.<br>Actual start times may vary between centres.</p>
                     </div>
                 </div>
             </div>

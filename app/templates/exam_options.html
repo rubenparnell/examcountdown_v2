@@ -5,40 +5,62 @@
 <div class="container">
   <h2><strong>Exam Options</strong></h2>
   <br>
-</div>
-<div class="container">
-  <div class="card">
-    <h5 class="card-header"><strong>Select Your Qualification</strong></h5>
-    <div class="card-body">
-      <form method="post">
-        {{ qualForm.hidden_tag() }}
-        {{ qualForm.Qualification }}
-        <input type="submit" class="btn btn-primary">
-      </form>
+
+  <div class="row row-cols-1 row-cols-md-2">
+    <div class="col p-1">
+      <div class="card mb-4">
+        <h4 class="card-header"><strong>Select Your Qualification</strong></h4>
+        <div class="card-body">
+          <p>Warning: changing this will delete all your selected exams.</p>
+          <form method="post">
+            {{ qualForm.hidden_tag() }}
+            {{ qualForm.Qualification }}
+            <input type="submit" class="btn btn-primary">
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col p-1">
+      <div class="card mb-4">
+        <h4 class="card-header"><strong>Exam Times</strong></h4>
+        <div class="card-body">
+          <p>Select the start times for your exams</p>
+          <form method="post">
+            {{ timeForm.hidden_tag() }}
+            <p>AM Exams Start time: {{ timeForm.AM_time(value=am_start_time) }}</p>
+            <p>PM Exams Start time: {{ timeForm.PM_time(value=pm_start_time) }}</p>
+            <input type="submit" class="btn btn-primary">
+          </form>
+        </div>
+      </div>
     </div>
   </div>
-  <br>
-  <div class="card">
+  
+  <div class="card mb-4">
     <h5 class="card-header"><strong>Add an exam</strong></h5>
     <div class="card-body">
       <form method="POST">
         <div class="row mb-3">
           <input type="hidden" name="form_id" value="add-subject-form">
-          <div class="col">
-            <label for="category" class="form-label">Category</label>
-            <select id="category" name="category" class="form-select">
-              <option value="" selected>Select a Category</option>
-              {% for category in categories %}
-                <option value="{{ category }}">{{ category }}</option>
-              {% endfor %}
-            </select>
-          </div>
           <div class="col">  
-
             <label for="base_subject" class="form-label">Subject</label>
-            <select id="base_subject" name="base_subject" class="form-select" disabled>
-              <option value="" disabled selected>Select a Subject</option>
-            </select>
+            <div class="dropdown">
+              <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" id="subjectDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                Select a Subject
+              </button>
+              <ul class="dropdown-menu w-100" aria-labelledby="subjectDropdown">
+                <li class="px-3">
+                  <input type="text" id="search_subject" class="form-control" placeholder="Search for a subject">
+                </li>
+                {% for category, subjects in categories.items() %}
+                  <li><span class="dropdown-header pb-0 bold large">{{ category }}</span></li>
+                  {% for subject in subjects %}
+                    <li><a class="dropdown-item subject-item ps-4" href="#" data-value="{{ subject }}">{{ subject }}</a></li>
+                  {% endfor %}
+                {% endfor %}
+              </ul>
+            </div>
+            <input type="hidden" id="base_subject" name="base_subject">
           </div>
           <div class="col">
             <label for="board" class="form-label">Board</label>
@@ -63,8 +85,8 @@
       </form>
     </div>
   </div>
-  <br>
-  <div class="card">
+
+  <div class="card mb-4">
     <h5 class="card-header"><strong>Your Selected Subjects</strong></h5>
     <div class="card-body">
       <table class="table table-striped">
@@ -96,6 +118,23 @@
 
 <script>
   $(document).ready(function() {
+    $('#search_subject').on('keyup', function() {
+      let value = $(this).val().toLowerCase();
+      $('.subject-item').each(function() {
+        $(this).toggle($(this).text().toLowerCase().includes(value));
+      });
+    });
+
+    $('.subject-item').on('click', function(e) {
+      e.preventDefault();
+      let selectedText = $(this).text();
+      let selectedValue = $(this).data('value');
+      $('#subjectDropdown').text(selectedText);
+      $('#base_subject').val(selectedValue).trigger('change');
+    });
+  });
+
+  $(document).ready(function() {
     // Function to check if all dropdowns are selected
     function checkDropdowns() {
       let categorySelected = $('#category').val() !== "";
@@ -114,38 +153,6 @@
   
     // Initial state of the "Add" button
     checkDropdowns();
-  
-    // When category is selected
-    $('#category').change(function() {
-      let category = $(this).val();
-  
-      // Reset the base subject, board, subject, and tier dropdowns when a new category is selected
-      $('#base_subject').empty().append('<option value="" selected>Select a Subject</option>').prop('disabled', true);
-      $('#board').empty().append('<option value="" disabled selected>Select a Board</option>').prop('disabled', true);
-      $('#subject').empty().append('<option value="" disabled selected>Select Your Specific Subject</option>').prop('disabled', true);
-      $('#tier').empty().append('<option value="" disabled selected>Select a Tier</option>').prop('disabled', true);
-  
-      if (category) {
-        // Enable and populate the Base Subject dropdown
-        $.getJSON('{{ url_for("main.get_base_subjects") }}', { category: category }, function(base_subjects) {
-          if (base_subjects.length === 1) {
-            $('#base_subject').append('<option selected value="' + base_subjects[0] + '">' + base_subjects[0] + '</option>');
-            // Hide the specific subject and tier dropdowns if only one base subject
-            $('#specific_subject_drop').hide();
-            $('#tier_drop').hide();
-          } else {
-            base_subjects.forEach(function(base_subject) {
-              $('#base_subject').append('<option value="' + base_subject + '">' + base_subject + '</option>');
-            });
-          }
-          $('#base_subject').trigger('change'); // Automatically trigger change if only one base subject
-          $('#base_subject').prop('disabled', false);
-          checkDropdowns(); // Check dropdowns after populating
-        });
-      } else {
-        checkDropdowns(); // Check dropdowns if category is deselected
-      }
-    });
   
     // When base_subject is selected
     $('#base_subject').change(function() {

@@ -1,6 +1,5 @@
 from app import db
 from flask_login import UserMixin
-from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.ext.mutable import MutableList
 from sqlalchemy import JSON
 
@@ -15,17 +14,8 @@ class Users(db.Model, UserMixin):
   logged_in_counter = db.Column(db.Integer, nullable=False, default=0)
   selected_subjects = db.Column(MutableList.as_mutable(JSON), default=[])
   level = db.Column(db.String(2))
-
-  @property
-  def password(self):
-    raise AttributeError("Password is not a readable attribute.")
-  
-  @password.setter
-  def password(self, password):
-    self.password_hash = generate_password_hash(password)
-
-  def verify_password(self, password):
-    return check_password_hash(self.password_hash, password)
+  exam_start_time_am = db.Column(db.String(10))
+  exam_start_time_pm = db.Column(db.String(10))
 
   def __repr__(self):
     return '<Username %r>' %self.username

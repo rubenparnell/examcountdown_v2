@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, HiddenField, PasswordField, RadioField, BooleanField, ValidationError
+from wtforms import StringField, SubmitField, HiddenField, PasswordField, RadioField, BooleanField, ValidationError, TimeField
 from wtforms.validators import DataRequired 
 
 #Create Sign Up form:
@@ -50,4 +50,10 @@ class OldPwdResetForm(FlaskForm):
   oldPassword = PasswordField("Old Password", validators=[DataRequired()])
   password1 = PasswordField("New Password", validators=[DataRequired()])
   password2 = PasswordField("Confirm New Password", validators=[DataRequired()])
+  submit = SubmitField('Confirm')
+
+class TimeForm(FlaskForm):
+  form_type = HiddenField(default='exam_times')
+  AM_time = TimeField('AM Exams')
+  PM_time = TimeField('PM Exams')
   submit = SubmitField('Confirm')
