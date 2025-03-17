@@ -1,6 +1,30 @@
 {% extends "base.html" %}
 {% block title %}Profile{% endblock %}
 
+{% block head %}
+<style>
+  .dropdown-menu {
+    max-height: 50vh;
+    overflow-y: scroll;
+    min-width: fit-content;
+    z-index: 1040;
+  }
+
+  .form-select {
+    text-wrap: auto;
+  }
+
+  #subjectDropdown {
+    text-align: left;
+  }
+
+  #subjectDropdown::after {
+    display: none !important;
+  }
+</style>
+
+{% endblock %}
+
 {% block content %}
 <div class="container">
   <h2><strong>Exam Options</strong></h2>
@@ -42,43 +66,45 @@
       <form method="POST">
         <div class="row mb-3">
           <input type="hidden" name="form_id" value="add-subject-form">
-          <div class="col">  
-            <label for="base_subject" class="form-label">Subject</label>
-            <div class="dropdown">
-              <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" id="subjectDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                Select a Subject
-              </button>
-              <ul class="dropdown-menu w-100" aria-labelledby="subjectDropdown">
-                <li class="px-3">
-                  <input type="text" id="search_subject" class="form-control" placeholder="Search for a subject">
-                </li>
-                {% for category, subjects in categories.items() %}
-                  <li><span class="dropdown-header pb-0 bold large">{{ category }}</span></li>
-                  {% for subject in subjects %}
-                    <li><a class="dropdown-item subject-item ps-4" href="#" data-value="{{ subject }}">{{ subject }}</a></li>
+          <div class="row row-cols-2 row-cols-md-4">
+            <div class="col mb-2 px-2">  
+              <label for="base_subject" class="form-label">Subject</label>
+              <div class="dropdown">
+                <button class="form-select dropdown-toggle w-100 pe-4" type="button" id="subjectDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                  Select a Subject
+                </button>
+                <ul class="dropdown-menu w-100" aria-labelledby="subjectDropdown">
+                  <li class="px-3">
+                    <input type="text" id="search_subject" class="form-control" placeholder="Search for a subject">
+                  </li>
+                  {% for category, subjects in categories.items() %}
+                    <li><span class="dropdown-header pb-0 bold large">{{ category }}</span></li>
+                    {% for subject in subjects %}
+                      <li><a class="dropdown-item subject-item ps-4" href="#" data-value="{{ subject }}">{{ subject }}</a></li>
+                    {% endfor %}
                   {% endfor %}
-                {% endfor %}
-              </ul>
+                </ul>
+              </div>
+              <input type="hidden" id="base_subject" name="base_subject">
             </div>
-            <input type="hidden" id="base_subject" name="base_subject">
-          </div>
-          <div class="col">
-            <label for="board" class="form-label">Board</label>
-            <select id="board" name="board" class="form-select" disabled>
-              <option value="" disabled selected>Select a Board</option>
-            </select>
-          </div>
-          <div class="col hidden" id="specific_subject_drop">
-            <label for="subject" class="form-label">Specific Subject</label>
-            <select id="subject" name="subject" class="form-select" disabled>
-              <option value="" disabled selected>Select Your Specific Subject</option>
-            </select>
-          </div>
-          <div class="col hidden" id="tier_drop">
-            <label for="tier" class="form-label">Tier</label>
-            <select id="tier" name="tier" class="form-select" disabled>
-              <option value="" disabled selected>Select Tier</option>
-            </select>
+            <div class="col mb-2 px-2">
+              <label for="board" class="form-label">Board</label>
+              <select id="board" name="board" class="form-select" disabled>
+                <option value="" disabled selected>Select a Board</option>
+              </select>
+            </div>
+            <div class="col mb-2 px-2 hidden" id="specific_subject_drop">
+              <label for="subject" class="form-label">Specific Subject</label>
+              <select id="subject" name="subject" class="form-select" disabled>
+                <option value="" disabled selected>Select Your Specific Subject</option>
+              </select>
+            </div>
+            <div class="col mb-2 px-2 hidden" id="tier_drop">
+              <label for="tier" class="form-label">Tier</label>
+              <select id="tier" name="tier" class="form-select" disabled>
+                <option value="" disabled selected>Select Tier</option>
+              </select>
+            </div>
           </div>
         </div>
         <button id="addButton" type="submit" class="btn btn-primary" disabled>Add</button>
