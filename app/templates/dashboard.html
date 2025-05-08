@@ -16,7 +16,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
 
-        {% if current_user.selected_subjects | length > 0 %}
+        {% if current_user.selected_subjects | length > 0 and next_exam_data %}
         <div class="card mb-4">
             <h4 class="card-header">Time to your next exam</h4>
             <div class="card-body text-center">
@@ -27,7 +27,20 @@
                 <h5><strong>Duration:</strong> {{ next_exam_data.duration }}</h5>
             </div>
         </div>
+        {% else %}
+        
+        <div class="card mb-4">
+            <h4 class="card-header">Time to your next exam</h4>
+            <div class="card-body text-center">
+                {% if current_user.selected_subjects | length == 0 %}
+                <h1>You have no exams selected</h1>
+                {% else %}
+                <h1>You have no upcoming exams</h1>
+                {% endif %}
+            </div>
+        </div>
         {% endif %}
+        
     </div>
     <div class="container-md">
         <div class="card mb-4">
