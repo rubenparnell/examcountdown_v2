@@ -154,6 +154,16 @@
           <li class="nav-item">
             <a class="nav-link" id="a-level-tab" href="{{url_for('main.exams', level='3b')}}">A Level</a>
           </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="timetable-tab" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Full Timetables
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="timetable-tab">
+              <li><a class="dropdown-item" href="{{url_for("main.all_timetable", level="2")}}">GCSE</a></li>
+              <li><a class="dropdown-item" href="{{url_for("main.all_timetable", level="3a")}}">AS Level</a></li>
+              <li><a class="dropdown-item" href="{{url_for("main.all_timetable", level="3b")}}">A Level</a></li>
+            </ul>
+          </li>
           {% endif %}
         </ul>
 

@@ -373,6 +373,17 @@ def delete_user(id):
     flash("Sorry, you can't delete that user!", "danger")
     return redirect(url_for('main.profile_options'))
 
+@main.route("/all_timetable/<level>")
+def all_timetable(level):
+  all_exams = Exams.query.filter(and_(Exams.time.isnot(None), 
+                                          Exams.time != '', 
+                                          Exams.level == level,
+                                          )).order_by(Exams.date, Exams.subject, Exams.board).all()
+  
+  level = "GCSE" if level == "2" else "A Level" if level == "3a" else "AS Level"
+
+  return render_template('timetable.html', exams=all_exams, level=level)
+
 
 @main.route("/timetable")
 @login_required

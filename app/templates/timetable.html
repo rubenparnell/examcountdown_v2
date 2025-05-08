@@ -7,7 +7,11 @@
 
 {% block content %}
     <div class="container">
+        {% if not current_user.is_authenticated %}
+        <h2><strong>All {{level}} Exams Timetable</strong></h2>
+        {% else %}
         <h2><strong>Personal Timetable</strong></h2>
+        {% endif %}
         <br>
     </div>
     <div class="container-md">
