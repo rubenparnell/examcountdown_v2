@@ -1,6 +1,17 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
 
+{% block head %}
+<style>
+    .centre-list ul {
+        list-style-position: inside;  /* Keeps bullets next to text */
+        padding-left: 20px;              /* Remove default left indent */
+        margin: 0 auto;               /* Auto margins to centre */
+        display: inline-block;        /* Keeps list tight to its content */
+    }
+</style>
+{% endblock %}
+
 {% block content %}
     <div class="container">
         <h2><strong>Home</strong></h2>
@@ -29,36 +40,48 @@
             <div class="col p-1">
                 <div class="card mb-4">
                     <h4 class="card-header"><strong>Time to next GCSE exam</strong></h4>
-                    <div class="card-body text-center">
-                        <h1><strong data-exam-datetime="{{ next_gcse_exam.date | format_datetime_countdown }}"><div class="countdown"></div></strong></h1>
-                        <h5><strong>Date:</strong> {{ next_gcse_exam.date | format_datetime }} ({{ next_gcse_exam.time }})</h5>
-                        <h5><strong>Subject:</strong> {{ next_gcse_exam.subject }}</h5>
-                        <h5><strong>Title:</strong> {{ next_gcse_exam.title }}</h5>
-                        <h5><strong>Duration:</strong> {{ next_gcse_exam.duration }}</h5>
+                    <div class="card-body">
+                        <h1 class="text-center"><strong data-exam-datetime="{{ next_gcse_exam.date | format_datetime_countdown }}"><div class="countdown"></div></strong></h1>
+                        <h5 class="text-center"><strong>Date:</strong> {{ next_gcse_exam.date | format_datetime }} ({{ next_gcse_exam.time }})</h5>
+                        <h5 class="text-center"><strong>Subjects:</strong><br></h5>
+                        {% for subject in next_gcse_exam.subjects %}
+                            <h6 class="m-0"><b>{{subject.subject}}:</b></h6>
+                            <div class="centre-list">
+                                <ul>{% for exam in subject.exams %}<li><span style="color: var(--bs-primary);">{{exam.board}} {{exam.subject}}</span> {{exam.title}}: {{exam.duration.replace(' ', '&nbsp;') | safe}}{% if not loop.last %}, <br>{% endif %}</li>{% endfor %}</ul>
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
             <div class="col p-1">
                 <div class="card mb-4">
                     <h4 class="card-header"><strong>Time to next AS Level exam</strong></h4>
-                    <div class="card-body text-center">
-                        <h1><strong data-exam-datetime="{{ next_as_level_exam.date | format_datetime_countdown }}"><div class="countdown"></div></strong></h1>
-                        <h5><strong>Date:</strong> {{ next_as_level_exam.date | format_datetime }} ({{ next_as_level_exam.time }})</h5>
-                        <h5><strong>Subject:</strong> {{ next_as_level_exam.subject }}</h5>
-                        <h5><strong>Title:</strong> {{ next_as_level_exam.title }}</h5>
-                        <h5><strong>Duration:</strong> {{ next_as_level_exam.duration }}</h5>
+                    <div class="card-body">
+                        <h1 class="text-center"><strong data-exam-datetime="{{ next_as_exam.date | format_datetime_countdown }}"><div class="countdown"></div></strong></h1>
+                        <h5 class="text-center"><strong>Date:</strong> {{ next_as_exam.date | format_datetime }} ({{ next_as_exam.time }})</h5>
+                        <h5 class="text-center"><strong>Subjects:</strong><br></h5>
+                        {% for subject in next_as_exam.subjects %}
+                            <h6 class="m-0"><b>{{subject.subject}}:</b></h6>
+                            <div class="centre-list">
+                                <ul>{% for exam in subject.exams %}<li><span style="color: var(--bs-primary);">{{exam.board}} {{exam.subject}}</span> {{exam.title}}: {{exam.duration.replace(' ', '&nbsp;') | safe}}{% if not loop.last %}, <br>{% endif %}</li>{% endfor %}</ul>
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
             <div class="col p-1">
                 <div class="card mb-4">
                     <h4 class="card-header"><strong>Time to next A Level exam</strong></h4>
-                    <div class="card-body text-center">
-                        <h1><strong data-exam-datetime="{{ next_a_level_exam.date | format_datetime_countdown }}"><div class="countdown"></div></strong></h1>
-                        <h5><strong>Date:</strong> {{ next_a_level_exam.date | format_datetime }} ({{ next_a_level_exam.time }})</h5>
-                        <h5><strong>Subject:</strong> {{ next_a_level_exam.subject }}</h5>
-                        <h5><strong>Title:</strong> {{ next_a_level_exam.title }}</h5>
-                        <h5><strong>Duration:</strong> {{ next_a_level_exam.duration }}</h5>
+                    <div class="card-body">
+                        <h1 class="text-center"><strong data-exam-datetime="{{ next_a_exam.date | format_datetime_countdown }}"><div class="countdown"></div></strong></h1>
+                        <h5 class="text-center"><strong>Date:</strong> {{ next_a_exam.date | format_datetime }} ({{ next_a_exam.time }})</h5>
+                        <h5 class="text-center"><strong>Subjects:</strong><br></h5>
+                        {% for subject in next_a_exam.subjects %}
+                            <h6 class="m-0"><b>{{subject.subject}}:</b></h6>
+                            <div class="centre-list">
+                                <ul>{% for exam in subject.exams %}<li><span style="color: var(--bs-primary);">{{exam.board}} {{exam.subject}}</span> {{exam.title}}: {{exam.duration.replace(' ', '&nbsp;') | safe}}{% if not loop.last %}, <br>{% endif %}</li>{% endfor %}</ul>
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>

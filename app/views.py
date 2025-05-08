@@ -4,7 +4,7 @@ from flask_login import login_required, current_user, login_user, logout_user
 from flask_mail import Message
 from itsdangerous import SignatureExpired
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime
+from datetime import datetime, timedelta
 from sqlalchemy import and_
 from uuid import uuid4
 import requests
@@ -12,6 +12,7 @@ from app import db, mail, s
 from app.forms import SignUpForm, LoginForm, UpdateForm, ConfirmPwdForm, EmailForm, PwdResetForm, QualForm, OldPwdResetForm, TimeForm
 from app.models import Users, Exams
 import os 
+from collections import defaultdict
 
 main = Blueprint('main', __name__)
 
@@ -70,29 +71,90 @@ def home():
     am_start_time = "09:00"
     pm_start_time = "13:30"
 
-    gcse_exams = Exams.query.filter(and_(Exams.time.isnot(None), 
-                                         Exams.time != '', 
-                                         Exams.level == "2"
-                                         )).order_by(Exams.date).all()
-    as_exams = Exams.query.filter(and_(Exams.time.isnot(None), 
-                                         Exams.time != '', 
-                                         Exams.level == "3a"
-                                         )).order_by(Exams.date).all()
-    a_exams = Exams.query.filter(and_(Exams.time.isnot(None), 
-                                         Exams.time != '', 
-                                         Exams.level == "3b"
-                                         )).order_by(Exams.date).all()
+    # Get the current date and time
+    now = datetime.now()
 
-    next_gcse_exam = gcse_exams[0]
-    next_as_level_exam = as_exams[0]
-    next_a_level_exam = a_exams[0]
-    return render_template("home.html", 
-                           next_gcse_exam=next_gcse_exam, 
-                           next_as_level_exam=next_as_level_exam,
-                           next_a_level_exam=next_a_level_exam,
-                           am_start_time=am_start_time,
-                           pm_start_time=pm_start_time,
-                           )
+    # Helper function to group exams by (date, time)
+    def group_exams_by_time(exams):
+        grouped = defaultdict(list)
+
+        # Group exams by (date, time)
+        for exam in exams:
+            key = (exam.date, exam.time)
+            grouped[key].append(exam)
+
+        if not grouped:
+            return None
+
+        # Get the first upcoming (date, time) group
+        first_key = sorted(grouped.items())[0][0]
+        exams_in_group = grouped[first_key]
+
+        # Group exams by subject title
+        subject_groups = defaultdict(list)
+        for exam in exams_in_group:
+            subject_groups[exam.base_subject].append(exam)
+
+        # Format as a list of {subject: ..., exams: [...]}
+        grouped_exams = sorted(
+            [
+                {
+                    'subject': subject,
+                    'exams': exams
+                }
+                for subject, exams in subject_groups.items()
+            ],
+            key=lambda x: x['subject'].lower()  # case-insensitive sorting
+        )
+
+
+        return {
+            'date': first_key[0],
+            'time': first_key[1],
+            'subjects': grouped_exams
+        }
+
+    # Query exams
+    gcse_exams = Exams.query.filter(
+      and_(
+        Exams.time.isnot(None),
+        Exams.time != '',
+        Exams.level == "2",
+        Exams.date > now
+      )
+    ).order_by(Exams.date, Exams.time).all()
+
+    as_exams = Exams.query.filter(
+      and_(
+        Exams.time.isnot(None),
+        Exams.time != '',
+        Exams.level == "3a",
+        Exams.date > now
+      )
+    ).order_by(Exams.date, Exams.time).all()
+
+    a_exams = Exams.query.filter(
+      and_(
+        Exams.time.isnot(None),
+        Exams.time != '',
+        Exams.level == "3b",
+        Exams.date > now
+      )
+    ).order_by(Exams.date, Exams.time).all()
+
+    # Group exams occurring at the same date and time
+    next_gcse_exam_group = group_exams_by_time(gcse_exams)
+    next_as_exam_group = group_exams_by_time(as_exams)
+    next_a_exam_group = group_exams_by_time(a_exams)
+
+    print(next_gcse_exam_group)
+
+    return render_template("home.html",
+                          next_gcse_exam=next_gcse_exam_group,
+                          next_as_exam=next_as_exam_group,
+                          next_a_exam=next_a_exam_group,
+                          am_start_time=am_start_time,
+                          pm_start_time=pm_start_time)
 
 @main.route("/login", methods=['GET', 'POST'])
 def login():

@@ -37,4 +37,4 @@ class Exams(db.Model):
   level = db.Column(db.String(2))
 
   def __repr__(self):
-    return f'<Exam {self.title}>'
+    return f'<Exam {self.subject} {self.examination_code} {self.date}>'
