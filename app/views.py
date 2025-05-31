@@ -147,8 +147,6 @@ def home():
     next_as_exam_group = group_exams_by_time(as_exams)
     next_a_exam_group = group_exams_by_time(a_exams)
 
-    print(next_gcse_exam_group)
-
     return render_template("home.html",
                           next_gcse_exam=next_gcse_exam_group,
                           next_as_exam=next_as_exam_group,
