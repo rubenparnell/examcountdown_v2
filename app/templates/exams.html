@@ -18,6 +18,10 @@
             Click on a subject to see all exams for that subject.<br>
             You can choose your subjects in your <a href="{{url_for("main.exam_options")}}">exam options page</a>.
         </p>
+        {% if exams_by_category.items() | length == 0 %}
+        <br>
+        <h2>You have no upcoming exams.</h2>
+        {% endif %}
       {% else %}
         <p>
             This page shows the next exam for each subject.<br>

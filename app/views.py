@@ -4,8 +4,8 @@ from flask_login import login_required, current_user, login_user, logout_user
 from flask_mail import Message
 from itsdangerous import SignatureExpired
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime, timedelta
-from sqlalchemy import and_
+from datetime import datetime
+from sqlalchemy import and_, or_
 from uuid import uuid4
 import requests
 from app import db, mail, s
@@ -440,18 +440,26 @@ def showExams(exams):
 
   return ordered_exams_by_category
 
-
 @main.route("/exams/<string:level>")
 def exams(level):
   if current_user.is_authenticated:
     # Fetch all exams from the database
-    subjects = []
-    for subject in current_user.selected_subjects:
-      subjects.append(subject['subject'])
+    filters = []
+    for subj in current_user.selected_subjects:
+        if subj['tier'] == "-":
+            # Match exams where tier is NULL or empty string
+            tier_filter = or_(Exams.tier.is_(None), Exams.tier == '')
+        else:
+            tier_filter = Exams.tier == subj['tier']
 
-    exams = Exams.query.filter(and_(Exams.subject.in_(subjects),
-                                    Exams.level == level,
-                                    )).all()
+        filters.append(and_(
+            Exams.subject == subj['subject'],
+            Exams.board == subj['board'],
+            tier_filter,
+            Exams.level == level
+        ))
+
+    exams = Exams.query.filter(or_(*filters)).all()
 
   else:
     exams = Exams.query.filter_by(level=level).all()
