@@ -3,5 +3,4 @@ __pycache__
 ruben_exam_main.pem
 config.py
 import_csv.py
-migrations
 .env
