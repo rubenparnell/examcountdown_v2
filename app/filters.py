@@ -1,6 +1,10 @@
 from flask_login import current_user
+from jinja2.runtime import Undefined
 
 def format_datetime(value):
+    if isinstance(value, Undefined):
+        return ""
+    
     if current_user.is_authenticated:
         if value.strftime('%H:%M') == "09:00":
             start_time = current_user.exam_start_time_am or "09:00"
@@ -12,7 +16,11 @@ def format_datetime(value):
     
     return value.strftime('%d/%m/%y %H:%M')
 
+
 def format_datetime_countdown(value):
+    if isinstance(value, Undefined):
+        return ""
+    
     if current_user.is_authenticated:
         if value.strftime('%H:%M') == "09:00":
             start_time = current_user.exam_start_time_am or "09:00"
