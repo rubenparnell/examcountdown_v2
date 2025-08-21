@@ -22,7 +22,12 @@ services:
 
       SQLALCHEMY_DATABASE_URI: ${SQLALCHEMY_DATABASE_URI}
       SQLALCHEMY_TRACK_MODIFICATIONS: ${SQLALCHEMY_TRACK_MODIFICATIONS}
-    command: gunicorn run:app -w 4 -b 0.0.0.0:5000
+    command: >
+      gunicorn run:app
+        -w ${GUNICORN_WORKERS:-2}
+        -b 0.0.0.0:5000
+        --max-requests 500
+        --max-requests-jitter 50
     deploy:
       restart_policy:
         condition: on-failure
