@@ -3,6 +3,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        MYEXAMSDB_TOKEN: ${MYEXAMSDB_TOKEN}
     ports:
       - 5001:5000
     environment:
@@ -22,6 +24,8 @@ services:
 
       SQLALCHEMY_DATABASE_URI: ${SQLALCHEMY_DATABASE_URI}
       SQLALCHEMY_TRACK_MODIFICATIONS: ${SQLALCHEMY_TRACK_MODIFICATIONS}
+
+      MYEXAMSDB_TOKEN: ${MYEXAMSDB_TOKEN}
     command: >
       gunicorn run:app
         -w ${GUNICORN_WORKERS:-2}
