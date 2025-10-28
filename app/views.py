@@ -10,11 +10,43 @@ from uuid import uuid4
 import requests
 from app import db, mail, s
 from app.forms import SignUpForm, LoginForm, UpdateForm, ConfirmPwdForm, EmailForm, PwdResetForm, QualForm, OldPwdResetForm, TimeForm
-from app.models import Users, Exams
+from app.models import Users, Exams, UserSubjects
 import os 
 from collections import defaultdict
 
 main = Blueprint('main', __name__)
+
+def get_shown_exams():
+  shown_exams = []
+  selected_subjects = current_user.subjects
+  for subj in selected_subjects:
+    board = subj.board
+    subject = subj.subject
+    base_subject = subj.base_subject
+    tier = subj.tier
+
+    current_exams = (
+        db.session.query(Exams)
+        .filter(
+          and_(
+            Exams.time.isnot(None),
+            Exams.time != '',
+            Exams.level == current_user.level,
+            Exams.base_subject == base_subject,
+            Exams.board == board,
+            Exams.subject == subject,
+            Exams.tier == tier,
+          )
+        )
+        .order_by(Exams.date)
+        .all()
+      )
+
+    for current_exam in current_exams:
+      shown_exams.append(current_exam)
+  
+  return shown_exams
+
 
 @main.route("/")
 def home():
@@ -22,29 +54,9 @@ def home():
     am_start_time=current_user.exam_start_time_am or "09:00"
     pm_start_time=current_user.exam_start_time_pm or "13:30"
 
-    level = current_user.level
+    shown_exams = get_shown_exams()
 
-    shown_exams = []
-    selected_exams = current_user.selected_subjects
-    for exam in selected_exams:
-      board = exam['board']
-      subject = exam['subject']
-      base_subject = exam['base_subject']
-      tier = exam['tier'] if exam['tier'] != "-" else ""
-
-      current_exams = Exams.query.filter(and_(Exams.time.isnot(None), 
-                                              Exams.time != '', 
-                                              Exams.level == level,
-                                              Exams.base_subject == base_subject, 
-                                              Exams.board == board, 
-                                              Exams.subject == subject,
-                                              Exams.tier == tier,
-                                              )).order_by(Exams.date).all()
-
-      for current_exam in current_exams:
-        shown_exams.append(current_exam)
-
-    #Get the date of the next exam:
+    # Get the date of the next exam:
     next_exam_date = None
     next_exam = None
     for exam in shown_exams:
@@ -386,28 +398,8 @@ def all_timetable(level):
 @main.route("/timetable")
 @login_required
 def timetable():
-  level = current_user.level
-
-  shown_exams = []
-  selected_exams = current_user.selected_subjects
-  for exam in selected_exams:
-    board = exam['board']
-    subject = exam['subject']
-    base_subject = exam['base_subject']
-    tier = exam['tier'] if exam['tier'] != "-" else ""
-
-    current_exams = Exams.query.filter(and_(Exams.time.isnot(None), 
-                                            Exams.time != '', 
-                                            Exams.level == level,
-                                            Exams.base_subject == base_subject, 
-                                            Exams.board == board, 
-                                            Exams.subject == subject,
-                                            Exams.tier == tier,
-                                            )).order_by(Exams.date).all()
-
-    for current_exam in current_exams:
-      shown_exams.append(current_exam)
-
+  shown_exams = get_shown_exams()
+  
   return render_template('timetable.html', exams=shown_exams)
 
 def showExams(exams):
@@ -443,19 +435,20 @@ def exams(level):
   if current_user.is_authenticated:
     # Fetch all exams from the database
     filters = []
-    for subj in current_user.selected_subjects:
-        if subj['tier'] == "-":
-            # Match exams where tier is NULL or empty string
-            tier_filter = or_(Exams.tier.is_(None), Exams.tier == '')
-        else:
-            tier_filter = Exams.tier == subj['tier']
+    selected_subjects = db.session.query(UserSubjects).filter_by(user_id=current_user.id).all()
+    for subj in selected_subjects:
+      if not subj.tier:
+        # Match exams where tier is NULL or empty string
+        tier_filter = or_(Exams.tier.is_(None), Exams.tier == '')
+      else:
+        tier_filter = Exams.tier == subj.tier
 
-        filters.append(and_(
-            Exams.subject == subj['subject'],
-            Exams.board == subj['board'],
-            tier_filter,
-            Exams.level == level
-        ))
+      filters.append(and_(
+        Exams.subject == subj.subject,
+        Exams.board == subj.board,
+        tier_filter,
+        Exams.level == level
+      ))
 
     exams = Exams.query.filter(or_(*filters)).all()
 
@@ -470,24 +463,7 @@ def exams(level):
 @main.route('/subject/<string:level>/<string:base_subject>')
 def show_selected_subject(level, base_subject):
   if current_user.is_authenticated:
-    shown_exams = []
-    selected_exams = current_user.selected_subjects
-    for exam in selected_exams:
-      board = exam['board']
-      subject = exam['subject']
-      tier = exam['tier'] if exam['tier'] != "-" else ""
-
-      current_exams = Exams.query.filter(and_(Exams.time.isnot(None), 
-                                              Exams.time != '', 
-                                              Exams.level == level,
-                                              Exams.base_subject == base_subject, 
-                                              Exams.board == board, 
-                                              Exams.subject == subject,
-                                              Exams.tier == tier,
-                                              )).order_by(Exams.date).all()
-
-      for current_exam in current_exams:
-        shown_exams.append(current_exam)
+    shown_exams = get_shown_exams()
 
   else:
     # Fetch all exams for the selected base_subject
@@ -582,7 +558,8 @@ def exam_options():
     if qualForm.validate_on_submit():
       if current_user.level != qualForm.Qualification.data: # if changed
         current_user.level = qualForm.Qualification.data
-        current_user.selected_subjects = []
+        # Delete all selected subjects
+        current_user.subjects.clear()
 
         # Save the changes to the database
         db.session.commit()
@@ -606,22 +583,21 @@ def exam_options():
       board = request.form.get('board')
       subject = request.form.get('subject')
       tier = request.form.get('tier')
-
-      # Create a dictionary representing the exam selection
-      exam_selection = {
-          'id': str(uuid4()),
-          'base_subject': base_subject,
-          'board': board,
-          'subject': subject,
-          'tier': tier,
-          'date_added': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-      }
+      if tier == "-":
+        tier = None
 
       # Append this selection to the user's selected_exams list
-      if current_user.selected_subjects is None:
-          current_user.selected_subjects = []
-      
-      current_user.selected_subjects.append(exam_selection)
+      new_subject = UserSubjects(
+        id=str(uuid4()),
+        user_id=current_user.id,
+        base_subject=base_subject,
+        subject=subject,
+        tier=tier,
+        board=board,
+        date_added=datetime.now()
+      )
+
+      current_user.subjects.append(new_subject)
       
       # Save the changes to the database
       db.session.commit()
@@ -630,7 +606,12 @@ def exam_options():
 
       return redirect(url_for('main.exam_options'))
 
-  unique_categories = Exams.query.with_entities(Exams.category, Exams.base_subject).filter_by(level=current_user.level).distinct().all()
+  unique_categories = (
+    Exams.query.with_entities(Exams.category, Exams.base_subject)
+    .filter_by(level=current_user.level)
+    .distinct()
+    .all()
+  )
 
   categories = {}
   for category, subject in unique_categories:
@@ -638,16 +619,16 @@ def exam_options():
       categories[category] = []
     categories[category].append(subject)
 
-
   # Render the page with the current user's selected exams
-  return render_template('exam_options.html', 
-                          selected_subjects=current_user.selected_subjects,
-                          categories=categories,
-                          qualForm=qualForm,
-                          timeForm=timeForm,
-                          am_start_time=current_user.exam_start_time_am or "09:00",
-                          pm_start_time=current_user.exam_start_time_pm or "13:30",
-                          )
+  return render_template(
+    'exam_options.html', 
+    selected_subjects=current_user.subjects,
+    categories=categories,
+    qualForm=qualForm,
+    timeForm=timeForm,
+    am_start_time=current_user.exam_start_time_am or "09:00",
+    pm_start_time=current_user.exam_start_time_pm or "13:30",
+  )
 
 @main.route('/get_base_subjects', methods=['GET'])
 def get_base_subjects():
@@ -695,9 +676,19 @@ def check_subject_tier():
   board = request.args.get('board')
   subject = request.args.get('subject')
 
-  exam_tiers = Exams.query.with_entities(Exams.tier).filter_by(level=current_user.level, base_subject=base_subject, board=board, subject=subject).all()
+  exam_tiers = (
+    Exams.query.with_entities(Exams.tier)
+    .filter_by(
+      level=current_user.level, 
+      base_subject=base_subject, 
+      board=board, 
+      subject=subject
+    )
+    .all()
+  )
+  
   try:
-    has_tier = True if exam_tiers[0][0] != '' else False
+    has_tier = True if exam_tiers[0][0] != None else False
   except IndexError:
     has_tier = False
 
@@ -708,13 +699,8 @@ def delete_subject():
   subject_id = request.form.get('subject_id')
 
   if current_user.is_authenticated:
-    selected_subjects = current_user.selected_subjects
-    
-    # Filter out the subject to delete
-    selected_subjects = [subject for subject in selected_subjects if subject.get('id') != subject_id]
-    
-    # Update the user's selected subjects
-    current_user.selected_subjects = selected_subjects
+    subject_to_delete = UserSubjects.query.filter_by(id=subject_id).first()
+    current_user.subjects.remove(subject_to_delete)
     db.session.commit()
     
     flash('Subject successfully deleted.', 'success')

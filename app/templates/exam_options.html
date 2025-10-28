@@ -127,7 +127,7 @@
           {% for subject in selected_subjects %}
             <tr>
               <td>{{ subject.board }}</td>
-              <td>{{ subject.subject }} {% if subject.tier != '-'%}({{ subject.tier }}){% endif %}</td>  
+              <td>{{ subject.subject }} {% if subject.tier %}({{ subject.tier }}){% endif %}</td>  
               <td>
                 <form method="POST" action="{{ url_for('main.delete_subject', subject_id=subject.id) }}">
                   <input type="hidden" name="subject_id" value="{{ subject.id }}">

@@ -2,6 +2,8 @@ from app import db
 from flask_login import UserMixin
 from sqlalchemy.ext.mutable import MutableList
 from sqlalchemy import JSON
+from sqlalchemy.dialects.postgresql import UUID
+import uuid
 
 #DATABASE CLASSES:
 #create a model for db
@@ -16,6 +18,8 @@ class Users(db.Model, UserMixin):
   level = db.Column(db.String(2))
   exam_start_time_am = db.Column(db.String(10))
   exam_start_time_pm = db.Column(db.String(10))
+
+  subjects = db.relationship('UserSubjects', backref='user', cascade='all, delete-orphan')
 
   def __repr__(self):
     return '<Username %r>' %self.username
@@ -38,3 +42,14 @@ class Exams(db.Model):
 
   def __repr__(self):
     return f'<Exam {self.subject} {self.examination_code} {self.date}>'
+  
+
+class UserSubjects(db.Model):
+  __tablename__ = 'user_subjects'
+  id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+  user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+  base_subject = db.Column(db.String(100), primary_key=True)
+  subject = db.Column(db.String(100), primary_key=True)
+  tier = db.Column(db.String(1))
+  board = db.Column(db.String(20), nullable=False)
+  date_added = db.Column(db.DateTime, nullable=False)
