@@ -10,7 +10,8 @@ from uuid import uuid4
 import requests
 from app import db, mail, s
 from app.forms import SignUpForm, LoginForm, UpdateForm, ConfirmPwdForm, EmailForm, PwdResetForm, QualForm, OldPwdResetForm, TimeForm
-from app.models import Users, Exams, UserSubjects
+from shared_db.db import db
+from shared_db.models import Users, Exams, UserSubjects
 import os 
 from collections import defaultdict
 
@@ -127,7 +128,7 @@ def home():
         }
 
     # Query exams
-    gcse_exams = Exams.query.filter(
+    gcse_exams = db.session.query(Exams).filter(
       and_(
         Exams.time.isnot(None),
         Exams.time != '',
@@ -136,7 +137,7 @@ def home():
       )
     ).order_by(Exams.date, Exams.time).all()
 
-    as_exams = Exams.query.filter(
+    as_exams = db.session.query(Exams).filter(
       and_(
         Exams.time.isnot(None),
         Exams.time != '',
@@ -145,7 +146,7 @@ def home():
       )
     ).order_by(Exams.date, Exams.time).all()
 
-    a_exams = Exams.query.filter(
+    a_exams = db.session.query(Exams).filter(
       and_(
         Exams.time.isnot(None),
         Exams.time != '',
@@ -385,7 +386,7 @@ def delete_user(id):
 
 @main.route("/all_timetable/<level>")
 def all_timetable(level):
-  all_exams = Exams.query.filter(and_(Exams.time.isnot(None), 
+  all_exams = db.session.query(Exams).filter(and_(Exams.time.isnot(None), 
                                           Exams.time != '', 
                                           Exams.level == level,
                                           )).order_by(Exams.date, Exams.subject, Exams.board).all()
@@ -450,10 +451,10 @@ def exams(level):
         Exams.level == level
       ))
 
-    exams = Exams.query.filter(or_(*filters)).all()
+    exams = db.session.query(Exams).filter(or_(*filters)).all()
 
   else:
-    exams = Exams.query.filter_by(level=level).all()
+    exams = db.session.query(Exams).filter_by(level=level).all()
 
   ordered_exams_by_category = showExams(exams)
 
@@ -467,7 +468,7 @@ def show_selected_subject(level, base_subject):
 
   else:
     # Fetch all exams for the selected base_subject
-    shown_exams = Exams.query.filter(and_(Exams.base_subject == base_subject, 
+    shown_exams = db.session.query(Exams).filter(and_(Exams.base_subject == base_subject, 
                                           Exams.time.isnot(None), 
                                           Exams.time != '',
                                           Exams.level == level
@@ -492,8 +493,8 @@ def profile_options():
       new_email = request.form.get('email', '').strip()
 
       # Check if username/email were actually changed
-      username_taken = new_username != current_user.username and Users.query.filter_by(username=new_username).first()
-      email_taken = new_email != current_user.email and Users.query.filter_by(email=new_email).first()
+      username_taken = new_username != current_user.username and db.session.query(Users).filter_by(username=new_username).first()
+      email_taken = new_email != current_user.email and db.session.query(Users).filter_by(email=new_email).first()
 
       if not username_taken and not email_taken:
         user_to_update.username = new_username
@@ -607,7 +608,7 @@ def exam_options():
       return redirect(url_for('main.exam_options'))
 
   unique_categories = (
-    Exams.query.with_entities(Exams.category, Exams.base_subject)
+    db.session.query(Exams).with_entities(Exams.category, Exams.base_subject)
     .filter_by(level=current_user.level)
     .distinct()
     .all()
@@ -634,7 +635,7 @@ def exam_options():
 def get_base_subjects():
   category = request.args.get('category')
   # Query unique boards for the selected base_subject
-  unique_base_subjects = Exams.query.with_entities(Exams.base_subject).filter_by(level=current_user.level, category=category).distinct().all()
+  unique_base_subjects = db.session.query(Exams).with_entities(Exams.base_subject).filter_by(level=current_user.level, category=category).distinct().all()
   unique_base_subjects = [x[0] for x in unique_base_subjects]
   
   return jsonify(unique_base_subjects)
@@ -643,7 +644,7 @@ def get_base_subjects():
 def get_boards():
   base_subject = request.args.get('base_subject')
   # Query unique boards for the selected base_subject
-  unique_boards = Exams.query.with_entities(Exams.board).filter_by(level=current_user.level, base_subject=base_subject).distinct().all()
+  unique_boards = db.session.query(Exams).with_entities(Exams.board).filter_by(level=current_user.level, base_subject=base_subject).distinct().all()
   unique_boards = [x[0] for x in unique_boards]
   
   return jsonify(unique_boards)
@@ -653,7 +654,7 @@ def get_subjects():
   base_subject = request.args.get('base_subject')
   board = request.args.get('board')
   # Query unique subjects for the selected base_subject and board
-  unique_subjects = Exams.query.with_entities(Exams.subject).filter_by(level=current_user.level, base_subject=base_subject, board=board).distinct().all()
+  unique_subjects = db.session.query(Exams).with_entities(Exams.subject).filter_by(level=current_user.level, base_subject=base_subject, board=board).distinct().all()
   unique_subjects = [x[0] for x in unique_subjects]
   
   return jsonify(unique_subjects)
@@ -665,7 +666,7 @@ def get_tiers():
   subject = request.args.get('subject')
 
   # Query unique subjects for the selected base_subject and board
-  unique_tiers = Exams.query.with_entities(Exams.tier).filter_by(level=current_user.level, base_subject=base_subject, board=board, subject=subject).distinct().all()
+  unique_tiers = db.session.query(Exams).with_entities(Exams.tier).filter_by(level=current_user.level, base_subject=base_subject, board=board, subject=subject).distinct().all()
   unique_tiers = [x[0] for x in unique_tiers]
   
   return jsonify(unique_tiers)
@@ -677,7 +678,7 @@ def check_subject_tier():
   subject = request.args.get('subject')
 
   exam_tiers = (
-    Exams.query.with_entities(Exams.tier)
+    db.session.query(Exams).with_entities(Exams.tier)
     .filter_by(
       level=current_user.level, 
       base_subject=base_subject, 
@@ -699,7 +700,7 @@ def delete_subject():
   subject_id = request.form.get('subject_id')
 
   if current_user.is_authenticated:
-    subject_to_delete = UserSubjects.query.filter_by(id=subject_id).first()
+    subject_to_delete = db.session.query(UserSubjects).filter_by(id=subject_id).first()
     current_user.subjects.remove(subject_to_delete)
     db.session.commit()
     
