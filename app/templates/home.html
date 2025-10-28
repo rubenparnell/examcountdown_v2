@@ -5,7 +5,7 @@
 <style>
     .centre-list ul {
         list-style-position: inside;  /* Keeps bullets next to text */
-        padding-left: 20px;              /* Remove default left indent */
+        padding-left: 20px;           /* Remove default left indent */
         margin: 0 auto;               /* Auto margins to centre */
         display: inline-block;        /* Keeps list tight to its content */
     }
@@ -27,11 +27,11 @@
                 <div class="card mb-4">
                     <h4 class="card-header"><strong>See all exams for a specific qualification:</strong></h4>
                     <div class="card-body text-center p-2">
-                        <a href="{{url_for("main.exams", level="2")}}" class="m-1 btn btn-lg btn-primary">GCSE</a>
-                        <a href="{{url_for("main.exams", level="3a")}}" class="m-1 btn btn-lg btn-primary">AS Level</a>
-                        <a href="{{url_for("main.exams", level="3b")}}" class="m-1 btn btn-lg btn-primary">A Level</a>
+                        <a href="{{url_for('main.exams', level='2')}}" class="m-1 btn btn-lg btn-primary">GCSE</a>
+                        <a href="{{url_for('main.exams', level='3a')}}" class="m-1 btn btn-lg btn-primary">AS Level</a>
+                        <a href="{{url_for('main.exams', level='3b')}}" class="m-1 btn btn-lg btn-primary">A Level</a>
                         <br><br>
-                        <p class="m-0">To see your specific exams, <a href="{{url_for("main.login")}}">log in</a>, or <a href="{{url_for("main.signup")}}">sign up</a>.</p>
+                        <p class="m-0">To see your specific exams, <a href="{{url_for('main.login')}}">log in</a>, or <a href="{{url_for('main.signup')}}">sign up</a>.</p>
                     </div>
                 </div>
             </div>
@@ -41,6 +41,7 @@
                 <div class="card mb-4">
                     <h4 class="card-header"><strong>Time to next GCSE exam</strong></h4>
                     <div class="card-body">
+                        {% if next_gcse_exam %}
                         <h1 class="text-center"><strong data-exam-datetime="{{ next_gcse_exam.date | format_datetime_countdown }}"><div class="countdown"></div></strong></h1>
                         <h5 class="text-center"><strong>Date:</strong> {{ next_gcse_exam.date | format_datetime }} ({{ next_gcse_exam.time }})</h5>
                         <h5 class="text-center"><strong>Subjects:</strong><br></h5>
@@ -50,6 +51,9 @@
                                 <ul>{% for exam in subject.exams %}<li><span style="color: var(--bs-primary);">{{exam.board}} {{exam.subject}}</span> {{exam.title}}: {{exam.duration.replace(' ', '&nbsp;') | safe}}{% if not loop.last %}, <br>{% endif %}</li>{% endfor %}</ul>
                             </div>
                         {% endfor %}
+                        {% else %}
+                        <h1 class="text-center"><strong>No more exams!</strong></h1>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -57,6 +61,7 @@
                 <div class="card mb-4">
                     <h4 class="card-header"><strong>Time to next AS Level exam</strong></h4>
                     <div class="card-body">
+                        {% if next_as_exam %}
                         <h1 class="text-center"><strong data-exam-datetime="{{ next_as_exam.date | format_datetime_countdown }}"><div class="countdown"></div></strong></h1>
                         <h5 class="text-center"><strong>Date:</strong> {{ next_as_exam.date | format_datetime }} ({{ next_as_exam.time }})</h5>
                         <h5 class="text-center"><strong>Subjects:</strong><br></h5>
@@ -66,6 +71,9 @@
                                 <ul>{% for exam in subject.exams %}<li><span style="color: var(--bs-primary);">{{exam.board}} {{exam.subject}}</span> {{exam.title}}: {{exam.duration.replace(' ', '&nbsp;') | safe}}{% if not loop.last %}, <br>{% endif %}</li>{% endfor %}</ul>
                             </div>
                         {% endfor %}
+                        {% else %}
+                        <h1 class="text-center"><strong>No more exams!</strong></h1>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -73,6 +81,7 @@
                 <div class="card mb-4">
                     <h4 class="card-header"><strong>Time to next A Level exam</strong></h4>
                     <div class="card-body">
+                        {% if next_a_exam %}
                         <h1 class="text-center"><strong data-exam-datetime="{{ next_a_exam.date | format_datetime_countdown }}"><div class="countdown"></div></strong></h1>
                         <h5 class="text-center"><strong>Date:</strong> {{ next_a_exam.date | format_datetime }} ({{ next_a_exam.time }})</h5>
                         <h5 class="text-center"><strong>Subjects:</strong><br></h5>
@@ -82,6 +91,9 @@
                                 <ul>{% for exam in subject.exams %}<li><span style="color: var(--bs-primary);">{{exam.board}} {{exam.subject}}</span> {{exam.title}}: {{exam.duration.replace(' ', '&nbsp;') | safe}}{% if not loop.last %}, <br>{% endif %}</li>{% endfor %}</ul>
                             </div>
                         {% endfor %}
+                        {% else %}
+                        <h1 class="text-center"><strong>No more exams!</strong></h1>
+                        {% endif %}
                     </div>
                 </div>
             </div>
