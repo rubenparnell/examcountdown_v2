@@ -11,7 +11,7 @@ from collections import defaultdict
 
 from app import supabase, supabase_admin
 from shared_db.db import db
-from shared_db.models import Users, Exams, UserSubjects
+from shared_db.models import Users, UserSubjects
 from app.forms import LoginForm, SignUpForm, UpdateForm, MigrationForm, ConfirmPwdForm, OldPwdResetForm, PwdResetForm, EmailForm, QualForm, TimeForm
 from app.helpers import flash
 
@@ -321,18 +321,15 @@ def profile():
                 if not session_data.user:
                     flash("Password is incorrect. Cannot delete account.", "danger")
                     return redirect(url_for("user.profile"))
-
-                # Delete from Supabase using admin client
-                if current_user.auth_id:
-                    try:
-                        supabase_admin.auth.admin.delete_user(current_user.auth_id)
-                    except Exception as e:
-                        flash(f"Error deleting user from Supabase: {e}", "danger")
-                        return redirect(url_for("user.profile"))
-
+                
                 # Delete from local DB
                 user_to_delete = db.session.query(Users).get_or_404(current_user.id)
                 db.session.delete(user_to_delete)
+
+                # Delete from Supabase using admin client
+                if current_user.auth_id:
+                    supabase_admin.auth.admin.delete_user(current_user.auth_id)
+                
                 db.session.commit()
 
                 flash("Your account has been deleted successfully.", "success")
@@ -340,6 +337,7 @@ def profile():
                 return redirect(url_for("main.home"))
 
             except Exception as e:
+                db.session.rollback()
                 flash(f"Error deleting account: {e}", "danger")
                 return redirect(url_for("user.profile"))
 
