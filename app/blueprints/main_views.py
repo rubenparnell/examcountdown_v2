@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, url_for, redirect, request, jsonify
+from flask import Blueprint, render_template
 from flask_login import login_required, current_user
 from datetime import datetime
 from sqlalchemy import and_, or_
@@ -6,7 +6,6 @@ from app import db
 from shared_db.db import db
 from shared_db.models import Exams, UserSubjects
 from collections import defaultdict
-from app.helpers import flash
 
 main = Blueprint('main', __name__)
 
