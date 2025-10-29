@@ -140,7 +140,7 @@ def login():
                 session["pending_email"] = email
                 return redirect(url_for("user.migration"))
         else:
-            flash(Markup("User not found! Try a different username or <a href="+url_for("user.signup")+">sign up</a>."), "danger")
+            flash(Markup("User not found! Try a different email or <a href="+url_for("user.signup")+">sign up</a>."), "danger")
 
     return render_template('login.html', form=form)
 
