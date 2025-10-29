@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}User Migration{% endblock %}
+
+{% block content %}
+<div class="container text-center mt-4">
+    <h2>We've upgraded our login system.</h2>
+    <p>Please enter a new password to continue.</p>
+
+    <form id="migration-form" method="POST" action="{{ url_for('user.migration') }}">
+        {{ form.hidden_tag() }}
+        <div class="form-floating mb-3">
+            {{ form.password1(class="form-control", placeholder="password") }}
+            <label>{{ form.password1.label }}</label>
+        </div>
+        <div class="form-floating mb-3">
+            {{ form.password2(class="form-control", placeholder="password") }}
+            <label>{{ form.password2.label }}</label>
+        </div>
+
+        <button id="submit-btn" class="btn btn-primary w-100" type="submit">
+            <span id="btn-text">Submit</span>
+            <span id="btn-spinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+        </button>
+    </form>
+</div>
+
+<script>
+document.getElementById('migration-form').addEventListener('submit', function() {
+    const btn = document.getElementById('submit-btn');
+    const spinner = document.getElementById('btn-spinner');
+    const btnText = document.getElementById('btn-text');
+
+    btn.disabled = true;
+    spinner.classList.remove('d-none');
+    btnText.textContent = 'Submitting...';
+});
+</script>
+{% endblock %}

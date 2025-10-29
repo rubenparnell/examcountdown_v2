@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container text-center mt-4">
+    <h2 id="header">Confirming your account...</h2>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+    const params = new URLSearchParams(window.location.hash.substring(1));
+    const access_token = params.get("access_token");
+    const refresh_token = params.get("refresh_token");
+    const header = document.getElementById("header");
+
+    if (!access_token) {
+        header.innerHTML = "<h3>Invalid or missing confirmation token.</h3>";
+        return;
+    }
+
+    try {
+        // Send tokens to Flask to create a session
+        const response = await fetch("{{ url_for('user.set_session') }}", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ access_token, refresh_token }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            header.textContent = "Account confirmed! Logging you in...";
+            // Redirect after short delay
+            setTimeout(() => {
+                window.location.href = data.redirect || "{{ url_for('main.home') }}";
+            }, 1200);
+        } else {
+            header.innerHTML = `<h3>Error confirming account:</h3><p>${data.error || 'Unknown error'}</p>`;
+        }
+    } catch (err) {
+        console.error(err);
+        header.innerHTML = "<h3>Something went wrong while confirming your account.</h3>";
+    }
+});
+</script>
+{% endblock %}

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, redirect, url_for, current_app, abort, session, jsonify
+from flask import Blueprint, request, render_template, redirect, url_for, abort, session, jsonify
 from markupsafe import Markup
 from flask_login import login_user, logout_user, current_user, login_required
 import os
