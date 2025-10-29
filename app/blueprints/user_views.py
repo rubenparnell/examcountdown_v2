@@ -6,6 +6,8 @@ import logging
 from datetime import datetime
 import requests
 import uuid
+import csv
+from collections import defaultdict
 
 from app import supabase, supabase_admin
 from shared_db.db import db
@@ -451,88 +453,133 @@ def reset_password():
     return render_template("reset_password.html", form=form)
 
 
-@user.route('/exam_options', methods=['GET', 'POST'])
+# --- Load exam combinations from CSV ---
+exam_data = []
+with open("app/static/exam_combinations.csv", newline="", encoding="utf-8-sig") as csvfile:
+    reader = csv.DictReader(csvfile)
+    for row in reader:
+        exam_data.append(row)
+
+# Build data structures filtered by user default level
+def build_exam_structures(user_level):
+    categories = defaultdict(set)
+    boards_for_subject = defaultdict(set)
+    specific_subjects = defaultdict(lambda: defaultdict(set))
+    tiers = defaultdict(lambda: defaultdict(lambda: defaultdict(set)))
+
+    for row in exam_data:
+        if row["level"] != user_level:
+            continue  # Skip exams that don't match the user's default level
+
+        category = row["category"]
+        subject = row["subject"]
+        board = row["board"]
+        specific = row["specific_subject"]
+        tier = row["tier"]
+
+        categories[category].add(subject)
+        boards_for_subject[subject].add(board)
+        specific_subjects[subject][board].add(specific)
+        if tier:
+            tiers[subject][board][specific].add(tier)
+
+    # Convert sets → sorted lists
+    categories = {c: sorted(list(s)) for c, s in categories.items()}
+    boards_for_subject = {s: sorted(list(b)) for s, b in boards_for_subject.items()}
+    specific_subjects = {s: {b: sorted(list(ss)) for b, ss in v.items()} for s, v in specific_subjects.items()}
+    tiers = {s: {b: {ss: sorted(list(tset)) for ss, tset in bv.items()} for b, bv in v.items()} for s, v in tiers.items()}
+
+    return categories, boards_for_subject, specific_subjects, tiers
+
+
+@user.route('/subject_options', methods=['GET', 'POST'])
 @login_required
-def exam_options():
-  form_id = request.form.get('form_id')
-  qualForm = QualForm()
-  timeForm = TimeForm()
+def subject_options():
+    qualForm = QualForm()
+    timeForm = TimeForm()
 
-  if request.method == 'GET':
-    qualForm.Qualification.data = current_user.default_level
+    # Get the user's currently selected subjects
+    selected_subjects = db.session.query(UserSubjects).filter_by(user_id=current_user.id).all()
 
-  elif request.method == 'POST':
-    if qualForm.validate_on_submit():
-      if current_user.default_level != qualForm.Qualification.data: # if changed
-        current_user.default_level = qualForm.Qualification.data
-        # Delete all selected subjects
-        current_user.subjects.clear()
+    # Build filtered exam structures based on user's default_level
+    categories, boards_for_subject, specific_subjects, tiers = build_exam_structures(current_user.default_level)
 
-        # Save the changes to the database
-        db.session.commit()
+    if request.method == 'GET':
+        qualForm.Qualification.data = current_user.default_level
 
-        flash(f"Updated profile.", "success")
+    elif request.method == 'POST':
+        # Update qualification
+        if qualForm.validate_on_submit() and qualForm.Qualification.data != current_user.default_level:
+            current_user.default_level = qualForm.Qualification.data
+            current_user.subjects.clear()  # remove all selected exams
+            db.session.commit()
+            flash("Updated qualification. All selected exams cleared.", "success")
+            return redirect(url_for("user.subject_options"))
 
-        return redirect(url_for('user.exam_options'))
-    
-    elif timeForm.validate_on_submit():
-      current_user.exam_start_time_am = timeForm.AM_time.data.strftime('%H:%M')
-      current_user.exam_start_time_pm = timeForm.PM_time.data.strftime('%H:%M')
+        # Update exam times
+        elif timeForm.validate_on_submit():
+            current_user.exam_start_time_am = timeForm.AM_time.data.strftime('%H:%M')
+            current_user.exam_start_time_pm = timeForm.PM_time.data.strftime('%H:%M')
+            db.session.commit()
+            flash("Updated exam times.", "success")
+            return redirect(url_for("user.subject_options"))
 
-      db.session.commit()
+        # Add a new subject
+        elif request.form.get("form_id") == "add-subject-form":
+            board = request.form["board"]
+            base_subject = request.form["base_subject"]
+            specific_subject = request.form["specific_subject"]
+            tier = request.form.get("tier")
 
-      flash(f"Updated exam times.", "success")
+            new_subject = UserSubjects(
+                id=str(uuid.uuid4()),
+                user_id=current_user.id,
+                base_subject=base_subject,
+                subject=specific_subject,
+                tier=tier,
+                board=board,
+                date_added=datetime.now()
+            )
+            current_user.subjects.append(new_subject)
+            db.session.commit()
+            flash(f"Successfully added {specific_subject}.", "success")
+            return redirect(url_for("user.subject_options"))
 
-      return redirect(url_for('user.exam_options'))
-    
-    elif form_id == "add-subject-form":
-      base_subject = request.form.get('base_subject')
-      board = request.form.get('board')
-      subject = request.form.get('subject')
-      tier = request.form.get('tier')
-      if tier == "-":
-        tier = None
+    return render_template(
+        "subject_options.html",
+        categories=categories,
+        selected_subjects=selected_subjects,
+        qualForm=qualForm,
+        timeForm=timeForm,
+        am_start_time=current_user.exam_start_time_am or "09:00",
+        pm_start_time=current_user.exam_start_time_pm or "13:30",
+    )
 
-      # Append this selection to the user's selected_exams list
-      new_subject = UserSubjects(
-        id=str(uuid.uuid4()),
-        user_id=current_user.id,
-        base_subject=base_subject,
-        subject=subject,
-        tier=tier,
-        board=board,
-        date_added=datetime.now()
-      )
 
-      current_user.subjects.append(new_subject)
-      
-      # Save the changes to the database
-      db.session.commit()
+@user.route("/delete/<string:subject_id>", methods=["POST"])
+def delete_subject(subject_id):
+    if current_user.is_authenticated:
+        subject = db.session.query(UserSubjects).filter_by(user_id=current_user.id, id=subject_id).first()
+        if subject:
+            current_user.subjects.remove(subject)
+            db.session.commit()
+            flash("Subject successfully deleted.", "success")
+    else:
+        flash("You need to be logged in to delete a subject.", "danger")
 
-      flash(f"Added {base_subject}.", "success")
+    return redirect(url_for("user.subject_options"))
 
-      return redirect(url_for('user.exam_options'))
+@user.route("/api/boards/<subject>")
+def get_boards(subject):
+    categories, boards_for_subject, specific_subjects, tiers = build_exam_structures(current_user.default_level)
+    return {"boards": boards_for_subject.get(subject, [])}
 
-  unique_categories = (
-    db.session.query(Exams).with_entities(Exams.category, Exams.base_subject)
-    .filter_by(level=current_user.default_level)
-    .distinct()
-    .all()
-  )
+@user.route("/api/specific_subjects/<subject>/<board>")
+def get_specific(subject, board):
+    categories, boards_for_subject, specific_subjects, tiers = build_exam_structures(current_user.default_level)
+    return {"specific_subjects": specific_subjects.get(subject, {}).get(board, [])}
 
-  categories = {}
-  for category, subject in unique_categories:
-    if category not in categories:
-      categories[category] = []
-    categories[category].append(subject)
-
-  # Render the page with the current user's selected exams
-  return render_template(
-    'exam_options.html', 
-    selected_subjects=current_user.subjects,
-    categories=categories,
-    qualForm=qualForm,
-    timeForm=timeForm,
-    am_start_time=current_user.exam_start_time_am or "09:00",
-    pm_start_time=current_user.exam_start_time_pm or "13:30",
-  )
+@user.route("/api/tiers/<subject>/<board>/<specific>")
+def get_tiers(subject, board, specific):
+    categories, boards_for_subject, specific_subjects, tiers = build_exam_structures(current_user.default_level)
+    return {"tiers": tiers.get(subject, {}).get(board, {}).get(specific, [])}

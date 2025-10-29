@@ -34,6 +34,7 @@
             <div class="card-body text-center">
                 {% if current_user.subjects | length == 0 %}
                 <h1>You have no exams selected</h1>
+                <h4>Please select your subjects in the <a href="{{ url_for('user.subject_options') }}">subject options</a> page.</h4>
                 {% else %}
                 <h1>You have no upcoming exams</h1>
                 {% endif %}

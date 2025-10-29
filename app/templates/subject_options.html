@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% block title %}Profile{% endblock %}
+
+{% block head %}
+<style>
+  .dropdown-menu {
+    max-height: 50vh;
+    overflow-y: scroll;
+    min-width: fit-content;
+    z-index: 1040;
+  }
+
+  .form-select {
+    text-wrap: auto;
+  }
+
+  #subjectDropdown {
+    text-align: left;
+  }
+
+  #subjectDropdown::after {
+    display: none !important;
+  }
+</style>
+
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2><strong>Subject Options</strong></h2>
+  <br>
+
+  <div class="row row-cols-1 row-cols-md-2">
+    <div class="col p-1">
+      <div class="card mb-4">
+        <h4 class="card-header"><strong>Select Your Qualification</strong></h4>
+        <div class="card-body">
+          <p>Warning: changing this will delete all your selected subjects.</p>
+          <form method="post">
+            {{ qualForm.hidden_tag() }}
+            {{ qualForm.Qualification }}
+            <input type="submit" class="btn btn-primary">
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col p-1">
+      <div class="card mb-4">
+        <h4 class="card-header"><strong>Exam Times</strong></h4>
+        <div class="card-body">
+          <p>Select the start times for your exams</p>
+          <form method="post">
+            {{ timeForm.hidden_tag() }}
+            <p>AM Exams Start time: {{ timeForm.AM_time(value=am_start_time) }}</p>
+            <p>PM Exams Start time: {{ timeForm.PM_time(value=pm_start_time) }}</p>
+            <input type="submit" class="btn btn-primary">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <div class="card mb-4">
+      <h5 class="card-header"><strong>Add a subject</strong></h5>
+      <div class="card-body">
+        {% if not current_user.default_level %}
+        <h3>Select a level to add your subjects</h3>
+        {% else %}
+        <form method="POST" id="add-form">
+          <input type="hidden" name="form_id" value="add-subject-form">
+
+          <div class="row row-cols-2 row-cols-md-4">
+            <!-- Subject dropdown -->
+            <div class="col mb-2 px-2">
+              <label class="form-label">Subject</label>
+              <div class="dropdown">
+                <button class="form-select dropdown-toggle w-100" type="button" id="subjectDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                  Select a Subject
+                </button>
+                <ul class="dropdown-menu w-100" aria-labelledby="subjectDropdown">
+                  <li class="px-3">
+                    <input type="text" id="search_subject" class="form-control" placeholder="Search for a subject">
+                  </li>
+                  {% for category, subjects in categories.items() %}
+                    <li><span class="dropdown-header pb-0">{{ category }}</span></li>
+                    {% for subject in subjects %}
+                      <li><a class="dropdown-item subject-item ps-4" href="#" data-value="{{ subject }}">{{ subject }}</a></li>
+                    {% endfor %}
+                  {% endfor %}
+                </ul>
+              </div>
+              <input type="hidden" id="base_subject" name="base_subject">
+            </div>
+
+            <!-- Board -->
+            <div class="col mb-2 px-2">
+              <label for="board" class="form-label">Board</label>
+              <select id="board" name="board" class="form-select" disabled>
+                <option value="" disabled selected>Select a Board</option>
+              </select>
+            </div>
+
+            <!-- Specific subject -->
+            <div class="col mb-2 px-2" id="specific_subject_drop" style="display:none;">
+              <label for="specific_subject" class="form-label">Specific Subject</label>
+              <select id="specific_subject" name="specific_subject" class="form-select" disabled>
+                <option value="" disabled selected>Select Your Specific Subject</option>
+              </select>
+            </div>
+
+            <!-- Tier -->
+            <div class="col mb-2 px-2" id="tier_drop" style="display:none;">
+              <label for="tier" class="form-label">Tier</label>
+              <select id="tier" name="tier" class="form-select" disabled>
+                <option value="" disabled selected>Select a Tier</option>
+              </select>
+            </div>
+          </div>
+
+          <button id="addButton" type="submit" class="btn btn-primary mt-2" disabled>Add</button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="card">
+      <h5 class="card-header"><strong>Your Selected Subjects</strong></h5>
+      <div class="card-body">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Board</th>
+              <th>Subject</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for subject in selected_subjects %}
+              <tr>
+                <td>{{ subject.board }}</td>
+                <td>{{ subject.subject }} {% if subject.tier %}({{ subject.tier }}){% endif %}</td>
+                <td>
+                  <form method="POST" action="{{ url_for('user.delete_subject', subject_id=subject.id) }}">
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/subject_options.js') }}"></script>
+
+{% endblock %}

@@ -33,7 +33,7 @@ def create_app(config_class=Config):
     mail.init_app(app)
 
     # Set the login view
-    login_manager.login_view = '/login'
+    login_manager.login_view = 'user.login'
 
     @login_manager.user_loader
     def load_user(user_id):
