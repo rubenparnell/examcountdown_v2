@@ -2,12 +2,12 @@ from flask import Blueprint, request, render_template, redirect, url_for, abort,
 from markupsafe import Markup
 from flask_login import login_user, logout_user, current_user, login_required
 import os
-import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 import requests
 import uuid
 import csv
 from collections import defaultdict
+import random
 
 from app import supabase, supabase_admin
 from shared_db.db import db
@@ -15,7 +15,10 @@ from shared_db.models import Users, UserSubjects
 from app.forms import LoginForm, SignUpForm, UpdateForm, MigrationForm, ConfirmPwdForm, OldPwdResetForm, PwdResetForm, EmailForm, QualForm, TimeForm
 from app.helpers import flash
 
-logging.basicConfig(level=logging.DEBUG)
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
+SUPABASE_AUTH_URL = f"{SUPABASE_URL}/auth/v1"
 
 user = Blueprint('user', __name__, url_prefix='/user')
 
@@ -147,6 +150,28 @@ def login():
     return render_template('login.html', form=form)
 
 
+
+@user.route("/login/google")
+def google_login():
+    # Supabase OAuth endpoint for Google
+    redirect_uri = url_for("user.google_callback", _external=True)
+    print(redirect_uri)
+    google_url = (
+        f"{SUPABASE_URL}/auth/v1/authorize"
+        f"?provider=google"
+        f"&redirect_to={redirect_uri}"
+    )
+    return redirect(google_url)
+
+
+@user.route("/auth/callback", methods=["GET"])
+def google_callback():
+    # Supabase returns tokens in the URL fragment (after '#'), which isn't visible to Flask.
+    # Serve a small page that extracts the fragment and forwards tokens to /user/set_session.
+    # It will then redirect to the app home (or use the redirect returned by /set_session).
+    return render_template("google_callback.html")
+
+
 @user.route("/migration", methods=['GET', 'POST'])
 def migration():
     migration_form = MigrationForm()
@@ -211,33 +236,61 @@ def set_session():
     data = request.get_json()
     access_token = data.get("access_token")
     refresh_token = data.get("refresh_token")
+    expires_in = data.get("expires_in", 3600)
 
-    if not access_token:
-        return jsonify({"error": "Missing access token"}), 400
+    if not access_token or not refresh_token:
+        return jsonify({"error": "Missing tokens"}), 400
 
     try:
-        # Set the Supabase session and fetch user info
+        # 1. Set Supabase session
+        session["access_token"] = access_token
+        session["refresh_token"] = refresh_token
+        session["expires_at"] = (datetime.utcnow() + timedelta(seconds=expires_in)).timestamp()
+
         supabase.auth.set_session(access_token, refresh_token)
+
+        # 2. Get user info from Supabase
         user_response = supabase.auth.get_user()
-        supa_user = user_response.user
+        if not user_response or not user_response.user:
+            return jsonify({"error": "Failed to get user info"}), 400
 
-        if not supa_user:
-            return jsonify({"error": "Invalid Supabase session"}), 400
+        supabase_user = user_response.user
+        email = supabase_user.email
 
-        # Find local user in your database
-        local_user = db.session.query(Users).filter_by(auth_id=supa_user.id).first()
-        if not local_user:
-            return jsonify({"error": "User not found in local database"}), 404
+        # 3. Check if user exists in your local DB
+        user = db.session.query(Users).filter(Users.email.ilike(email)).first()
 
-        # Log in the user locally
-        login_user(local_user)
-        session['supabase_user'] = supa_user.id
+        # 4. Create user if they don't exist
+        if not user:
+            username = supabase_user.user_metadata.get("full_name", "").replace(" ", "") or email.split("@")[0]
+            # Check if the username is taken
+            username_taken = db.session.query(Users).filter(Users.username.ilike(username)).first()
+            while username_taken:
+                username = f"{username}_{random.randint(0, 999)}"
+                username_taken = db.session.query(Users).filter(Users.username.ilike(username)).first()
+            
+            user = Users(
+                email=email,
+                username=username.lower(),
+                profile_picture=supabase_user.user_metadata.get("avatar_url", ""),
+                auth_id=supabase_user.id,
+                date_added=datetime.now()
+            )
+            db.session.add(user)
+            db.session.commit()
 
-        flash("Email confirmed. You are now logged in.", "success")
-        return jsonify({"success": True, "redirect": url_for('main.home')})
+        # 5. Log the user in
+        login_user(user)
+
+        # 6. Return success and redirect
+        return jsonify({
+            "success": True,
+            "redirect": url_for("main.home")
+        })
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        print("Error during Supabase session setup:", e)
+        return jsonify({"error": str(e)}), 400
 
 
 @user.route("/logout")
@@ -256,6 +309,36 @@ def profile():
     update_form = UpdateForm()
     confirm_pwd_form = ConfirmPwdForm()
     old_pwd_reset_form = OldPwdResetForm()
+
+    try:
+        access_token = session.get("access_token")
+        refresh_token = session.get("refresh_token")
+        expires_at = session.get("expires_at")
+
+
+        if not access_token:
+            raise ValueError("No access token")
+
+        # Refresh if expired
+        if datetime.now().timestamp() > expires_at:
+            refreshed = supabase.auth.refresh_session(refresh_token)
+            if not refreshed.user:
+                raise ValueError("Refresh failed")
+            session["access_token"] = refreshed.session.access_token
+            session["refresh_token"] = refreshed.session.refresh_token
+            session["expires_at"] = (datetime.now().timestamp() +
+                                    refreshed.session.expires_in)
+
+        # Set the valid session before calling get_user
+        supabase.auth.set_session(session["access_token"], session["refresh_token"])
+        user_response = supabase.auth.get_user()
+        supabase_user = user_response.user
+        provider = supabase_user.app_metadata.get("provider")
+
+    except Exception as e:
+        flash("Session expired or invalid. Please log in again.", "danger")
+        logout_user()
+        return redirect(url_for("user.login"))
 
     if request.method == "POST":
         form_type = request.form.get('form_type', '')
@@ -309,19 +392,26 @@ def profile():
 
         # --- Request account deletion confirmation ---
         elif form_type == "confirm_pwd" and confirm_pwd_form.validate_on_submit():
-            password = confirm_pwd_form.password.data
+            if provider == "email":
+                password = confirm_pwd_form.password.data
 
-            try:
-                # Re-authenticate with Supabase
-                session_data = supabase.auth.sign_in_with_password({
-                    "email": current_user.email,
-                    "password": password
-                })
+                try:
+                    # Re-authenticate with Supabase
+                    session_data = supabase.auth.sign_in_with_password({
+                        "email": current_user.email,
+                        "password": password
+                    })
 
-                if not session_data.user:
-                    flash("Password is incorrect. Cannot delete account.", "danger")
+                    if not session_data.user:
+                        flash("Password is incorrect. Cannot delete account.", "danger")
+                        return redirect(url_for("user.profile"))
+                
+                except Exception as e:
+                    db.session.rollback()
+                    flash(f"Error deleting account: {e}", "danger")
                     return redirect(url_for("user.profile"))
 
+            try:
                 # Delete from DB
                 user_to_delete = db.session.query(Users).get_or_404(current_user.id)
                 db.session.delete(user_to_delete)
@@ -339,6 +429,7 @@ def profile():
                 db.session.rollback()
                 flash(f"Error deleting account: {e}", "danger")
                 return redirect(url_for("user.profile"))
+
 
         # --- Change password using Supabase ---
         elif form_type == "password_reset" and old_pwd_reset_form.validate_on_submit():
@@ -382,6 +473,7 @@ def profile():
         update_form=update_form,
         confirm_pwd_form=confirm_pwd_form,
         old_pwd_reset_form=old_pwd_reset_form,
+        provider=provider,
     )
 
 
@@ -392,7 +484,7 @@ def send_password_reset():
         form_email = form.email.data.strip().lower()
 
         # Check if the user has migrated
-        user = db.session.query(Users).filter_by(email=form_email).first()
+        user = db.session.query(Users).filter(Users.email.ilike(form_email)).first()
         if user and user.auth_id:
             try:
                 # Trigger Supabase to send reset link
@@ -432,10 +524,10 @@ def reset_password():
             return render_template("reset_password.html", form=form)
 
         # Use Supabase REST API to update password with token
-        url = f"{os.getenv('SUPABASE_URL')}/auth/v1/user"
+        url = f"{SUPABASE_URL}/auth/v1/user"
         headers = {
             "Authorization": f"Bearer {access_token}",
-            "apikey": os.getenv("SUPABASE_KEY"),
+            "apikey": SUPABASE_KEY,
             "Content-Type": "application/json"
         }
         payload = {"password": password1}

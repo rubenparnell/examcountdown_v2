@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container text-center mt-4">
+    <h2 id="header">Processing login...</h2>
+</div>
+<script>
+    (function() {
+        // If there is no fragment, show an error and optionally redirect back to login
+        if (!window.location.hash || !window.location.hash.includes('access_token')) {
+            // Maybe Supabase returned tokens in query params (rare). Try to read them:
+            const qp = new URLSearchParams(window.location.search);
+            const a = qp.get('access_token');
+            const r = qp.get('refresh_token');
+            if (a) {
+            postTokens(a, r);
+            return;
+            }
+
+            // No token — show an error and go back to login
+            alert('Missing access token. Please try again.');
+            window.location.href = '{{url_for("user.login")}}';
+            return;
+        }
+
+        const params = new URLSearchParams(window.location.hash.substring(1));
+        const access_token = params.get('access_token');
+        const refresh_token = params.get('refresh_token');
+
+        if (!access_token) {
+            alert('Missing access token. Please try again.');
+            window.location.href = '{{url_for("user.login")}}';
+            return;
+        }
+
+        postTokens(access_token, refresh_token);
+
+        function postTokens(access_token, refresh_token) {
+            fetch('{{url_for("user.set_session")}}', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'same-origin',
+                body: JSON.stringify({ access_token, refresh_token })
+            })
+            .then(res => {
+                if (!res.ok) throw res;
+                return res.json();
+            })
+            .then(data => {
+                if (data && data.redirect) {
+                    window.location.href = data.redirect;
+                } else {
+                    window.location.href = '/';
+                }
+            })
+            .catch(async (err) => {
+                let msg = 'Login failed.';
+                try {
+                    const txt = await err.text();
+                    msg = txt || msg;
+                } catch(e) {}
+                alert(msg);
+                window.location.href = '{{url_for("user.login")}}';
+            });
+        }
+    })();
+</script>
+{% endblock %}

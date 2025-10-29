@@ -109,12 +109,14 @@
                             <form method="POST" id="confirm-pwd-form">
                                 {{ confirm_pwd_form.hidden_tag() }}
                                 {{ confirm_pwd_form.form_type(id="delete-form-type") }}
-                
+                                
+                                {% if provider == "email" %}
                                 <div class="form-floating mb-3">
                                     {{ confirm_pwd_form.password(class="form-control", placeholder="pwd") }}
                                     {{ confirm_pwd_form.password.label }}
                                 </div>
-
+                                {% endif %}
+                                
                                 {{ confirm_pwd_form.submit(class="btn btn-danger", value="Confirm", id="delete-submit") }}
                             </form>
                         </div>
@@ -127,6 +129,7 @@
         </div>
     </div>
     <br>
+    {% if provider == "email" %}
     <div class="card">
         <div class="card-header">
             <h4><strong>Update Password</strong></h4>
@@ -155,6 +158,7 @@
             </form>
         </div>
     </div>
+    {% endif %}
 </div>
 <!-- jQuery (required for Select2) -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

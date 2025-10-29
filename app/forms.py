@@ -52,7 +52,7 @@ class OldPwdResetForm(FlaskForm):
 
 class ConfirmPwdForm(FlaskForm):
   form_type = HiddenField(default='confirm_pwd')
-  password = PasswordField("Confirm Password", validators=[DataRequired()])
+  password = PasswordField("Confirm Password")
   submit = SubmitField('Confirm')
 
 class EmailForm(FlaskForm):

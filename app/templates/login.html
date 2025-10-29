@@ -2,34 +2,59 @@
 {% block title %}Log In{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h2 class="bold my-4">Log In</h2>
-    <form method="POST" id="login-form">
-        {{ form.hidden_tag() }}
+<div class="d-flex justify-content-center my-5">
+    <div class="card p-2 p-sm-4 shadow-lg" style="max-width: 400px; width: 100%; border-radius: 1rem;">
+        <div class="card-body">
+            <h3 class="text-center mb-4 fw-bold">Log In</h3>
 
-        <div class="form-floating mb-3">
-            {{ form.email(class="form-control", placeholder="username or email") }}
-            <label for="floatingInput">{{ form.email.label }}</label>
-        </div>
-        <div class="form-floating mb-3">
-            {{ form.password(class="form-control", placeholder="password") }}
-            <label for="floatingInput">{{ form.password.label }}</label>
-        </div>
-        <div class="mb-3">
-            {{ form.rememberMe }}
-            {{ form.rememberMe.label }}
-        </div>
+            <form method="POST" id="login-form">
+                {{ form.hidden_tag() }}
 
-        <button type="submit" class="btn btn-primary w-100" id="submit-btn">
-            <span id="btn-text">Log In</span>
-            <span id="btn-spinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
-        </button>
-    </form>
+                <div class="form-floating mb-3">
+                    {{ form.email(class="form-control", placeholder="username or email") }}
+                    <label for="floatingInput">{{ form.email.label }}</label>
+                </div>
+                <div class="form-floating mb-3">
+                    {{ form.password(class="form-control", placeholder="password") }}
+                    <label for="floatingInput">{{ form.password.label }}</label>
+                </div>
+                <div class="mb-3 form-check">
+                    {{ form.rememberMe(class="form-check-input", id="rememberMeCheck") }}
+                    <label class="form-check-label" for="rememberMeCheck">{{ form.rememberMe.label.text }}</label>
+                </div>
 
-    <br>
-    <p>Don't have an account? <a href="{{ url_for('user.signup') }}">Sign Up</a>.</p>
-    <p>Forgot password? <a href="{{ url_for('user.send_password_reset') }}">Reset</a>.</p>
+                <button type="submit" class="btn btn-primary w-100" id="submit-btn">
+                    <span id="btn-text">Log In</span>
+                    <span id="btn-spinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+                </button>
+            </form>
+
+            <div class="text-center mt-3">
+                <a href="{{ url_for('user.google_login') }}" class="btn btn-outline-dark w-100">
+                    <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo" width="18" class="me-2">
+                    Continue with Google
+                </a>
+            </div>
+
+            <hr class="my-4">
+
+            <div class="text-center small">
+                <p>Don't have an account? <a href="{{ url_for('user.signup') }}">Sign Up</a>.</p>
+                <p>Forgot password? <a href="{{ url_for('user.send_password_reset') }}">Reset</a>.</p>
+            </div>
+        </div>
+    </div>
 </div>
+
+<style>
+@media (max-width: 576px) {
+    .card {
+        box-shadow: none !important;
+        border-radius: 0.5rem;
+        margin: 0 1rem;
+    }
+}
+</style>
 
 <script>
 document.getElementById('login-form').addEventListener('submit', function() {
