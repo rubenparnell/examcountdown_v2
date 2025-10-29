@@ -139,29 +139,29 @@
           </li>
           {% if current_user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link" id="exams-tab" href="{{url_for('main.exams', level=current_user.level)}}">Exams</a>
+            <a class="nav-link" id="exams-tab" href="{{url_for('main.exams', level=current_user.default_level)}}">Exams</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" id="timetable-tab" href="{{url_for('main.timetable')}}">Timetable</a>
           </li>
           {% else %}
           <li class="nav-item">
-            <a class="nav-link" id="gcse-tab" href="{{url_for('main.exams', level='2')}}">GCSE</a>
+            <a class="nav-link" id="gcse-tab" href="{{url_for('main.exams', level='GCSE')}}">GCSE</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="as-level-tab" href="{{url_for('main.exams', level='3a')}}">AS Level</a>
+            <a class="nav-link" id="as-level-tab" href="{{url_for('main.exams', level='AS')}}">AS Level</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="a-level-tab" href="{{url_for('main.exams', level='3b')}}">A Level</a>
+            <a class="nav-link" id="a-level-tab" href="{{url_for('main.exams', level='A')}}">A Level</a>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="timetable-tab" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Full Timetables
             </a>
             <ul class="dropdown-menu" aria-labelledby="timetable-tab">
-              <li><a class="dropdown-item" href="{{url_for("main.all_timetable", level="2")}}">GCSE</a></li>
-              <li><a class="dropdown-item" href="{{url_for("main.all_timetable", level="3a")}}">AS Level</a></li>
-              <li><a class="dropdown-item" href="{{url_for("main.all_timetable", level="3b")}}">A Level</a></li>
+              <li><a class="dropdown-item" href="{{url_for('main.all_timetable', level='GCSE')}}">GCSE</a></li>
+              <li><a class="dropdown-item" href="{{url_for('main.all_timetable', level='AS')}}">AS Level</a></li>
+              <li><a class="dropdown-item" href="{{url_for('main.all_timetable', level='A')}}">A Level</a></li>
             </ul>
           </li>
           {% endif %}
@@ -178,15 +178,15 @@
               </a>
               <ul class="dropdown-menu dropdown-menu-end">
                 {% if current_user.is_authenticated %}
-                <li><a class="dropdown-item" href="{{url_for('main.exam_options')}}" id="exam-options-tab">Exam Options</a></li>
-                <li><a class="dropdown-item" href="{{url_for('main.profile_options')}}" id="profile-options-tab">Profile Options</a></li>
+                <li><a class="dropdown-item" href="{{url_for('user.exam_options')}}" id="exam-options-tab">Exam Options</a></li>
+                <li><a class="dropdown-item" href="{{url_for('user.profile')}}" id="profile-options-tab">Profile Options</a></li>
                 <li>
                   <hr class="dropdown-divider">
                 </li>
-                <li><a class="dropdown-item" href="{{url_for('main.logout')}}" id="logout-tab">Log Out</a></li>
+                <li><a class="dropdown-item" href="{{url_for('user.logout')}}" id="logout-tab">Log Out</a></li>
                 {% else %}
-                <li><a class="dropdown-item" href="{{url_for('main.login')}}" id="login-tab">Log In</a></li>
-                <li><a class="dropdown-item" href="{{url_for('main.signup')}}" id="signup-tab">Sign Up</a></li>
+                <li><a class="dropdown-item" href="{{url_for('user.login')}}" id="login-tab">Log In</a></li>
+                <li><a class="dropdown-item" href="{{url_for('user.signup')}}" id="signup-tab">Sign Up</a></li>
                 {% endif %}
               </ul>
             </div>
@@ -196,23 +196,23 @@
           <div class="d-block d-md-none">
             {% if current_user.is_authenticated %}
             <li class="nav-item">
-              <a class="nav-link" href="{{url_for('main.exam_options')}}" id="exam-options-tab">Exam Options</a>
+              <a class="nav-link" href="{{url_for('user.exam_options')}}" id="exam-options-tab">Exam Options</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{url_for('main.profile_options')}}" id="profile-options-tab">Profile Options</a>
+              <a class="nav-link" href="{{url_for('user.profile')}}" id="profile-options-tab">Profile Options</a>
             </li>
   
             <hr class="navbar-divider">
   
             <li class="nav-item">
-              <a class="nav-link" href="{{url_for('main.logout')}}" id="logout-tab">Log Out</a>
+              <a class="nav-link" href="{{url_for('user.logout')}}" id="logout-tab">Log Out</a>
             </li>
             {% else %}
             <li class="nav-item">
-              <a class="nav-link" href="{{url_for('main.login')}}" id="login-tab">Log In</a>
+              <a class="nav-link" href="{{url_for('user.login')}}" id="login-tab">Log In</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{url_for('main.signup')}}" id="signup-tab">Sign Up</a>
+              <a class="nav-link" href="{{url_for('user.signup')}}" id="signup-tab">Sign Up</a>
             </li>
             {% endif %}
           </div>
@@ -223,42 +223,46 @@
 
   <!-- Flash Messages -->
   {% with messages = get_flashed_messages(with_categories=True) %}
-    {% if messages %}
-      <div aria-live="polite" aria-atomic="true" class="position-relative">
-        <!-- Danger -->
-        <div class="position-fixed toast-container top-0 start-50 translate-middle-x p-3">
-          {% for category, message in messages %}
-            {% if category == "danger" %}
-              <div class="toast align-items-center border-0 bg-{{ category if category in ['success', 'warning', 'danger', 'info'] else 'info' }}-subtle" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="d-flex">
-                  <svg class="bi flex-shrink-0 me-1 ms-2 m-auto" role="img" aria-label="Info:" width="25px" height="25px" fill="var(--bs-toast-header-color)"><use xlink:href="#icon-{{category}}"/></svg>
-                  <div class="toast-body">
-                    {{message}}
+  {% if messages %}
+      {% set grouped_messages = {} %}
+      {% for category, msg in messages %}
+          {% set message = msg['message'] if msg is mapping else msg %}
+          {% set persistent = msg['persistent'] if msg is mapping and 'persistent' in msg else (category == 'danger') %}
+          {% set position = msg['position'] if msg is mapping and 'position' in msg else ('top' if category == 'danger' else 'bottom') %}
+          {% if position not in grouped_messages %}
+              {% set _ = grouped_messages.update({position: []}) %}
+          {% endif %}
+          {% set _ = grouped_messages[position].append({'category': category, 'message': message, 'persistent': persistent}) %}
+      {% endfor %}
+
+      {% for position, msgs in grouped_messages.items() %}
+          {% if position == 'top' %}
+              {% set container_classes = 'position-fixed toast-container top-0 start-50 translate-middle-x p-3' %}
+          {% elif position == 'bottom' %}
+              {% set container_classes = 'position-fixed toast-container bottom-0 end-0 p-3' %}
+          {% else %}
+              {% set container_classes = 'position-fixed toast-container top-0 start-50 translate-middle-x p-3' %}
+          {% endif %}
+
+          <div class="{{ container_classes }}" aria-live="polite" aria-atomic="true">
+              {% for msg in msgs %}
+                  <div class="toast align-items-center border-0 bg-{{ msg.category if msg.category in ['success','warning','danger','info'] else 'info' }}-subtle"
+                      role="alert"
+                      aria-live="assertive"
+                      aria-atomic="true"
+                      data-bs-autohide="{{ 'false' if msg.persistent else 'true' }}">
+                      <div class="d-flex">
+                          <svg class="bi flex-shrink-0 me-1 ms-2 m-auto" role="img" aria-label="{{ msg.category.capitalize() }}:" width="25px" height="25px" fill="var(--bs-toast-header-color)">
+                              <use xlink:href="#icon-{{msg.category}}"/>
+                          </svg>
+                          <div class="toast-body">{{ msg.message }}</div>
+                          <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                      </div>
                   </div>
-                  <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-              </div>
-            {% endif %}
-          {% endfor %}
-        </div>
-        <!-- Others -->
-        <div class="position-fixed toast-container bottom-0 end-0 p-3">
-          {% for category, message in messages %}
-            {% if category != "danger" %}
-              <div class="toast align-items-center border-0 bg-{{ category if category in ['success', 'warning', 'danger', 'info'] else 'info' }}-subtle" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="d-flex">
-                  <svg class="bi flex-shrink-0 me-1 ms-2 m-auto" role="img" aria-label="Info:" width="25px" height="25px" fill="var(--bs-toast-header-color)"><use xlink:href="#icon-{{category}}"/></svg>
-                  <div class="toast-body">
-                    {{message}}
-                  </div>
-                  <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-              </div>
-            {% endif %}
-          {% endfor %}
-        </div>
-      </div>
-    {% endif %}
+              {% endfor %}
+          </div>
+      {% endfor %}
+  {% endif %}
   {% endwith %}
 
   <div class="content">

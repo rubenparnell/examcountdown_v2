@@ -2,32 +2,91 @@
 {% block title %}Profile{% endblock %}
 
 {% block head %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+    .profile-pic-container {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        cursor: pointer;
+    }
+
+    .profile-pic {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 3px solid #ddd;
+        transition: transform 0.3s ease;
+    }
+
+    .profile-pic-container:hover .profile-pic {
+        transform: scale(1.03);
+    }
+
+    .edit-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        border-radius: 50%;
+        transition: opacity 0.3s ease;
+    }
+
+    .profile-pic-container:hover .edit-overlay {
+        opacity: 1;
+    }
+
+    .edit-overlay i {
+        font-size: 1.5rem;
+        color: #fff;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
 <div class="container">
-    <h2><strong>Profile Options</strong></h2>
-    <br>
-</div>
-<div class="container">
+    <h2 class="bold my-4">Profile Options</h2>
     <div class="card">
         <div class="card-header">
             <h4><strong>Update Profile Information</strong></h4>
         </div>
         <div class="card-body">
-            <form method="POST" id="update-form">
+            <form method="POST" id="update-form" enctype="multipart/form-data">
+                {{ update_form.hidden_tag() }}
                 {{ update_form.form_type(id="update-form-type") }}
 
-                <div class="form-floating mb-3">
-                    {{ update_form.username(class="form-control", placeholder="username", value=current_user.username, minlength="3", maxlength="20") }}
-                    {{ update_form.username.label }}
-                </div>
-                <div class="form-floating mb-3">
-                    {{ update_form.email(class="form-control", placeholder="email", value=current_user.email, maxlength="100") }}
-                    {{ update_form.email.label }}
-                </div>
+                <!-- Profile Picture + Username -->
+                <div class="d-flex align-items-center mb-4 gap-3">
+                    {% if current_user.auth_id %}
+                    <div class="profile-pic-container">
+                        <img src="{{ current_user.profile_picture or url_for('static', filename='images/person-circle.svg') }}"
+                             alt="Profile Picture" class="profile-pic">
 
-                {{ update_form.submit(class="btn btn-primary", value="Submit Changes", id="update-submit") }}
+                        <div class="edit-overlay">
+                            <i class="bi bi-pencil-fill"></i>
+                        </div>
+
+                        {{ update_form.profile_picture(class="d-none", id="profilePictureInput") }}
+                    </div>
+                    {% endif %}
+
+                    <div class="flex-grow-1">
+                        <div class="form-floating mb-3">
+                            {{ update_form.username(class="form-control", placeholder="Username", value=current_user.username) }}
+                            {{ update_form.username.label }}
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control" placeholder="Email" value="{{ current_user.email }}" readonly>
+                            <label>Email</label>
+                            <div id="passwordHelp" class="form-text mt-1 mb-3">You can't change your email.</div>
+                        </div>
+                    </div>
+                </div>
+                {{ update_form.submit(class="btn btn-primary") }}
             </form>
             <br>
             
@@ -48,6 +107,7 @@
                             This can't be undone!
                             <br><br>
                             <form method="POST" id="confirm-pwd-form">
+                                {{ confirm_pwd_form.hidden_tag() }}
                                 {{ confirm_pwd_form.form_type(id="delete-form-type") }}
                 
                                 <div class="form-floating mb-3">
@@ -73,6 +133,7 @@
         </div>
         <div class="card-body">
             <form method="POST" id="pwd-reset-form">
+                {{ old_pwd_reset_form.hidden_tag() }}
                 {{ old_pwd_reset_form.form_type(id="pwd-form-type") }}
 
                 <div class="form-floating mb-3">
@@ -95,4 +156,30 @@
         </div>
     </div>
 </div>
+<!-- jQuery (required for Select2) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('.select2').select2({ placeholder: "Select your subjects", width: '100%' });
+    });
+
+    const container = document.querySelector(".profile-pic-container");
+    const input = document.getElementById("profilePictureInput");
+    if (container && input) {
+        container.addEventListener("click", () => input.click());
+        input.addEventListener("change", () => {
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                container.querySelector("img").src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+</script>
 {% endblock %}

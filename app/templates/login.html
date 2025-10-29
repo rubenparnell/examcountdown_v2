@@ -2,27 +2,44 @@
 {% block title %}Log In{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <h2><strong>Log In</strong></h2>
-        <br>
-    </div>
-    <div class="container">
-        <form method="POST">
-            {{ form.hidden_tag() }}
+<div class="container">
+    <h2 class="bold my-4">Log In</h2>
+    <form method="POST" id="login-form">
+        {{ form.hidden_tag() }}
 
-            <div class="form-floating mb-3">
-                {{ form.identifier(class="form-control", placeholder="username or email") }}
-                <label for="floatingInput">{{ form.identifier.label }}</label>
-            </div>
-            <div class="form-floating mb-3">
-                {{ form.password(class="form-control", placeholder="password") }}
-                <label for="floatingInput">{{ form.password.label }}</label>
-            </div>
-            {{ form.submit(class="btn btn-primary") }}
-        </form>
-        <br>
-        <p>Don't have an account? <a href="{{url_for('main.signup')}}">Sign Up</a>.</p>
-        <p>Forgot password? <a href="{{url_for('main.send_password_reset')}}">Reset</a>.</p>
-        
-    </div>
+        <div class="form-floating mb-3">
+            {{ form.email(class="form-control", placeholder="username or email") }}
+            <label for="floatingInput">{{ form.email.label }}</label>
+        </div>
+        <div class="form-floating mb-3">
+            {{ form.password(class="form-control", placeholder="password") }}
+            <label for="floatingInput">{{ form.password.label }}</label>
+        </div>
+        <div class="mb-3">
+            {{ form.rememberMe }}
+            {{ form.rememberMe.label }}
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100" id="submit-btn">
+            <span id="btn-text">Log In</span>
+            <span id="btn-spinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+        </button>
+    </form>
+
+    <br>
+    <p>Don't have an account? <a href="{{ url_for('user.signup') }}">Sign Up</a>.</p>
+    <p>Forgot password? <a href="{{ url_for('user.send_password_reset') }}">Reset</a>.</p>
+</div>
+
+<script>
+document.getElementById('login-form').addEventListener('submit', function() {
+    const btn = document.getElementById('submit-btn');
+    const spinner = document.getElementById('btn-spinner');
+    const btnText = document.getElementById('btn-text');
+
+    btn.disabled = true;
+    spinner.classList.remove('d-none');
+    btnText.textContent = 'Logging in...';
+});
+</script>
 {% endblock %}

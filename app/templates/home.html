@@ -27,11 +27,11 @@
                 <div class="card mb-4">
                     <h4 class="card-header"><strong>See all exams for a specific qualification:</strong></h4>
                     <div class="card-body text-center p-2">
-                        <a href="{{url_for('main.exams', level='2')}}" class="m-1 btn btn-lg btn-primary">GCSE</a>
-                        <a href="{{url_for('main.exams', level='3a')}}" class="m-1 btn btn-lg btn-primary">AS Level</a>
-                        <a href="{{url_for('main.exams', level='3b')}}" class="m-1 btn btn-lg btn-primary">A Level</a>
+                        <a href="{{url_for('main.exams', level='GCSE')}}" class="m-1 btn btn-lg btn-primary">GCSE</a>
+                        <a href="{{url_for('main.exams', level='AS')}}" class="m-1 btn btn-lg btn-primary">AS Level</a>
+                        <a href="{{url_for('main.exams', level='A')}}" class="m-1 btn btn-lg btn-primary">A Level</a>
                         <br><br>
-                        <p class="m-0">To see your specific exams, <a href="{{url_for('main.login')}}">log in</a>, or <a href="{{url_for('main.signup')}}">sign up</a>.</p>
+                        <p class="m-0">To see your specific exams, <a href="{{url_for('user.login')}}">log in</a>, or <a href="{{url_for('user.signup')}}">sign up</a>.</p>
                     </div>
                 </div>
             </div>

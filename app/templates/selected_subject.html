@@ -13,7 +13,7 @@
     <div class="container-md">
         {% if not current_user.is_authenticated %}
         <p>
-            This page shows all exams for this subject. <a href="{{url_for("main.signup")}}">Sign up</a> to filter by your own exam board and tier.
+            This page shows all exams for this subject. <a href="{{url_for('user.signup')}}">Sign up</a> to filter by your own exam board and tier.
         </p>
         {% endif %}
         <div class="card mb-4">

@@ -16,7 +16,7 @@
         <p>
             This page shows the next exam for each of your selected subjects.<br>
             Click on a subject to see all exams for that subject.<br>
-            You can choose your subjects in your <a href="{{url_for("main.exam_options")}}">exam options page</a>.
+            You can choose your subjects and level in your <a href="{{url_for('user.exam_options')}}">exam options page</a>.
         </p>
         {% if exams_by_category.items() | length == 0 %}
         <br>
@@ -26,7 +26,7 @@
         <p>
             This page shows the next exam for each subject.<br>
             Click on a subject to see all exams for that subject.<br>
-            You can <a href="{{url_for("main.signup")}}">sign up</a> to filter by your own subjects.
+            You can <a href="{{url_for('user.signup')}}">sign up</a> to filter by your own subjects.
         </p>
       {% endif %}
       
@@ -47,7 +47,7 @@
                   </thead>
                   <tbody>
                         {% for exam in exams.values() %}
-                        <tr onclick="window.location.href='{{ url_for('main.show_selected_subject', level=exam.level, base_subject=exam.base_subject) }}'" style="cursor:pointer;" data-exam-datetime="{{ exam.date | format_datetime_countdown }}">
+                        <tr onclick="window.location.href=`{{ url_for('main.show_selected_subject', level=exam.level, base_subject=exam.base_subject) }}`;" style="cursor:pointer;" data-exam-datetime="{{ exam.date | format_datetime_countdown }}">
                             <td class="countdown col-3"></td>
                             <td>{{ exam.date | format_datetime }} ({{ exam.time }})</td>
                             <td class="col-3">{{ exam.base_subject }}</td>
