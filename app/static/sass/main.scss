@@ -1,6 +1,12 @@
-// custom variables
+// Custom Variables:
+
+// Colors:
 $primary: rgb(26, 53, 206);
 
+// Fonts:
+$font-family-sans-serif: Rubik, Roboto, "Open Sans", system-ui, -apple-system, "Segoe UI", "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+// Grid breakpoints:
 $grid-breakpoints: (
   xs: 0,
   sm: 576px,
@@ -10,5 +16,5 @@ $grid-breakpoints: (
   xxl: 1400px
 );
 
-//import bootstrap
+// Import Bootstrap:
 @import '../node_modules/bootstrap/scss/bootstrap';

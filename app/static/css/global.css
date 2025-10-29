@@ -1,0 +1,71 @@
+.grecaptcha-badge {
+    z-index:999;
+}
+
+body {
+    color: black;
+    padding-top: 110px;
+    margin: 0px;
+}
+
+#disclaimer {
+    position: relative;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #d8d8d8;
+    text-align: center;
+    font-size: 16px;
+
+    a {
+        color: darkslategray;
+    }
+}
+
+.content {
+    min-height: 100vh;
+}
+
+.hidden {
+    display: none;
+}
+
+#anchor {
+    scroll-margin-top: 100px;
+}
+
+.pointer {cursor: pointer;}
+
+.form-group label::after {
+    content: "*";
+    color: red;
+    font-weight: bold;
+    margin-left: 4px;
+}
+
+/* Hide the asterisk for labels that are not associated with required fields */
+.form-group input[required] + label::after {
+    content: "*";
+    color: red;
+    font-weight: bold;
+    margin-left: 4px;
+}
+
+.form-floating label::after {
+    content: "";
+}
+
+.form-floating input[required] + label::after {
+    content: "*";
+    color: red;
+    font-weight: bold;
+    margin-left: 4px;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.large {
+    font-size: 1.2rem;
+}
