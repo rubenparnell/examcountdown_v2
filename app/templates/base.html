@@ -3,9 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="shortcut icon" href="/static/img/alarm-fill.svg" type="image/x-icon">
+  
+  <link rel="icon" type="image/png" href="/static/favicon/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/static/favicon/favicon.svg" />
+  <link rel="shortcut icon" href="/static/favicon/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/favicon/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-title" content="Countdown" />
+  <link rel="manifest" href="/static/favicon/site.webmanifest" />
+
   <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-  <title>Exam Countdown: {% block title %}{% endblock %}</title>
+  <title>{% block title %}{% endblock %} | My Exams: Countdown</title>
   <link id="bootstrap-css" href="/static/css/main.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -106,62 +113,65 @@
     </symbol>
   </svg>
   
+  {% macro user_menu(item_class="dropdown-item") %}
+      {% if current_user.is_authenticated %}
+          <li><a class="{{ item_class }}" href="{{ url_for('user.exam_options') }}">Exam Options</a></li>
+          <li><a class="{{ item_class }}" href="{{ url_for('user.profile') }}">Profile Options</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="{{ item_class }}" href="{{ url_for('user.logout') }}">Log Out</a></li>
+      {% else %}
+          <li><a class="{{ item_class }}" href="{{ url_for('user.login') }}">Log In</a></li>
+          <li><a class="{{ item_class }}" href="{{ url_for('user.signup') }}">Sign Up</a></li>
+      {% endif %}
+  {% endmacro %}
+
+
+  <!-- Navbar -->
   <nav class="navbar navbar-expand-md fixed-top navbar-light bg-light" id="nav-bar-top">
-    <div class="container">
-      <!-- Left section with Logo and Title -->
-      <!-- <div class="dropdown"> -->
-        <a class="navbar-brand d-flex align-items-center" href="/" id="examDropdown" role="button" aria-expanded="false">
-          <i class="bi bi-alarm-fill" style="font-size: 2rem; color: #090c5a;"></i>
-          <p class="m-0 ms-2"><b>My Exams:</b> Countdown</p>
-        </a>
-        <!-- 
-        <ul class="dropdown-menu dropdown-menu-end px-2 me-3" aria-labelledby="examDropdown">
-          <li>
-            <a class="navbar-brand d-flex align-items-center m-0" href="https://questions.myexams.net">
-              <i class="bi bi-search" id="logo" style="font-size: 2rem;"></i>
-              <p class="ms-2 m-0"><b>My Exams:</b> Questions</p>
-            </a>
-          </li>
-        </ul>
-      </div>
-      -->
-  
-      <!-- Toggler button for the main navigation -->
+    <div class="container-lg">
+      <!-- Logo -->
+      <a class="navbar-brand d-flex align-items-center" href="/" role="button" aria-expanded="false">
+        <img src="{{ url_for('static', filename='logos/countdown_dark.svg') }}" alt="My Exams Countdown Logo" width="220" class="me-2">
+      </a>
+
+      <!-- Toggler -->
       <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-  
-      <!-- Main collapsible navigation links -->
+
+      <!-- Collapsible content -->
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav nav-underline gap-2">
+        <!-- Left-aligned nav links -->
+        <ul class="navbar-nav nav-underline gap-2 d-flex align-items-center justify-content-center">
           <li class="nav-item">
-            <a class="nav-link" id="home-tab" href="{{url_for('main.home')}}">Home</a>
+            <a class="nav-link text-center" href="{{ url_for('main.home') }}">Home</a>
           </li>
+
           {% if current_user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link" id="exams-tab" href="{{url_for('main.exams', level=current_user.default_level)}}">Exams</a>
+            <a class="nav-link text-center" href="{{ url_for('main.exams', level=current_user.default_level) }}">Exams</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="timetable-tab" href="{{url_for('main.timetable')}}">Timetable</a>
+            <a class="nav-link text-center" href="{{ url_for('main.timetable') }}">Timetable</a>
           </li>
           {% else %}
           <li class="nav-item">
-            <a class="nav-link" id="gcse-tab" href="{{url_for('main.exams', level='GCSE')}}">GCSE</a>
+            <a class="nav-link text-center" href="{{ url_for('main.exams', level='GCSE') }}">GCSE</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="as-level-tab" href="{{url_for('main.exams', level='AS')}}">AS Level</a>
+            <a class="nav-link text-center" href="{{ url_for('main.exams', level='AS') }}">AS Level</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="a-level-tab" href="{{url_for('main.exams', level='A')}}">A Level</a>
+            <a class="nav-link text-center" href="{{ url_for('main.exams', level='A') }}">A Level</a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="timetable-tab" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link text-center dropdown-toggle" href="#" id="timetableDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Full Timetables
             </a>
-            <ul class="dropdown-menu" aria-labelledby="timetable-tab">
-              <li><a class="dropdown-item" href="{{url_for('main.all_timetable', level='GCSE')}}">GCSE</a></li>
-              <li><a class="dropdown-item" href="{{url_for('main.all_timetable', level='AS')}}">AS Level</a></li>
-              <li><a class="dropdown-item" href="{{url_for('main.all_timetable', level='A')}}">A Level</a></li>
+            <ul class="dropdown-menu" aria-labelledby="timetableDropdown">
+              <li><a class="dropdown-item" href="{{ url_for('main.all_timetable', level='GCSE') }}">GCSE</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('main.all_timetable', level='AS') }}">AS Level</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('main.all_timetable', level='A') }}">A Level</a></li>
             </ul>
           </li>
           {% endif %}
@@ -169,52 +179,31 @@
 
         <hr class="navbar-divider">
 
+        <!-- Right-aligned user menu -->
         <ul class="navbar-nav nav-underline ms-auto gap-2">
-          <!-- Dropdown for larger screens -->
+          {% if current_user.is_authenticated %}
+          <li class="nav-item align-items-center justify-content-center ms-4 me-2 d-none d-md-flex text-center">
+            Hi, {{ current_user.username }}
+          </li>
+          {% endif %}
           <li class="nav-item d-none d-md-block">
             <div class="dropdown">
               <a class="nav-link text-start text-md-end" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" id="user-tab">
+                {% if current_user.is_authenticated and current_user.profile_picture %}
+                <img src="{{ current_user.profile_picture }}" alt="Profile Picture" class="rounded-circle" style="width: 2.5rem; height: 2.5rem;">
+                {% else %}
                 <i class="bi bi-person-circle" style="font-size: 1.8rem;"></i>
+                {% endif %}
               </a>
               <ul class="dropdown-menu dropdown-menu-end">
-                {% if current_user.is_authenticated %}
-                <li><a class="dropdown-item" href="{{url_for('user.exam_options')}}" id="exam-options-tab">Exam Options</a></li>
-                <li><a class="dropdown-item" href="{{url_for('user.profile')}}" id="profile-options-tab">Profile Options</a></li>
-                <li>
-                  <hr class="dropdown-divider">
-                </li>
-                <li><a class="dropdown-item" href="{{url_for('user.logout')}}" id="logout-tab">Log Out</a></li>
-                {% else %}
-                <li><a class="dropdown-item" href="{{url_for('user.login')}}" id="login-tab">Log In</a></li>
-                <li><a class="dropdown-item" href="{{url_for('user.signup')}}" id="signup-tab">Sign Up</a></li>
-                {% endif %}
+                {{ user_menu("dropdown-item") }}
               </ul>
             </div>
           </li>
 
-          <!-- Always display for smaller screens -->
+          <!-- Always visible on small screens -->
           <div class="d-block d-md-none">
-            {% if current_user.is_authenticated %}
-            <li class="nav-item">
-              <a class="nav-link" href="{{url_for('user.exam_options')}}" id="exam-options-tab">Exam Options</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{url_for('user.profile')}}" id="profile-options-tab">Profile Options</a>
-            </li>
-  
-            <hr class="navbar-divider">
-  
-            <li class="nav-item">
-              <a class="nav-link" href="{{url_for('user.logout')}}" id="logout-tab">Log Out</a>
-            </li>
-            {% else %}
-            <li class="nav-item">
-              <a class="nav-link" href="{{url_for('user.login')}}" id="login-tab">Log In</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{url_for('user.signup')}}" id="signup-tab">Sign Up</a>
-            </li>
-            {% endif %}
+            {{ user_menu("nav-link text-center") }}
           </div>
         </ul>
       </div>
