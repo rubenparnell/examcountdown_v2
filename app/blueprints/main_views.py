@@ -276,8 +276,3 @@ def timetable():
     shown_exams = get_shown_exams()
     
     return render_template('timetable.html', exams=shown_exams)
-
-
-@main.route("/privacy_policy")
-def privacy_policy():
-    return render_template('privacy_policy.html')
