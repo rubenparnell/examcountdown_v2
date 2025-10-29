@@ -321,16 +321,15 @@ def profile():
                 if not session_data.user:
                     flash("Password is incorrect. Cannot delete account.", "danger")
                     return redirect(url_for("user.profile"))
-                
-                # Delete from local DB
+
+                # Delete from DB
                 user_to_delete = db.session.query(Users).get_or_404(current_user.id)
                 db.session.delete(user_to_delete)
+                db.session.commit()
 
-                # Delete from Supabase using admin client
+                # Delete from Supabase
                 if current_user.auth_id:
                     supabase_admin.auth.admin.delete_user(current_user.auth_id)
-                
-                db.session.commit()
 
                 flash("Your account has been deleted successfully.", "success")
                 logout_user()
