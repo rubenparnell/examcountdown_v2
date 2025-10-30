@@ -8,20 +8,6 @@ body {
     margin: 0px;
 }
 
-#disclaimer {
-    position: relative;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: #d8d8d8;
-    text-align: center;
-    font-size: 16px;
-
-    a {
-        color: darkslategray;
-    }
-}
-
 .content {
     min-height: 100vh;
 }

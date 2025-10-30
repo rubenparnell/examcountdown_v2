@@ -198,29 +198,20 @@
   </div>
   
 
-  <footer id="disclaimer" class="p-2">
-    <div class="d-flex justify-content-between align-items-top">
-      <p class="flex-grow-1">
-        <strong>Disclaimer: </strong>
-        Accuracy of exam data provided and its completeness is not guaranteed. <br>
+  <footer class="bg-light text-muted border-top mt-3 mb-1 pb-1 pt-2">
+    <div class="container text-center">
+      <p class="small mb-2">
+        <strong>Disclaimer:</strong>
+        Accuracy of exam data provided and its completeness is not guaranteed.<br>
         Users are encouraged to verify all information with official exam boards and their own timetables to ensure accuracy.
       </p>
-      <button id="footer-close-btn" type="button" class="btn-close p-2" aria-label="Close"></button>
-    </div>
-    
-
-    <div class="container text-center pb-2" style="padding-left:2rem; padding-right:2rem;">
-      <div class="row align-items-start">
-        <div class="col">
-          <a href="https://myexams.net/privacy">Privacy Policy</a>
-        </div>
-        <div class="col">
-          <a href="https://myexams.net/cookies">Cookie Policy</a>
-        </div>
+      <div class="d-flex flex-wrap justify-content-center align-items-center gap-3 small">
+        <span>This site uses only essential cookies required for its operation.</span>
+        <a href="https://myexams.net/privacy" class="text-muted text-decoration-none">Privacy Policy</a>
+        <a href="https://myexams.net/cookies" class="text-muted text-decoration-none">Cookie Policy</a>
       </div>
     </div>
   </footer>
-
   
   <script>
     // Get the current URL path
@@ -259,26 +250,6 @@
       }
       
     });
-
-    function disclaimerHide() {
-      document.getElementById("disclaimer").style.position = "relative";
-      document.getElementById("footer-close-btn").hidden = true;
-      localStorage.setItem("disclaimerHidden", true);
-    }
-
-    function checkDisclaimerHidden() {
-      if (localStorage.getItem("disclaimerHidden")) {
-        document.getElementById("disclaimer").style.position = "relative";
-        document.getElementById("footer-close-btn").hidden = true;
-      } else {
-        document.getElementById("disclaimer").style.position = "sticky";
-        document.getElementById("footer-close-btn").hidden = false;
-      }
-    }
-
-    document.getElementById("footer-close-btn").addEventListener("click", disclaimerHide)
-    // Call checkDisclaimerHidden on page load
-    window.onload = checkDisclaimerHidden;
 
     const toastElList = document.querySelectorAll('.toast')
     const toastList = [...toastElList].map(toastEl => new bootstrap.Toast(toastEl))
