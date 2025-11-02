@@ -119,6 +119,19 @@ def login():
                         "email": email,
                         "password": password
                     })
+                    # --- Store session tokens in Flask session ---
+                    if result.session:
+                        access_token = result.session.access_token
+                        refresh_token = result.session.refresh_token
+                        expires_in = result.session.expires_in or 3600
+
+                        session["access_token"] = access_token
+                        session["refresh_token"] = refresh_token
+                        session["expires_at"] = (datetime.now() + timedelta(seconds=expires_in)).timestamp()
+
+                        # Also update the Supabase client session (useful for get_user() later)
+                        supabase.auth.set_session(access_token, refresh_token)
+
                 except Exception as e:
                     flash(f"Login failed: {e}", "danger")
                     return render_template('login.html', form=form)
@@ -326,8 +339,7 @@ def profile():
                 raise ValueError("Refresh failed")
             session["access_token"] = refreshed.session.access_token
             session["refresh_token"] = refreshed.session.refresh_token
-            session["expires_at"] = (datetime.now().timestamp() +
-                                    refreshed.session.expires_in)
+            session["expires_at"] = (datetime.now().timestamp() + refreshed.session.expires_in)
 
         # Set the valid session before calling get_user
         supabase.auth.set_session(session["access_token"], session["refresh_token"])
@@ -446,6 +458,10 @@ def profile():
                         "email": current_user.email,
                         "password": old_password
                     })
+
+                    session["access_token"] = session_data.session.access_token
+                    session["refresh_token"] = session_data.session.refresh_token
+                    session["expires_at"] = (datetime.now() + timedelta(seconds=session_data.session.expires_in)).timestamp()
 
                     if not session_data.user:
                         flash("Old password is incorrect.", "danger")
