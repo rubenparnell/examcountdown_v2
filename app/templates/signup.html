@@ -27,11 +27,11 @@
                 {{ form.hidden_tag() }}
 
                 <div class="form-floating mb-3">
-                    {{ form.username(class="form-control", placeholder="username", minlength="2", maxlength="20") }}
+                    {{ form.username(class="form-control", placeholder="username") }}
                     <label>{{ form.username.label }}</label>
                 </div>
                 <div class="form-floating mb-3">
-                    {{ form.email(class="form-control", placeholder="email", type="email", maxlength="100") }}
+                    {{ form.email(class="form-control", placeholder="email", type="email") }}
                     <label>{{ form.email.label }}</label>
                 </div>
                 <div class="form-floating mb-3">

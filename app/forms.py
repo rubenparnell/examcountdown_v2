@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField, ValidationError, HiddenField, BooleanField, EmailField, TimeField, RadioField
-from wtforms.validators import DataRequired, Email
+from wtforms.validators import DataRequired, Email, Length
 from flask_wtf.file import FileField, FileAllowed
 
 class LoginForm(FlaskForm):
@@ -10,8 +10,8 @@ class LoginForm(FlaskForm):
   submit = SubmitField("Continue")
 
 class SignUpForm(FlaskForm):
-  username = StringField("Username", validators=[DataRequired()])
-  email = EmailField("Email", validators=[DataRequired(), Email()])
+  username = StringField("Username", validators=[DataRequired(), Length(min=2, max=50)])
+  email = EmailField("Email", validators=[DataRequired(), Email(), Length(max=100)])
   password1 = PasswordField("Password", validators=[DataRequired()])
   password2 = PasswordField("Confirm Password", validators=[DataRequired()])
   submit = SubmitField("Continue")
@@ -29,7 +29,7 @@ class MigrationForm(FlaskForm):
 
 class UpdateForm(FlaskForm):
   form_type = HiddenField(default='update_profile')
-  username = StringField('Username', validators=[DataRequired()])
+  username = StringField('Username', validators=[DataRequired(), Length(min=2, max=50)])
   profile_picture = FileField(
     "Profile Picture",
     validators=[FileAllowed(['jpg', 'jpeg', 'png'], "Images only!")]
