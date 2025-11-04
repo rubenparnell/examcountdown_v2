@@ -56,7 +56,7 @@
 
             <div class="text-center mt-3">
                 <a href="{{ url_for('user.google_login') }}" class="btn btn-outline-dark w-100">
-                    <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo" width="18" class="me-2">
+                    <img src="{{ url_for('static', filename='images/google_logo.svg') }}" alt="Google logo" width="18" class="me-2">
                     Continue with Google
                 </a>
             </div>
