@@ -198,53 +198,39 @@ AQA,Arts & Design,Dance,Dance,,GCSE
 AQA,Arts & Design,Design and Technology,Design and Technology,,GCSE
 OCR,Arts & Design,Design and Technology,Design and Technology,,GCSE
 Edexcel,Arts & Design,Design and Technology,Design and Technology,,GCSE
-Eduqas,Arts & Design,Design and Technology,Design and Technology,,GCSE
 AQA,Arts & Design,Drama,Drama,,GCSE
 Edexcel,Arts & Design,Drama,Drama,,GCSE
 OCR,Arts & Design,Drama,Drama,,GCSE
-Eduqas,Arts & Design,Drama,Drama,,GCSE
-Eduqas,Arts & Design,Electronics,Electronics,,GCSE
 AQA,Arts & Design,Engineering,Engineering,,GCSE
 OCR,Arts & Design,Engineering,Engineering Design,,GCSE
 OCR,Arts & Design,Engineering,Engineering Manufacture,,GCSE
 OCR,Arts & Design,Engineering,Engineering Programmable Systems,,GCSE
-Eduqas,Arts & Design,Film Studies,Film Studies,,GCSE
 AQA,Arts & Design,Food Preparation and Nutrition,Food preparation and nutrition,,GCSE
 OCR,Arts & Design,Food Preparation and Nutrition,Food Preparation and Nutrition,,GCSE
-Eduqas,Arts & Design,Food Preparation and Nutrition,Food Preparation and Nutrition,,GCSE
 AQA,Arts & Design,Music,Music,,GCSE
 Edexcel,Arts & Design,Music,Music,,GCSE
 OCR,Arts & Design,Music,Music,,GCSE
-Eduqas,Arts & Design,Music,Music,,GCSE
 AQA,English,English Language,English Language,,GCSE
 Edexcel,English,English Language,English Language,,GCSE
 OCR,English,English Language,English Language,,GCSE
 Edexcel,English,English Language,English Language 2.0,,GCSE
-Eduqas,English,English Language,English Language,,GCSE
 Edexcel,English,English Literature,English Literature,,GCSE
 AQA,English,English Literature,English Literature,,GCSE
 OCR,English,English Literature,English Literature,,GCSE
-Eduqas,English,English Literature,English Literature,,GCSE
 OCR,Humanities & Social Sciences,Ancient History,Ancient History,,GCSE
 Edexcel,Humanities & Social Sciences,Citizenship Studies,Citizenship Studies,,GCSE
 AQA,Humanities & Social Sciences,Citizenship Studies,Citizenship Studies,,GCSE
 OCR,Humanities & Social Sciences,Citizenship Studies,Citizenship Studies,,GCSE
 OCR,Humanities & Social Sciences,Classical Civilisation,Classical Civilisation,,GCSE
-Eduqas,Humanities & Social Sciences,Geography,Geography A,,GCSE
-Eduqas,Humanities & Social Sciences,Geography,Geography B,,GCSE
 AQA,Humanities & Social Sciences,Geography,Geography,,GCSE
 Edexcel,Humanities & Social Sciences,Geography,Geography A,,GCSE
 OCR,Humanities & Social Sciences,Geography,Geography A (Geographical Themes),,GCSE
 Edexcel,Humanities & Social Sciences,Geography,Geography B,,GCSE
 OCR,Humanities & Social Sciences,Geography,Geography B (Geography for Enquiring Minds),,GCSE
 AQA,Humanities & Social Sciences,History,History,,GCSE
-Eduqas,Humanities & Social Sciences,History,History,,GCSE
 OCR,Humanities & Social Sciences,History,History A (Explaining the Modern World),,GCSE
 OCR,Humanities & Social Sciences,History,History B (Schools History Project),,GCSE
 Edexcel,Humanities & Social Sciences,History,History,,GCSE
-Eduqas,Humanities & Social Sciences,Religious Studies,Religious Studies (Full Course) A,,GCSE
-Eduqas,Humanities & Social Sciences,Religious Studies,Religious Studies (Full Course) B,,GCSE
-Eduqas,Humanities & Social Sciences,Religious Studies,Religious Studies (Short Course),,GCSE
 AQA,Humanities & Social Sciences,Religious Studies,Religious Studies A,,GCSE
 AQA,Humanities & Social Sciences,Religious Studies,Religious Studies B,,GCSE
 OCR,Humanities & Social Sciences,Religious Studies,Religious Studies,,GCSE
@@ -252,21 +238,17 @@ OCR,Humanities & Social Sciences,Religious Studies,Religious Studies (Short Cour
 Edexcel,Humanities & Social Sciences,Religious Studies,Religious Studies A,,GCSE
 Edexcel,Humanities & Social Sciences,Religious Studies,Religious Studies B,,GCSE
 AQA,Humanities & Social Sciences,Religious Studies,Religious Studies (Short course),,GCSE
-Eduqas,Humanities & Social Sciences,Sociology,Sociology,,GCSE
 AQA,Humanities & Social Sciences,Sociology,Sociology,,GCSE
 Edexcel,Humanities & Social Sciences,Biblical Hebrew,Biblical Hebrew,,GCSE
 OCR,Humanities & Social Sciences,Classical Greek,Classical Greek,,GCSE
 AQA,Humanities & Social Sciences,Economics,Economics,,GCSE
 OCR,Humanities & Social Sciences,Economics,Economics,,GCSE
 AQA,Humanities & Social Sciences,Media Studies,Media Studies,,GCSE
-Eduqas,Humanities & Social Sciences,Media Studies,Media Studies,,GCSE
 OCR,Humanities & Social Sciences,Media Studies,Media Studies,,GCSE
 Edexcel,Humanities & Social Sciences,Psychology,Psychology,,GCSE
 AQA,Humanities & Social Sciences,Psychology,Psychology,,GCSE
 OCR,Humanities & Social Sciences,Psychology,Psychology,,GCSE
 AQA,Maths,Further Mathematics,Further Mathematics,,GCSE
-Eduqas,Maths,Mathematics,Mathematics,F,GCSE
-Eduqas,Maths,Mathematics,Mathematics,H,GCSE
 Edexcel,Maths,Mathematics,Mathematics,F,GCSE
 Edexcel,Maths,Mathematics,Mathematics,H,GCSE
 AQA,Maths,Mathematics,Mathematics,F,GCSE
@@ -289,10 +271,6 @@ AQA,Modern Languages,French,French,F,GCSE
 AQA,Modern Languages,French,French,H,GCSE
 Edexcel,Modern Languages,French,French,F,GCSE
 Edexcel,Modern Languages,French,French,H,GCSE
-Eduqas,Modern Languages,French,French,F,GCSE
-Eduqas,Modern Languages,French,French,H,GCSE
-Eduqas,Modern Languages,German,German,F,GCSE
-Eduqas,Modern Languages,German,German,H,GCSE
 Edexcel,Modern Languages,German,German,F,GCSE
 Edexcel,Modern Languages,German,German,H,GCSE
 AQA,Modern Languages,German,German,F,GCSE
@@ -307,7 +285,6 @@ Edexcel,Modern Languages,Italian,Italian,F,GCSE
 Edexcel,Modern Languages,Italian,Italian,H,GCSE
 Edexcel,Modern Languages,Japanese,Japanese,F,GCSE
 Edexcel,Modern Languages,Japanese,Japanese,H,GCSE
-Eduqas,Modern Languages,Latin,Latin,,GCSE
 OCR,Modern Languages,Latin,Latin,,GCSE
 AQA,Modern Languages,Modern Hebrew,Modern Hebrew,F,GCSE
 AQA,Modern Languages,Modern Hebrew,Modern Hebrew,H,GCSE
@@ -323,8 +300,6 @@ Edexcel,Modern Languages,Russian,Russian,F,GCSE
 Edexcel,Modern Languages,Russian,Russian,H,GCSE
 AQA,Modern Languages,Spanish,Spanish,F,GCSE
 AQA,Modern Languages,Spanish,Spanish,H,GCSE
-Eduqas,Modern Languages,Spanish,Spanish,F,GCSE
-Eduqas,Modern Languages,Spanish,Spanish,H,GCSE
 Edexcel,Modern Languages,Spanish,Spanish,F,GCSE
 Edexcel,Modern Languages,Spanish,Spanish,H,GCSE
 Edexcel,Modern Languages,Turkish,Turkish,F,GCSE
@@ -336,7 +311,6 @@ AQA,Modern Languages,Urdu,Urdu,H,GCSE
 Edexcel,Other,Business,Business,,GCSE
 AQA,Other,Business,Business,,GCSE
 OCR,Other,Business,Business,,GCSE
-Eduqas,Other,Business,Business,,GCSE
 OCR,Other,Child Development,Child Development,,GCSE
 OCR,Other,Enterprise and Marketing,Enterprise and Marketing,,GCSE
 OCR,Other,Health and Social Care,Health and Social Care,,GCSE
@@ -344,15 +318,11 @@ OCR,Other,IT,IT,,GCSE
 Edexcel,Other,Physical Education,Physical Education,,GCSE
 AQA,Other,Physical Education,Physical Education,,GCSE
 OCR,Other,Physical Education,Physical Education,,GCSE
-Eduqas,Other,Physical Education,Physical Education (Full Course),,GCSE
-Eduqas,Other,Physical Education,Physical Education (Short Course),,GCSE
 OCR,Other,Sport Science,Sport Studies,,GCSE
 OCR,Other,Sport Science,Sport Science,,GCSE
 Edexcel,Science,Computer Science,Computer Science,,GCSE
 AQA,Science,Computer Science,Computer Science,,GCSE
 OCR,Science,Computer Science,Computer Science,,GCSE
-Eduqas,Science,Computer Science,Computer Science,,GCSE
-Eduqas,Science,Geology,Geology,,GCSE
 Edexcel,Science,Astronomy,Astronomy,,GCSE
 Edexcel,Science,Biology,Biology,F,GCSE
 Edexcel,Science,Biology,Biology,H,GCSE
