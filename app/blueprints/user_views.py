@@ -2,7 +2,7 @@ from flask import Blueprint, request, render_template, redirect, url_for, abort,
 from markupsafe import Markup
 from flask_login import login_user, logout_user, current_user, login_required
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import requests
 import uuid
 import csv
@@ -38,7 +38,7 @@ def signup():
             abort(403)
 
         form_email = form.email.data.strip().lower()
-        form_username = form.username.data.strip()
+        form_username = form.username.data.strip()[:50]
         form_password = form.password1.data
         form_password_2 = form.password2.data
 
@@ -127,7 +127,7 @@ def login():
 
                         session["access_token"] = access_token
                         session["refresh_token"] = refresh_token
-                        session["expires_at"] = (datetime.now() + timedelta(seconds=expires_in)).timestamp()
+                        session["expires_at"] = (datetime.now(timezone.utc) + timedelta(seconds=expires_in)).timestamp()
 
                         # Also update the Supabase client session (useful for get_user() later)
                         supabase.auth.set_session(access_token, refresh_token)
@@ -141,7 +141,13 @@ def login():
                     local_user = db.session.query(Users).filter_by(auth_id=sb_user.id).first()
                     if not local_user:
                         # auto-create if missing
-                        local_user = Users(auth_id=sb_user.id, email=email, username=email.split('@')[0])
+                        local_user = Users(
+                            auth_id=user.id,
+                            username=email.split('@')[0][:50],
+                            email=email,
+                            date_added=datetime.now(),
+                            is_admin=False
+                        )
                         db.session.add(local_user)
                         db.session.commit()
 
@@ -258,7 +264,7 @@ def set_session():
         # 1. Set Supabase session
         session["access_token"] = access_token
         session["refresh_token"] = refresh_token
-        session["expires_at"] = (datetime.utcnow() + timedelta(seconds=expires_in)).timestamp()
+        session["expires_at"] = (datetime.now(timezone.utc) + timedelta(seconds=expires_in)).timestamp()
 
         supabase.auth.set_session(access_token, refresh_token)
 
@@ -275,7 +281,7 @@ def set_session():
 
         # 4. Create user if they don't exist
         if not user:
-            username = supabase_user.user_metadata.get("full_name", "").replace(" ", "") or email.split("@")[0]
+            username = supabase_user.user_metadata.get("full_name", "").replace(" ", "")[:50] or email.split("@")[0][:50]
             # Check if the username is taken
             username_taken = db.session.query(Users).filter(Users.username.ilike(username)).first()
             while username_taken:
@@ -333,13 +339,13 @@ def profile():
             raise ValueError("No access token")
 
         # Refresh if expired
-        if datetime.now().timestamp() > expires_at:
+        if datetime.now(timezone.utc).timestamp() > expires_at:
             refreshed = supabase.auth.refresh_session(refresh_token)
             if not refreshed.user:
                 raise ValueError("Refresh failed")
             session["access_token"] = refreshed.session.access_token
             session["refresh_token"] = refreshed.session.refresh_token
-            session["expires_at"] = (datetime.now().timestamp() + refreshed.session.expires_in)
+            session["expires_at"] = (datetime.now(timezone.utc).timestamp() + refreshed.session.expires_in)
 
         # Set the valid session before calling get_user
         supabase.auth.set_session(session["access_token"], session["refresh_token"])
@@ -461,7 +467,7 @@ def profile():
 
                     session["access_token"] = session_data.session.access_token
                     session["refresh_token"] = session_data.session.refresh_token
-                    session["expires_at"] = (datetime.now() + timedelta(seconds=session_data.session.expires_in)).timestamp()
+                    session["expires_at"] = (datetime.now(timezone.utc) + timedelta(seconds=session_data.session.expires_in)).timestamp()
 
                     if not session_data.user:
                         flash("Old password is incorrect.", "danger")
