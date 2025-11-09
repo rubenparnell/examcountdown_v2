@@ -88,7 +88,7 @@ def signup():
 
             flash("Signed up successfully. Please check your email to confirm your account.", "info", persistent=True, position="top")
 
-            return redirect(url_for('user.login'))
+            return render_template('sign_up_confirm.html')
         
         except Exception as e:
             flash(f"Error creating user in Supabase: {e}", "danger")

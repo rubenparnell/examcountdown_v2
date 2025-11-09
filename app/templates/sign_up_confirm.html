@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+<div class="container text-center">
+    <h3>Please check your email to confirm your account.</h3>
+    <p>If you don't receive an email, check your spam folder.</p>
+    <a href="{{url_for('user.login')}}" class="btn btn-lg btn-primary">Log In</a>
+</div>
+{% endblock %}
