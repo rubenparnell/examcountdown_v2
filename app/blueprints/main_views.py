@@ -65,8 +65,18 @@ def build_exam_list(exams):
         duration_delta = parse_duration(exam.duration)
         end_dt = start_dt + duration_delta
 
+        if current_user.is_authenticated:
+            if current_user.is_authenticated:
+                am_start_time=current_user.exam_start_time_am or "09:00"
+                pm_start_time=current_user.exam_start_time_pm or "13:30"
+
+            if exam.time.upper() == "AM":
+                start_date = exam.date.replace(hour=int(am_start_time.split(':')[0]), minute=int(am_start_time.split(':')[1]))
+            elif exam.time.upper() == "PM":
+                start_date = exam.date.replace(hour=int(pm_start_time.split(':')[0]), minute=int(pm_start_time.split(':')[1]))
+
         exam_list.append({
-            "start_date": exam.date,
+                "start_date": start_date,
                 "end_date": end_dt,
                 "time": exam.time,
                 "subject": exam.base_subject,
