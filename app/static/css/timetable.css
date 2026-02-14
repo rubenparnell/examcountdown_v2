@@ -1,0 +1,108 @@
+/* =========================
+Event Appearance
+========================= */
+
+/* Make events look like boxes */
+.fc .fc-event {
+    border: 1px solid #666;
+    border-radius: 4px;
+    padding: 4px 6px;
+    color: #fff !important;
+    font-size: 0.9rem;
+    box-shadow: none;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+/* Remove the default dot */
+.fc .fc-event-dot {
+    display: none !important;
+}
+
+/* Hide default time display */
+.fc .fc-event-time {
+    display: none !important;
+}
+
+/* Allow wrapped event titles */
+.fc .fc-event-title {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+    line-height: 1.2;
+}
+
+/* Prevent row collapsing in month view */
+.fc .fc-daygrid-day-events {
+    display: block;
+}
+
+
+/* =========================
+Toolbar Alignment
+========================= */
+
+/* Ensure proper vertical alignment */
+.fc .fc-toolbar {
+    align-items: center;
+}
+
+/* Align button groups neatly */
+.fc .fc-toolbar-chunk {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Remove spacing inside prev/next group */
+.fc .fc-button-group {
+    display: flex;
+}
+
+.fc .fc-button-group .fc-button {
+    margin: 0;
+}
+
+.fc-header-toolbar {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+/* =========================
+Responsive Adjustments
+========================= */
+
+@media (max-width: 900px) {
+    .fc .fc-event {
+        padding: 3px 2px;
+    }
+}
+
+@media (max-width: 750px) {
+    /* Smaller event text */
+    .fc .fc-event {
+        font-size: 0.75rem;
+        padding: 1px 1px;
+    }
+
+    /* Make toolbar wrap nicely */
+    .fc .fc-toolbar {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    /* Centre title on small screens */
+    .fc .fc-toolbar-title {
+        width: 100%;
+        text-align: center;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 500px) {
+    /* Smaller event text */
+    .fc .fc-event {
+        font-size: 0.65rem;
+        padding: 1px 0.5px;
+    }
+}

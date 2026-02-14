@@ -1,11 +1,12 @@
 from flask import Blueprint, render_template
 from flask_login import login_required, current_user
-from datetime import datetime
+from datetime import datetime, timedelta
 from sqlalchemy import and_, or_
 from app import db
 from shared_db.db import db
 from shared_db.models import Exams, UserSubjects
 from collections import defaultdict
+import re
 
 main = Blueprint('main', __name__)
 
@@ -41,6 +42,43 @@ def get_shown_exams():
     return shown_exams
 
 
+def parse_duration(duration_str):
+    hours = 0
+    minutes = 0
+
+    hour_match = re.search(r"(\d+)h", duration_str)
+    minute_match = re.search(r"(\d+)m", duration_str)
+
+    if hour_match:
+        hours = int(hour_match.group(1))
+    if minute_match:
+        minutes = int(minute_match.group(1))
+
+    return timedelta(hours=hours, minutes=minutes)
+
+
+def build_exam_list(exams):
+    exam_list = []
+
+    for exam in sorted(exams, key=lambda e: (e.date, e.time)):
+        start_dt = exam.date
+        duration_delta = parse_duration(exam.duration)
+        end_dt = start_dt + duration_delta
+
+        exam_list.append({
+            "start_date": exam.date,
+                "end_date": end_dt,
+                "time": exam.time,
+                "subject": exam.base_subject,
+                "title": exam.title,
+                "tier": exam.tier,
+                "duration": exam.duration,
+                "board": exam.board
+            })
+
+    return exam_list
+
+
 @main.route("/")
 def home():
     if current_user.is_authenticated:
@@ -65,11 +103,14 @@ def home():
             if isinstance(exam.date, datetime) and exam.date > datetime.now():
                 filtered_shown_exams.append(exam)
 
+        individual_exams = build_exam_list(shown_exams)
+
         return render_template("dashboard.html", 
                             next_exam_data=next_exam, 
                             exams=filtered_shown_exams,
                             am_start_time=am_start_time,
                             pm_start_time=pm_start_time,
+                            grouped_exams=individual_exams,
                             )
   
     else:
@@ -269,10 +310,14 @@ def all_timetable(level):
     return render_template('timetable.html', exams=all_exams, level=level)
 
 
-
 @main.route("/timetable")
 @login_required
 def timetable():
     shown_exams = get_shown_exams()
-    
-    return render_template('timetable.html', exams=shown_exams)
+    individual_exams = build_exam_list(shown_exams)
+
+    return render_template(
+        "timetable.html",
+        exams=shown_exams,
+        grouped_exams=individual_exams,
+    )

@@ -2,7 +2,8 @@
 {% block title %}Home{% endblock %}
 
 {% block head %}
-    <link rel="stylesheet" href="/static/tableSort.css">
+    <link rel="stylesheet" href="/static/css/tableSort.css">
+    <link rel="stylesheet" href="/static/css/timetable.css">
 {% endblock %}
 
 {% block content %}
@@ -41,8 +42,21 @@
             </div>
         </div>
         {% endif %}
-        
     </div>
+
+    {% if current_user.is_authenticated %}
+    <div class="container-responsive container-lg p-0 px-sm-2">
+        <div class="card mb-4">
+            <h4 class="card-header">Calendar</h4>
+            <div class="card-body px-0">
+                <div class="table-responsive">
+                    <div id="calendar" class="mb-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
     <div class="container-md">
         <div class="card mb-4">
             <h4 class="card-header">Timetable</h4>
@@ -77,7 +91,59 @@
         </div>
     </div>
 
+    <!-- Exam Details Modal -->
+    <div class="modal fade" id="examModal" tabindex="-1" aria-labelledby="examModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centred">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="examModalLabel">Exam Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Date:</strong> <span id="modalDate"></span></p>
+                    <p><strong>Time:</strong> <span id="modalTime"></span></p>
+                    <p><strong>Subject:</strong> <span id="modalSubject"></span></p>
+                    <p><strong>Title:</strong> <span id="modalTitle"></span></p>
+                    <p><strong>Duration:</strong> <span id="modalDuration"></span></p>
+                    <p><strong>Board:</strong> <span id="modalBoard"></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="/static/tableSort.js"></script>
+    <script>
+        window.CALENDAR_COLOURS = [
+            '#D41719', '#ff7f0e', '#2CB82C', '#1f77b4', 
+            '#9467bd', '#304736', '#B01392', '#450404'
+        ];
+
+        window.CALENDAR_EVENTS = [
+            {% for exam in grouped_exams %}
+            {
+                title: {{ (exam.start_date.time()|format_time 
+                        ~ ": " ~ exam.subject 
+                        ~ ": " ~ exam.title 
+                        ~ " (" ~ exam.board ~ ", " ~ exam.duration 
+                        ~ (", " ~ exam.tier if exam.tier else "") 
+                        ~ ")") | tojson }},
+                start: "{{ exam.start_date.isoformat() }}",
+                end: "{{ exam.end_date.isoformat() }}",
+                display: 'block',
+                extendedProps: {
+                    subject: {{ exam.subject | tojson }},
+                    title: {{ exam.title | tojson }},
+                    tier: {{ exam.tier | tojson }},
+                    duration: {{ exam.duration | tojson }},
+                    board: {{ exam.board | tojson }},
+                    time: {{ exam.time | tojson }}
+                }
+            },
+            {% endfor %}
+        ];
+    </script>
+    <script src="/static/js/calendar.js"></script>
+
     <script>
         const sortHeader = document.getElementById('date-col');
         sortHeader.click();

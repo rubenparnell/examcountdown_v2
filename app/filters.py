@@ -19,6 +19,13 @@ def format_datetime(value):
     return value.strftime('%d/%m/%y %H:%M')
 
 
+def format_time(value):
+    if isinstance(value, Undefined):
+        return ""
+    
+    return value.strftime('%H:%M')
+
+
 def format_datetime_countdown(value):
     if isinstance(value, Undefined):
         return ""
@@ -39,4 +46,5 @@ def format_datetime_countdown(value):
 
 def register_filters(app):
     app.jinja_env.filters['format_datetime'] = format_datetime
+    app.jinja_env.filters['format_time'] = format_time
     app.jinja_env.filters['format_datetime_countdown'] = format_datetime_countdown
