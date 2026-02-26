@@ -83,7 +83,6 @@ def signup():
             db.session.add(new_user)
             db.session.commit()
 
-            login_user(new_user)
             session['supabase_user'] = user.id
 
             flash("Signed up successfully. Please check your email to confirm your account.", "info", persistent=True, position="top")
