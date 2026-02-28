@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 info.event.start.toLocaleDateString();
             document.getElementById('modalTime').textContent = props.time;
             document.getElementById('modalSubject').textContent = props.subject;
+            document.getElementById('pastPapersBtn').href = `https://myexams.net/papers?board=${props.board}&level=${props.tier}&subject=${props.subject}`;
 
             let titleText = props.title;
             if (props.tier) titleText += " (" + props.tier + ")";

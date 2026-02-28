@@ -81,7 +81,7 @@ def build_exam_list(exams):
                 "time": exam.time,
                 "subject": exam.base_subject,
                 "title": exam.title,
-                "tier": exam.tier,
+                "tier": exam.qualification,
                 "duration": exam.duration,
                 "board": exam.board
             })
