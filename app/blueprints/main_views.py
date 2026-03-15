@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, abort, Response
+from flask import Blueprint, render_template, abort, Response, url_for
 from flask_login import login_required, current_user
 from datetime import datetime, timedelta, timezone
 from sqlalchemy import and_, or_
@@ -115,12 +115,15 @@ def home():
 
         individual_exams = build_exam_list(shown_exams, current_user)
 
-        return render_template("dashboard.html", 
-                            next_exam_data=next_exam, 
+        calendar_link = url_for("main.calendar_feed", token=current_user.secret_token, _external=True)
+
+        return render_template("dashboard.html",
+                            next_exam_data=next_exam,
                             exams=filtered_shown_exams,
                             am_start_time=am_start_time,
                             pm_start_time=pm_start_time,
                             grouped_exams=individual_exams,
+                            calendar_link=calendar_link,
                             )
   
     else:
@@ -346,7 +349,9 @@ def calendar_feed(token):
         "BEGIN:VCALENDAR",
         "VERSION:2.0",
         "PRODID:-//countdown.myexams.net//Exam Calendar//EN",
-        "CALSCALE:GREGORIAN"
+        "CALSCALE:GREGORIAN",
+        "X-WR-CALNAME:My Exams",
+        "X-WR-CALDESC:All your upcoming exams from countdown.myexams.net"
     ]
 
     for exam in individual_exams:

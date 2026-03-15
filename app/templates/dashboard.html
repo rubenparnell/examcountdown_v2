@@ -48,10 +48,17 @@
     <div class="container-responsive container-lg p-0 px-sm-2">
         <div class="card mb-4">
             <h4 class="card-header">Calendar</h4>
-            <div class="card-body px-0">
+            <div class="card-body px-0 pb-0">
                 <div class="table-responsive">
                     <div id="calendar" class="mb-3"></div>
                 </div>
+            </div>
+            <div class="card-body py-0">
+                <button class="btn btn-primary" id="calendar-link-btn"><i class="bi bi-copy me-2"></i>Copy Calendar Link to Clipboard</button>
+                <p class="pt-1">
+                    Use this link to add your exams to your own calendar, for example in Google Calendar, Outlook, or Apple Calendar.<br>
+                    Add a new calendar and use the "From URL" or "Subscribe from web" option.
+                </p>
             </div>
         </div>
     </div>
@@ -148,6 +155,22 @@
     <script>
         const sortHeader = document.getElementById('date-col');
         sortHeader.click();
+
+        const calendarLinkBtn = document.getElementById('calendar-link-btn');
+        calendarLinkBtn.addEventListener('click', function() {
+            // copy the link to clipboard
+            navigator.clipboard.writeText("{{calendar_link}}");
+            // Show tick in the button
+            calendarLinkBtn.classList.remove('btn-primary');
+            calendarLinkBtn.classList.add('btn-success');
+            calendarLinkBtn.innerHTML += '<i class="bi bi-check"></i>';
+            setTimeout(function() {
+                calendarLinkBtn.classList.remove('btn-success');
+                calendarLinkBtn.classList.add('btn-primary');
+                calendarLinkBtn.innerHTML = calendarLinkBtn.innerHTML.replace('<i class="bi bi-check"></i>', "");
+            }, 2000);
+        });
+
     </script>
     <script type="module">
         import {updateCountdown} from "/static/countdown.js";
