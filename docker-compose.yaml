@@ -10,6 +10,7 @@ services:
     environment:
       SERVER_NAME: ${SERVER_NAME}
       SECRET_KEY: ${SECRET_KEY}
+      FLASK_DEBUG: ${FLASK_DEBUG:-0}
       FLASK_APP: ${FLASK_APP}
 
       MAIL_SERVER: ${MAIL_SERVER}
@@ -30,6 +31,7 @@ services:
       gunicorn run:app
         -w ${GUNICORN_WORKERS:-2}
         -b 0.0.0.0:5000
+        ${GUNICORN_RELOAD:-}
         --max-requests 500
         --max-requests-jitter 50
     deploy:
