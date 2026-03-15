@@ -37,6 +37,8 @@ def create_app(config_class=Config):
 
     @login_manager.user_loader
     def load_user(user_id):
+        if user_id is None:
+            return None
         return db.session.get(Users, int(user_id))
 
     # Register blueprints

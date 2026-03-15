@@ -1,18 +1,17 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, abort, Response
 from flask_login import login_required, current_user
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from sqlalchemy import and_, or_
-from app import db
 from shared_db.db import db
-from shared_db.models import Exams, UserSubjects
+from shared_db.models import Exams, UserSubjects, Users
 from collections import defaultdict
 import re
 
 main = Blueprint('main', __name__)
 
-def get_shown_exams():
+def get_shown_exams(user):
     shown_exams = []
-    selected_subjects = current_user.subjects
+    selected_subjects = user.subjects
     for subj in selected_subjects:
         board = subj.board
         subject = subj.subject
@@ -25,7 +24,7 @@ def get_shown_exams():
                 and_(
                     Exams.time.isnot(None),
                     Exams.time != '',
-                    Exams.level == current_user.default_level,
+                    Exams.level == user.default_level,
                     Exams.base_subject == base_subject,
                     Exams.board == board,
                     Exams.subject == subject,
@@ -57,7 +56,7 @@ def parse_duration(duration_str):
     return timedelta(hours=hours, minutes=minutes)
 
 
-def build_exam_list(exams):
+def build_exam_list(exams, user):
     exam_list = []
 
     for exam in sorted(exams, key=lambda e: (e.date, e.time)):
@@ -65,10 +64,9 @@ def build_exam_list(exams):
         duration_delta = parse_duration(exam.duration)
         end_dt = start_dt + duration_delta
 
-        if current_user.is_authenticated:
-            if current_user.is_authenticated:
-                am_start_time=current_user.exam_start_time_am or "09:00"
-                pm_start_time=current_user.exam_start_time_pm or "13:30"
+        if user.is_authenticated:
+            am_start_time=user.exam_start_time_am or "09:00"
+            pm_start_time=user.exam_start_time_pm or "13:30"
 
             if exam.time.upper() == "AM":
                 start_date = exam.date.replace(hour=int(am_start_time.split(':')[0]), minute=int(am_start_time.split(':')[1]))
@@ -76,14 +74,16 @@ def build_exam_list(exams):
                 start_date = exam.date.replace(hour=int(pm_start_time.split(':')[0]), minute=int(pm_start_time.split(':')[1]))
 
         exam_list.append({
+                "examination_code": exam.examination_code,
                 "start_date": start_date,
                 "end_date": end_dt,
                 "time": exam.time,
                 "subject": exam.base_subject,
                 "title": exam.title,
-                "tier": exam.qualification,
+                "tier": exam.tier,
                 "duration": exam.duration,
-                "board": exam.board
+                "board": exam.board,
+                "qualification": exam.qualification
             })
 
     return exam_list
@@ -95,7 +95,7 @@ def home():
         am_start_time=current_user.exam_start_time_am or "09:00"
         pm_start_time=current_user.exam_start_time_pm or "13:30"
 
-        shown_exams = get_shown_exams()
+        shown_exams = get_shown_exams(current_user)
 
         # Get the date of the next exam:
         next_exam_date = None
@@ -113,7 +113,7 @@ def home():
             if isinstance(exam.date, datetime) and exam.date > datetime.now():
                 filtered_shown_exams.append(exam)
 
-        individual_exams = build_exam_list(shown_exams)
+        individual_exams = build_exam_list(shown_exams, current_user)
 
         return render_template("dashboard.html", 
                             next_exam_data=next_exam, 
@@ -279,7 +279,7 @@ def exams(level=None):
 @main.route('/subject/<string:level>/<string:base_subject>')
 def show_selected_subject(level, base_subject):
     if current_user.is_authenticated:
-        shown_exams = get_shown_exams()
+        shown_exams = get_shown_exams(current_user)
 
     else:
         # Fetch all exams for the selected base_subject
@@ -323,11 +323,47 @@ def all_timetable(level):
 @main.route("/timetable")
 @login_required
 def timetable():
-    shown_exams = get_shown_exams()
-    individual_exams = build_exam_list(shown_exams)
+    shown_exams = get_shown_exams(current_user)
+    individual_exams = build_exam_list(shown_exams, current_user)
 
     return render_template(
         "timetable.html",
         exams=shown_exams,
         grouped_exams=individual_exams,
     )
+
+@main.route("/calendar/<token>.ics")
+def calendar_feed(token):
+
+    user = db.session.query(Users).filter_by(secret_token=token).first()
+    if not user:
+        abort(404)
+
+    shown_exams = get_shown_exams(user)
+    individual_exams = build_exam_list(shown_exams, user)
+
+    lines = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//countdown.myexams.net//Exam Calendar//EN",
+        "CALSCALE:GREGORIAN"
+    ]
+
+    for exam in individual_exams:
+        start = exam['start_date']
+        end = exam['end_date']
+
+        lines.extend([
+            "BEGIN:VEVENT",
+            f"UID:{exam['examination_code'].replace(' ', '_')}@countdown.myexams.net",
+            f"DTSTAMP:{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}",
+            f"DTSTART:{start.strftime('%Y%m%dT%H%M%S')}",
+            f"DTEND:{end.strftime('%Y%m%dT%H%M%S')}",
+            f"SUMMARY:{exam['subject']} - {exam['title']} {exam['tier'] + 'Tier' if exam['tier'] else ''} ({exam['qualification']})",
+            f"DESCRIPTION:Board: {exam['board']}",
+            "END:VEVENT"
+        ])
+
+    lines.append("END:VCALENDAR")
+
+    return Response("\n".join(lines), mimetype="text/calendar")
