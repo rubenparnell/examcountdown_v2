@@ -351,7 +351,8 @@ def calendar_feed(token):
         "PRODID:-//countdown.myexams.net//Exam Calendar//EN",
         "CALSCALE:GREGORIAN",
         "X-WR-CALNAME:My Exams",
-        "X-WR-CALDESC:All your upcoming exams from countdown.myexams.net"
+        "X-WR-CALDESC:All your upcoming exams from countdown.myexams.net",
+        "X-WR-TIMEZONE:Europe/London"
     ]
 
     for exam in individual_exams:
@@ -362,8 +363,8 @@ def calendar_feed(token):
             "BEGIN:VEVENT",
             f"UID:{exam['examination_code'].replace(' ', '_')}@countdown.myexams.net",
             f"DTSTAMP:{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}",
-            f"DTSTART:{start.strftime('%Y%m%dT%H%M%S')}",
-            f"DTEND:{end.strftime('%Y%m%dT%H%M%S')}",
+            f"DTSTART;TZID=Europe/London:{start.strftime('%Y%m%dT%H%M%S')}",
+            f"DTEND;TZID=Europe/London:{end.strftime('%Y%m%dT%H%M%S')}",
             f"SUMMARY:{exam['subject']} - {exam['title']} {exam['tier'] + 'Tier' if exam['tier'] else ''} ({exam['qualification']})",
             f"DESCRIPTION:Board: {exam['board']}",
             "END:VEVENT"
