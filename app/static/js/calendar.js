@@ -54,7 +54,6 @@ document.addEventListener('DOMContentLoaded', function() {
         eventClick: function(info) {
             const modal = new bootstrap.Modal(document.getElementById('examModal'));
             const props = info.event.extendedProps;
-            console.log(props);
 
             document.getElementById('modalDate').textContent = info.event.start.toLocaleDateString();
             document.getElementById('modalTime').textContent = props.time;
