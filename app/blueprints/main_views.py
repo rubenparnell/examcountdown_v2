@@ -282,7 +282,12 @@ def exams(level=None):
 @main.route('/subject/<string:level>/<string:base_subject>')
 def show_selected_subject(level, base_subject):
     if current_user.is_authenticated:
-        shown_exams = get_shown_exams(current_user)
+        all_shown_exams = get_shown_exams(current_user)
+        shown_exams = []
+
+        for exam in all_shown_exams:
+            if exam.base_subject == base_subject:
+                shown_exams.append(exam)
 
     else:
         # Fetch all exams for the selected base_subject
