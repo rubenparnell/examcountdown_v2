@@ -77,7 +77,7 @@ def signup():
                 auth_id=user.id,
                 username=form_username,
                 email=form_email,
-                date_added=datetime.now(),
+                date_added=datetime.now(timezone.utc),
                 is_admin=False
             )
             db.session.add(new_user)
@@ -144,7 +144,7 @@ def login():
                             auth_id=user.id,
                             username=email.split('@')[0][:50],
                             email=email,
-                            date_added=datetime.now(),
+                            date_added=datetime.now(timezone.utc),
                             is_admin=False
                         )
                         db.session.add(local_user)
@@ -292,7 +292,7 @@ def set_session():
                 username=username.lower(),
                 profile_picture=supabase_user.user_metadata.get("avatar_url", ""),
                 auth_id=supabase_user.id,
-                date_added=datetime.now()
+                date_added=datetime.now(timezone.utc)
             )
             db.session.add(user)
             db.session.commit()
@@ -648,7 +648,7 @@ def subject_options():
                 subject=specific_subject,
                 tier=tier,
                 board=board,
-                date_added=datetime.now()
+                date_added=datetime.now(timezone.utc)
             )
             current_user.subjects.append(new_subject)
             db.session.commit()

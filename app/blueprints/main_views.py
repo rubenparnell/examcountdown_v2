@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, abort, Response, url_for
 from flask_login import login_required, current_user
 from datetime import datetime, timedelta, timezone
+from zoneinfo import ZoneInfo
 from sqlalchemy import and_, or_
 from shared_db.db import db
 from shared_db.models import Exams, UserSubjects, Users
@@ -91,6 +92,9 @@ def build_exam_list(exams, user):
 
 @main.route("/")
 def home():
+    # Get the current date and time
+    now = datetime.now(ZoneInfo("Europe/London")).replace(tzinfo=None)
+    
     if current_user.is_authenticated:
         am_start_time=current_user.exam_start_time_am or "09:00"
         pm_start_time=current_user.exam_start_time_pm or "13:30"
@@ -102,7 +106,7 @@ def home():
         next_exam = None
         for exam in shown_exams:
             if isinstance(exam.date, datetime):
-                if exam.date > datetime.now():
+                if exam.date > now:
                     if not next_exam_date or exam.date < next_exam_date:
                         next_exam_date = exam.date
                         next_exam = exam
@@ -110,7 +114,7 @@ def home():
         filtered_shown_exams = []
 
         for exam in shown_exams:
-            if isinstance(exam.date, datetime) and exam.date > datetime.now():
+            if isinstance(exam.date, datetime) and exam.date > now:
                 filtered_shown_exams.append(exam)
 
         individual_exams = build_exam_list(shown_exams, current_user)
@@ -129,10 +133,6 @@ def home():
     else:
         am_start_time = "09:00"
         pm_start_time = "13:30"
-
-        # Get the current date and time
-        now = datetime.now()
-
         # Helper function to group exams by (date, time)
         def group_exams_by_time(exams):
             grouped = defaultdict(list)
@@ -218,7 +218,7 @@ def home():
 
 def showExams(exams):
     # Get the current date and time
-    now = datetime.now()
+    now = datetime.now(ZoneInfo("Europe/London")).replace(tzinfo=None)
 
     # Dictionary to store the soonest future event for each base_subject grouped by category
     exams_by_category = {}
