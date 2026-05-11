@@ -14,8 +14,12 @@ export function updateCountdown(element) {
             const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
 
             countdownElement.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            row._wasLive = true;
         } else {
             countdownElement.textContent = "Exam Started/ Ended";
+            if (row._wasLive) {
+                location.reload();
+            }
         }
     });
 }

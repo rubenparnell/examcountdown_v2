@@ -10,6 +10,25 @@ import re
 
 main = Blueprint('main', __name__)
 
+def exam_start_datetime(exam):
+    """Return the actual datetime the exam starts, based on AM/PM rules."""
+    if current_user.is_authenticated:
+        am_start_time = current_user.exam_start_time_am or "09:00"
+        pm_start_time = current_user.exam_start_time_pm or "13:30"
+    else:
+        am_start_time = "09:00"
+        pm_start_time = "13:30"
+
+    if not isinstance(exam.date, datetime):
+        return None
+
+    if exam.time.upper() == "AM":
+        hour, minute = map(int, am_start_time.split(":"))
+    else:  # PM
+        hour, minute = map(int, pm_start_time.split(":"))
+
+    return exam.date.replace(hour=hour, minute=minute)
+
 def get_shown_exams(user):
     shown_exams = []
     selected_subjects = user.subjects
@@ -96,25 +115,24 @@ def home():
     now = datetime.now(ZoneInfo("Europe/London")).replace(tzinfo=None)
     
     if current_user.is_authenticated:
-        am_start_time=current_user.exam_start_time_am or "09:00"
-        pm_start_time=current_user.exam_start_time_pm or "13:30"
-
+        # Exam countdown
         shown_exams = get_shown_exams(current_user)
 
-        # Get the date of the next exam:
-        next_exam_date = None
-        next_exam = None
+        # Find the next upcoming exam
+        now = datetime.now(ZoneInfo("Europe/London")).replace(tzinfo=None)
 
+        am_start_time = current_user.exam_start_time_am or "09:00"
+        pm_start_time = current_user.exam_start_time_pm or "13:30"
+
+        # Build list of upcoming exams with correct start times
+        upcoming = []
         for exam in shown_exams:
-            if isinstance(exam.date, datetime):
-                if exam.time.upper() == "AM":
-                    start_date = exam.date.replace(hour=int(am_start_time.split(':')[0]), minute=int(am_start_time.split(':')[1]))
-                elif exam.time.upper() == "PM":
-                    start_date = exam.date.replace(hour=int(pm_start_time.split(':')[0]), minute=int(pm_start_time.split(':')[1]))
-                if start_date > now:
-                    if not next_exam_date or start_date < next_exam_date:
-                        next_exam_date = start_date
-                        next_exam = exam
+            start_dt = exam_start_datetime(exam)
+            if start_dt and start_dt > now:
+                upcoming.append((start_dt, exam))
+
+        # Pick the earliest one
+        next_exam = min(upcoming, key=lambda x: x[0], default=(None, None))[1]
 
         individual_exams = build_exam_list(shown_exams, current_user)
 
@@ -223,6 +241,8 @@ def showExams(exams):
     exams_by_category = {}
 
     for exam in exams:
+        if current_user.is_authenticated:
+            exam.date = exam_start_datetime(exam)
         # Ensure the exam has a time value and is in the future
         if exam.time and exam.date > now:
             category = exam.category
