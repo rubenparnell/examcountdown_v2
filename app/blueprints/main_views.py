@@ -104,18 +104,17 @@ def home():
         # Get the date of the next exam:
         next_exam_date = None
         next_exam = None
+
         for exam in shown_exams:
             if isinstance(exam.date, datetime):
-                if exam.date > now:
-                    if not next_exam_date or exam.date < next_exam_date:
-                        next_exam_date = exam.date
+                if exam.time.upper() == "AM":
+                    start_date = exam.date.replace(hour=int(am_start_time.split(':')[0]), minute=int(am_start_time.split(':')[1]))
+                elif exam.time.upper() == "PM":
+                    start_date = exam.date.replace(hour=int(pm_start_time.split(':')[0]), minute=int(pm_start_time.split(':')[1]))
+                if start_date > now:
+                    if not next_exam_date or start_date < next_exam_date:
+                        next_exam_date = start_date
                         next_exam = exam
-
-        filtered_shown_exams = []
-
-        for exam in shown_exams:
-            if isinstance(exam.date, datetime) and exam.date > now:
-                filtered_shown_exams.append(exam)
 
         individual_exams = build_exam_list(shown_exams, current_user)
 
@@ -123,7 +122,7 @@ def home():
 
         return render_template("dashboard.html",
                             next_exam_data=next_exam,
-                            exams=filtered_shown_exams,
+                            exams=shown_exams,
                             am_start_time=am_start_time,
                             pm_start_time=pm_start_time,
                             grouped_exams=individual_exams,
