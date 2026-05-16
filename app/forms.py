@@ -71,6 +71,6 @@ class QualForm(FlaskForm):
 
 class TimeForm(FlaskForm):
   form_type = HiddenField(default='exam_times')
-  AM_time = TimeField('AM Exams')
-  PM_time = TimeField('PM Exams')
+  AM_time = TimeField('AM Exams', validators=[DataRequired()])
+  PM_time = TimeField('PM Exams', validators=[DataRequired()])
   submit = SubmitField('Confirm')
